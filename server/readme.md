@@ -49,3 +49,8 @@ If make is not enabled :
 > bin/console doctrine:migrations:migrate -n
 > bin/console hautelook:fixture:load -n
 ```
+
+# Doc Swagger
+```
+http://localhost:8888/api
+```
