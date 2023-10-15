@@ -1,0 +1,38 @@
+name: Build and Publish Docker Image
+
+on:
+  push:
+    branches:
+      - main  # Change this to the branch you want to trigger the workflow on
+
+jobs:
+  build_and_publish_docker_image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Get the latest Docker image tag
+        id: get_latest_tag
+        run: |
+          TAG=$(curl -s "https://registry.hub.docker.com/v2/repositories/popokola/odicylens-api/tags/latest" | jq -r '.name')
+          TAG=${TAG#v0.1.}  # Remove the version prefix
+          TAG=$((TAG + 1))
+          echo "::set-output name=NEW_TAG::v0.1.$TAG"
+
+      - name: Build and push Docker image for odicylens-api
+        uses: docker/build-push-action@v2
+        with:
+          context: ./server
+          file: ./server/Dockerfile
+          push: true
+          tags: popokola/odicylens-api:${{ steps.get_latest_tag.outputs.NEW_TAG }}
