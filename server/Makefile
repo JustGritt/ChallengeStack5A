@@ -87,6 +87,8 @@ migrate: | $(SF_CONSOLE_DEPS) ## Play all symfony migration
 	@$(PRINT_COLOR) "$(LOG_START) Execute Symfony migrations $(LOG_END)"
 	$(SF_CONSOLE_CMD) doctrine:migrations:migrate -n --env=$(env)
 
+# docker-compose run --rm --no-deps php bin/console doctrine:migrations:migrate -n --env=prod
+
 .PHONY: bddReset
 bddReset: ## Purge all data, recreate tables and execute migrations
 	@$(PRINT_COLOR) "$(LOG_START) Reset DB $(LOG_END)"

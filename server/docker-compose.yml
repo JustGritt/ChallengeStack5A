@@ -14,6 +14,7 @@ services:
       - php
     ports:
       - '8888:80'
+      
   php:
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -25,6 +26,7 @@ services:
       - ./.docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       - ~/.config/composer:/home/prod/.composer
       - .:/srv/app
+
   database:
     image: postgres:15.4-alpine
     environment:
