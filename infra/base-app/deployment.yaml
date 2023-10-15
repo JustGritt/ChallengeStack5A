@@ -30,7 +30,7 @@ spec:
     app: odicylens-api
   ports:
     - protocol: TCP
-      port: 8888
+      port: 80
       targetPort: 8888
 ---
 apiVersion: networking.k8s.io/v1
@@ -51,5 +51,5 @@ spec:
               service:
                 name: odicylens-api-service
                 port:
-                  number: 8888
+                  number: 80
 
