@@ -2,20 +2,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: base-app
+  name: odicylens-api
   labels:
-    app: base-app
+    app: odicylens-api
 spec:
   selector:
     matchLabels:
-      app: base-app
+      app: odicylens-api
   template:
     metadata:
       labels:
-        app: base-app
+        app: odicylens-api
     spec:
       containers:
-        - name: base-app
+        - name: odicylens-api
           imagePullPolicy: Always
           image: popokola/odicylens-api
           ports:
