@@ -59,10 +59,11 @@ jobs:
           push: true
           tags: popokola/odicylens-api:${{ steps.get_latest_tag.outputs.NEW_TAG }}
 
-      - name: Run all migrations 
+      - name: Run all migrations
         run: |
-          docker run --rm -it \
+          docker run --rm \
             --env-file ./server/.env \
             popokola/odicylens-api:${{ steps.get_latest_tag.outputs.NEW_TAG }} \
             php bin/console doctrine:migrations:migrate -n --env=APP_ENV
+        
         
