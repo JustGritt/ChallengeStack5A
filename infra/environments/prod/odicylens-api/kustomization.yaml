@@ -7,4 +7,4 @@ images:
   - name: popokola/odicylens-api
     newTag: v0.1.1
 resources:
-  - ../../../base-app
+  - ../../../../infra/base-app
