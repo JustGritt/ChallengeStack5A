@@ -17,6 +17,7 @@ jobs:
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
       JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
       JWT_PASSPHRASE: ${{ secrets.JWT_PASSPHRASE }}
+      DATABASE_VERSION: ${{ secrets.DATABASE_VERSION }}
 
     steps:
       - name: Checkout code
@@ -48,6 +49,7 @@ jobs:
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> ./server/.env
           echo "JWT_PUBLIC_KEY=${{ secrets.JWT_PUBLIC_KEY }}" >> ./server/.env
           echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> ./server/.env
+          echo "DATABASE_VERSION=${{ secrets.DATABASE_VERSION }}" >> ./server/.env
 
       - name: Build and push Docker image for odicylens-api
         uses: docker/build-push-action@v2
