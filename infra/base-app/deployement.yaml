@@ -17,6 +17,6 @@ spec:
       containers:
         - name: base-app
           imagePullPolicy: Always
-          image: popokola/base-app-api
+          image: popokola/odicylens-api
           ports:
             - containerPort: 8888
