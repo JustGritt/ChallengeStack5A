@@ -1,0 +1,22 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: base-app
+  labels:
+    app: base-app
+spec:
+  selector:
+    matchLabels:
+      app: base-app
+  template:
+    metadata:
+      labels:
+        app: base-app
+    spec:
+      containers:
+        - name: base-app
+          imagePullPolicy: Always
+          image: popokola/base-app-api
+          ports:
+            - containerPort: 8888

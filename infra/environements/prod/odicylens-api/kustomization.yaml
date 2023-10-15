@@ -1,0 +1,10 @@
+---
+namespace: odicylens-api
+replicas:
+  - name: odicylens-api
+    count: 1
+images:
+  - name: popokola/odicylens-api
+    newTag: v0.1.1
+resources:
+  - ../../../base-app
