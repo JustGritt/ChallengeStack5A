@@ -37,10 +37,10 @@ jobs:
       - name: Get the latest Docker image tag
         id: get_latest_tag
         run: |
-          TAG=$(curl -s "https://registry.hub.docker.com/v2/repositories/popokola/odicylens-api/tags/latest" | jq -r '.name')
-          TAG=${TAG#v0.1.}  # Remove the version prefix
-          TAG=$((TAG + 1))
-          echo "::set-output name=NEW_TAG::v0.1.$TAG"
+          LATEST_TAG=$(curl -s "https://registry.hub.docker.com/v2/repositories/popokola/odicylens-api/tags" | jq -r '.results[].name' | grep -E '^v0\.1\.[0-9]+$' | sort -rV | head -n 1)
+          CURRENT_X=${LATEST_TAG#v0.1.}
+          NEW_X=$((CURRENT_X + 1))
+          echo "::set-output name=NEW_TAG::v0.1.$NEW_X"
 
       - name: Generate .env File
         run: |
