@@ -48,10 +48,12 @@ jobs:
           echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> ./server/.env
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./server/.env
           echo "CORS_ALLOW_ORIGIN=${{ secrets.CORS_ALLOW_ORIGIN }}" >> ./server/.env
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> ./server/.env
-          echo "JWT_PUBLIC_KEY=${{ secrets.JWT_PUBLIC_KEY }}" >> ./server/.env
-          echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> ./server/.env
           echo "DATABASE_VERSION=${{ secrets.DATABASE_VERSION }}" >> ./server/.env
+          echo "MERCURE_JWT_SECRET=${{ secrets.MERCURE_JWT_SECRET }}" >> ./server/.env
+          echo "MERCURE_PUBLIC_URL=${{ secrets.MERCURE_PUBLIC_URL }}" >> ./server/.env
+          echo "MERCURE_URL=${{ secrets.MERCURE_URL }}" >> ./server/.env
+          echo "TRUSTED_PROXIES=${{ secrets.TRUSTED_PROXIES }}" >> ./server/.env
+          echo "TRUSTED_HOSTS=${{ secrets.TRUSTED_HOSTS }}" >> ./server/.env
 
       - name: Build and push Docker image for odicylens-api
         uses: docker/build-push-action@v2
