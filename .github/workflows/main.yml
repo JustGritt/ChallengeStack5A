@@ -14,10 +14,12 @@ jobs:
       APP_SECRET: ${{ secrets.APP_SECRET }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       CORS_ALLOW_ORIGIN: ${{ secrets.CORS_ALLOW_ORIGIN }}
-      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-      JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
-      JWT_PASSPHRASE: ${{ secrets.JWT_PASSPHRASE }}
       DATABASE_VERSION: ${{ secrets.DATABASE_VERSION }}
+      MERCURE_JWT_SECRET: ${{ secrets.MERCURE_JWT_SECRET }}
+      MERCURE_PUBLIC_URL: ${{ secrets.MERCURE_PUBLIC_URL }}
+      MERCURE_URL: ${{ secrets.MERCURE_URL }}
+      TRUSTED_PROXIES: ${{ secrets.TRUSTED_PROXIES }}
+      TRUSTED_HOSTS: ${{ secrets.TRUSTED_HOSTS }}
 
     steps:
       - name: Checkout code
@@ -55,7 +57,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./server
-          file: ./server/Dockerfile
+          file: ./server/api/Dockerfile.prod
           push: true
           tags: popokola/odicylens-api:${{ steps.get_latest_tag.outputs.NEW_TAG }}
 
