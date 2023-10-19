@@ -6,6 +6,7 @@ metadata:
   labels:
     app: odicylens-api
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: odicylens-api
@@ -19,7 +20,7 @@ spec:
           imagePullPolicy: Always
           image: popokola/odicylens-api
           ports:
-            - containerPort: 8888
+            - containerPort: 443
 ---
 apiVersion: v1
 kind: Service
@@ -30,8 +31,8 @@ spec:
     app: odicylens-api
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 8888
+      port: 443
+      targetPort: 433
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -51,5 +52,5 @@ spec:
               service:
                 name: odicylens-api-service
                 port:
-                  number: 80
+                  number: 433
 

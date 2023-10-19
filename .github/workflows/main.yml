@@ -14,10 +14,12 @@ jobs:
       APP_SECRET: ${{ secrets.APP_SECRET }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       CORS_ALLOW_ORIGIN: ${{ secrets.CORS_ALLOW_ORIGIN }}
-      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-      JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
-      JWT_PASSPHRASE: ${{ secrets.JWT_PASSPHRASE }}
       DATABASE_VERSION: ${{ secrets.DATABASE_VERSION }}
+      MERCURE_JWT_SECRET: ${{ secrets.MERCURE_JWT_SECRET }}
+      MERCURE_PUBLIC_URL: ${{ secrets.MERCURE_PUBLIC_URL }}
+      MERCURE_URL: ${{ secrets.MERCURE_URL }}
+      TRUSTED_PROXIES: ${{ secrets.TRUSTED_PROXIES }}
+      TRUSTED_HOSTS: ${{ secrets.TRUSTED_HOSTS }}
 
     steps:
       - name: Checkout code
@@ -35,10 +37,10 @@ jobs:
       - name: Get the latest Docker image tag
         id: get_latest_tag
         run: |
-          TAG=$(curl -s "https://registry.hub.docker.com/v2/repositories/popokola/odicylens-api/tags/latest" | jq -r '.name')
-          TAG=${TAG#v0.1.}  # Remove the version prefix
-          TAG=$((TAG + 1))
-          echo "::set-output name=NEW_TAG::v0.1.$TAG"
+          LATEST_TAG=$(curl -s "https://registry.hub.docker.com/v2/repositories/popokola/odicylens-api/tags" | jq -r '.results[].name' | grep -E '^v0\.1\.[0-9]+$' | sort -rV | head -n 1)
+          CURRENT_X=${LATEST_TAG#v0.1.}
+          NEW_X=$((CURRENT_X + 1))
+          echo "::set-output name=NEW_TAG::v0.1.$NEW_X"
 
       - name: Generate .env File
         run: |
@@ -46,24 +48,19 @@ jobs:
           echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> ./server/.env
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./server/.env
           echo "CORS_ALLOW_ORIGIN=${{ secrets.CORS_ALLOW_ORIGIN }}" >> ./server/.env
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> ./server/.env
-          echo "JWT_PUBLIC_KEY=${{ secrets.JWT_PUBLIC_KEY }}" >> ./server/.env
-          echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> ./server/.env
           echo "DATABASE_VERSION=${{ secrets.DATABASE_VERSION }}" >> ./server/.env
+          echo "MERCURE_JWT_SECRET=${{ secrets.MERCURE_JWT_SECRET }}" >> ./server/.env
+          echo "MERCURE_PUBLIC_URL=${{ secrets.MERCURE_PUBLIC_URL }}" >> ./server/.env
+          echo "MERCURE_URL=${{ secrets.MERCURE_URL }}" >> ./server/.env
+          echo "TRUSTED_PROXIES=${{ secrets.TRUSTED_PROXIES }}" >> ./server/.env
+          echo "TRUSTED_HOSTS=${{ secrets.TRUSTED_HOSTS }}" >> ./server/.env
 
       - name: Build and push Docker image for odicylens-api
         uses: docker/build-push-action@v2
         with:
           context: ./server
-          file: ./server/Dockerfile
+          file: ./server/api/Dockerfile.prod
           push: true
           tags: popokola/odicylens-api:${{ steps.get_latest_tag.outputs.NEW_TAG }}
 
-      - name: Run all migrations
-        run: |
-          docker run --rm \
-            --env-file ./server/.env \
-            popokola/odicylens-api:${{ steps.get_latest_tag.outputs.NEW_TAG }} \
-            bin/console doctrine:migrations:migrate -n --env=APP_ENV
-        
         
