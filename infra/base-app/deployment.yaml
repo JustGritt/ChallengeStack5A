@@ -20,7 +20,7 @@ spec:
           imagePullPolicy: Always
           image: popokola/odicylens-api
           ports:
-            - containerPort: 443
+            - containerPort: 80
           env:
             - name: MERCURE_PUBLISHER_JWT_KEY
               valueFrom:
@@ -28,7 +28,7 @@ spec:
                   name: mercure-secret
                   key: MERCURE_PUBLISHER_JWT_KEY
             - name: SERVER_NAME
-              value: api.odicylens.com
+              value: :80
 
 ---
 apiVersion: v1
@@ -40,8 +40,8 @@ spec:
     app: odicylens-api
   ports:
     - protocol: TCP
-      port: 443
-      targetPort: 443
+      port: 80
+      targetPort: 80
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -59,7 +59,7 @@ spec:
               service:
                 name: odicylens-api-service
                 port:
-                  number: 443
+                  number: 80
         
 
 
