@@ -56,6 +56,7 @@ jobs:
           echo "MERCURE_URL=${{ secrets.MERCURE_URL }}" >> ./server/api/.env
           echo "TRUSTED_HOSTS='*'" >> ./server/api/.env
           echo "TRUSTED_PROXIES=0.0.0.0" >> ./server/api/.env
+          echo "SERVER_NAME=api.odicylens.com" >> ./server/api/.env
 
       - name: Build and push Docker image for odicylens-api
         uses: docker/build-push-action@v2
