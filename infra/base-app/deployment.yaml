@@ -37,14 +37,22 @@ spec:
   selector:
     app: odicylens-api
   ports:
-    - name: https
       protocol: TCP
-      port: 443
+      port: 433
       targetPort: 443
-    - name: http
-      protocol: TCP
-      port: 80
-      targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: odicylens-debug-service
+spec:
+  selector:
+    app: odicylens-api
+  ports:
+    - protocol: TCP
+      port: 8081  # Define a port of your choice
+      targetPort: 443  # Use the appropriate targetPort
+  type: NodePort  # Expose this service using NodePort
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -65,7 +73,7 @@ spec:
               service:
                 name: odicylens-api-service
                 port:
-                  number: 80
+                  number: 443
         
 
 
