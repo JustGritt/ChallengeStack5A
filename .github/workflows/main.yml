@@ -54,6 +54,7 @@ jobs:
           echo "MERCURE_JWT_SECRET=${{ secrets.MERCURE_JWT_SECRET }}" >> ./server/api/.env
           echo "MERCURE_PUBLIC_URL=${{ secrets.MERCURE_PUBLIC_URL }}" >> ./server/api/.env
           echo "MERCURE_URL=${{ secrets.MERCURE_URL }}" >> ./server/api/.env
+          echo "TRUSTED_HOSTS=^(localhost|php|api\.odicylens\.com|subdomain\.odicylens\.com)$" >> ./server/api/.env
 
       - name: Build and push Docker image for odicylens-api
         uses: docker/build-push-action@v2
