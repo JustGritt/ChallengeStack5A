@@ -21,6 +21,12 @@ spec:
           image: popokola/odicylens-api
           ports:
             - containerPort: 443
+        env:
+          - name: MERCURE_PUBLISHER_JWT_KEY
+            valueFrom:
+              secretKeyRef:
+                name: mercure-secret
+                key: MERCURE_PUBLISHER_JWT_KEY
 ---
 apiVersion: v1
 kind: Service
