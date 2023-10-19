@@ -44,16 +44,16 @@ jobs:
 
       - name: Generate .env File
         run: |
-          echo "APP_ENV=${{ secrets.APP_ENV }}" >> ./server/.env
-          echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> ./server/.env
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./server/.env
-          echo "CORS_ALLOW_ORIGIN=${{ secrets.CORS_ALLOW_ORIGIN }}" >> ./server/.env
-          echo "DATABASE_VERSION=${{ secrets.DATABASE_VERSION }}" >> ./server/.env
-          echo "MERCURE_JWT_SECRET=${{ secrets.MERCURE_JWT_SECRET }}" >> ./server/.env
-          echo "MERCURE_PUBLIC_URL=${{ secrets.MERCURE_PUBLIC_URL }}" >> ./server/.env
-          echo "MERCURE_URL=${{ secrets.MERCURE_URL }}" >> ./server/.env
-          echo "TRUSTED_PROXIES=${{ secrets.TRUSTED_PROXIES }}" >> ./server/.env
-          echo "TRUSTED_HOSTS=${{ secrets.TRUSTED_HOSTS }}" >> ./server/.env
+          echo "APP_ENV=${{ secrets.APP_ENV }}" >> ./server/api/.env
+          echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> ./server/api/.env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./server/api/.env
+          echo "CORS_ALLOW_ORIGIN=${{ secrets.CORS_ALLOW_ORIGIN }}" >> ./server/api/.env
+          echo "DATABASE_VERSION=${{ secrets.DATABASE_VERSION }}" >> ./server/api/.env
+          echo "MERCURE_JWT_SECRET=${{ secrets.MERCURE_JWT_SECRET }}" >> ./server/api/.env
+          echo "MERCURE_PUBLIC_URL=${{ secrets.MERCURE_PUBLIC_URL }}" >> ./server/api/.env
+          echo "MERCURE_URL=${{ secrets.MERCURE_URL }}" >> ./server/api/.env
+          echo "TRUSTED_PROXIES=${{ secrets.TRUSTED_PROXIES }}" >> ./server/api/.env
+          echo "TRUSTED_HOSTS=${{ secrets.TRUSTED_HOSTS }}" >> ./server/api/.env
 
       - name: Build and push Docker image for odicylens-api
         uses: docker/build-push-action@v2
