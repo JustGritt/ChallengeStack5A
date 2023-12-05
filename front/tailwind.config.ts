@@ -18,7 +18,8 @@ const config: Config = {
       },
       colors: {
         'main': '#6366F1',
-
+        'main-light': '#EEF2FF',
+        'main-dark': '#262626',
       },
     },
   },

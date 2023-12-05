@@ -43,7 +43,7 @@ function NavBar() {
                 </div>
 
             </nav>
-            {navbarOpen && (<div className="w-11/12 self-center absolute right-0 left-0 ml-auto mr-auto md:hidden block" id='navbar-default'>
+            {navbarOpen && (<div className="w-11/12 self-center absolute right-0 left-0 ml-auto mr-auto md:hidden block z-20" id='navbar-default'>
                 <ul className="font-medium flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 ">
                     <li>
                         <a href="#" className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page">Home</a>
