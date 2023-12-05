@@ -1,0 +1,65 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: odicylens-api
+  labels:
+    app: odicylens-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: odicylens-api
+  template:
+    metadata:
+      labels:
+        app: odicylens-api
+    spec:
+      containers:
+        - name: odicylens-api
+          imagePullPolicy: Always
+          image: popokola/odicylens-api
+          ports:
+            - containerPort: 80
+          env:
+            - name: MERCURE_PUBLISHER_JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mercure-secret
+                  key: MERCURE_PUBLISHER_JWT_KEY
+            - name: SERVER_NAME
+              value: :80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: odicylens-api-service
+spec:
+  selector:
+    app: odicylens-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: odicylens-api-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: api.odicylens.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: odicylens-api-service
+                port:
+                  number: 80
+        
+
+
