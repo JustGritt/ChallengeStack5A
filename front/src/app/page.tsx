@@ -1,4 +1,6 @@
+"use client";
 import Image from 'next/image'
+import Faq from './partials/Faq'
 import Footer from './partials/Footer'
 
 export default function Home() {
@@ -110,6 +112,8 @@ export default function Home() {
           </p>
         </a>
       </div>
+
+      <Faq />
 
     </main>
 
