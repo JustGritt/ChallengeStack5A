@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-page-custom-font */
+import NavBar from '@/components/Header/NavBar'
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
@@ -16,7 +18,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className="min-h-screen">
+        <NavBar />
+        <div className='flex justify-center items-center p-24'>
+          {children}
+        </div>
+      </body>
     </html>
   )
 }
