@@ -317,6 +317,18 @@
     "symfony/http-kernel": {
         "version": "v6.0.2"
     },
+    "symfony/mailer": {
+        "version": "6.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "4.3",
+            "ref": "2bf89438209656b85b9a49238c4467bff1b1f939"
+        },
+        "files": [
+            "config/packages/mailer.yaml"
+        ]
+    },
     "symfony/maker-bundle": {
         "version": "1.0",
         "recipe": {
@@ -379,6 +391,15 @@
     },
     "symfony/polyfill-php70": {
         "version": "v1.20.0"
+    },
+    "symfony/postmark-mailer": {
+        "version": "6.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "4.4",
+            "ref": "631f81f2fbf58126ae699a04b1d0984442613a19"
+        }
     },
     "symfony/process": {
         "version": "v6.0.2"
@@ -496,6 +517,19 @@
     },
     "symfony/yaml": {
         "version": "v6.0.2"
+    },
+    "tilleuls/forgot-password-bundle": {
+        "version": "1.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "1.0",
+            "ref": "48ab9b5581997a68245b79ac21e355152e29fcde"
+        },
+        "files": [
+            "config/packages/coop_tilleuls_forgot_password.yaml",
+            "config/routes/coop_tilleuls_forgot_password.yaml"
+        ]
     },
     "twig/twig": {
         "version": "v3.3.7"
