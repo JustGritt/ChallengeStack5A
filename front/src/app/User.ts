@@ -1,5 +1,5 @@
 import { UserData } from "./utils/Types";
-import { EndT, Endpoint, api } from "../service/apiUtils";
+import { EndT, Endpoint, api } from "../redux/api/apiUtils";
 
 const endpoints = new Endpoint()
 let instance: User

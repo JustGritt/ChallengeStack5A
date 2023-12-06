@@ -1,29 +1,36 @@
 'use client'
 import { Form, Formik, Field, FormikProvider, useFormik, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
-import user, { User } from '../User'
 import { UserData } from '../utils/Types'
 import Image from 'next/image'
 import Button from '@/components/Ui/Button'
+import { useRegisterMutation } from '@/redux/api/authApi'
+import { User } from '@/redux/types/User'
 import { useState } from 'react'
 import Modal from '@/components/Modal'
 
 export default function Register() {
 
-    const [showModal, setShowModal] = useState(false)
-
     const initialValues = {
         firstName: '',
         lastName: '',
         email: '',
-        password: '',
+        plainPassword: '',
         confirmPassword: '',
         terms: false
     }
 
+    const [register, {
+        isLoading: isRegisterLoading,
+        isSuccess: isRegisterSuccess,
+        isError: isRegisterError,
+        error: registerError,
+        data: registerData
+    }] = useRegisterMutation()
+
     const validationSchema = Yup.object().shape({
-        firstName: Yup.string().required('Required'),
-        lastName: Yup.string().required('Required'),
+        firstname: Yup.string().required('Required'),
+        lastname: Yup.string().required('Required'),
         email: Yup.string().email('Invalid email address').required('Required'),
         password: Yup.string().required('Required'),
         confirmPassword: Yup.string()
@@ -31,14 +38,15 @@ export default function Register() {
         terms: Yup.boolean().oneOf([true], 'Must Accept Terms and Conditions')
     })
 
-    const formik = useFormik<UserData>({
+    const formik = useFormik<User>({
         initialValues: initialValues,
         validationSchema: validationSchema,
-        onSubmit: (values: UserData) => {
+        onSubmit: (values: User) => {
             setShowModal(true)
-            user.SignUp(values)
+            register(values)
         }
     })
+
 
     return (
         <div className='m-auto w-full flex justify-center items-center relative p-8 bg-[#EEF2FF] min-h-[70vh] flex-col-reverse lg:flex-row'>
@@ -89,6 +97,16 @@ export default function Register() {
                                 <ErrorMessage name='confirmPassword' component='span' className="text-red-600 leading-3 text-sm" />
                             </div>
                             <Field type="password" placeholder="Confirm Password" name='confirmPassword' className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm" />
+                            <Field type="text" placeholder="First Name" name='firstname' className="border border-gray-400 rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-600 placeholder:text-sm " />
+                            <ErrorMessage name='firstname' component='span' className="text-red-600 leading-3 text-sm" />
+                            <Field type="text" placeholder="Last Name" name='lastname' className="border border-gray-400 rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-600 placeholder:text-sm" />
+                            <ErrorMessage name='lastname' component='span' className="text-red-600 leading-3 text-sm" />
+                            <Field type="email" placeholder="Email" name='email' className="border border-gray-400 rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-600 placeholder:text-sm" />
+                            <ErrorMessage name='email' component='span' className="text-red-600 leading-3 text-sm" />
+                            <Field type="password" placeholder="Password" name='password' className="border border-gray-400 rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-600 placeholder:text-sm" />
+                            <ErrorMessage name='password' component='span' className="text-red-600 leading-3 text-sm" />
+                            <Field type="password" placeholder="Confirm Password" name='confirmPassword' className="border border-gray-400 rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-600 placeholder:text-sm" />
+                            <ErrorMessage name='confirmPassword' component='span' className="text-red-600 leading-3 text-sm" />
                             <label className="mt-2">
                                 <Field type="checkbox" name="terms" className="mr-2 focus:outline-0 font-inter text-gray-600 placeholder:text-sm" />
                                 <span className='text-black text-sm font-inter'>
@@ -97,7 +115,7 @@ export default function Register() {
                             </label>
                             <ErrorMessage name='terms' component='span' className="text-red-600 leading-3 text-sm" />
                             <div className='flex flex-col justify-center items-center gap-2'>
-                                <Button title={'Register'} classNames='mt-4 w-full' />
+                                <Button title={'Register'} isLoading={isRegisterLoading} classNames='mt-4 w-full' />
                                 <p className='text-black text-center text-sm font-inter'>
                                     Already a member? <a href="/login" className="text-blue-500 hover:text-blue-700">Sign in</a>
                                 </p>
