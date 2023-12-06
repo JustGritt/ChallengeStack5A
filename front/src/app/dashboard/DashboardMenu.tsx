@@ -1,30 +1,32 @@
+"use client";
 import { Fragment, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, CalendarIcon, ChartPieIcon, Cog6ToothIcon, HomeIcon, UsersIcon, XMarkIcon, UserIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
-
-// Get the current url path
-const currentUrl = window.location.pathname.split('/')[2]
-
-const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: currentUrl === 'dashboard' },
-    { name: 'Employees', href: '/dashboard/employees', icon: UsersIcon, current: currentUrl === 'employees' },
-    { name: 'Reservations', href: '/dashboard/appointments', icon: CalendarIcon, current: currentUrl === 'appointments' },
-    { name: 'Statistics', href: '/dashboard/statistics', icon: ChartPieIcon, current: currentUrl === 'statistics' },
-]
-
-const userNavigation = [
-    { name: 'Your profile', href: '/dashboard/profile' },
-    { name: 'Sign out', href: '/dashboard/logout' },
-]
-
-function classNames(...classes: any) {
-    return classes.filter(Boolean).join(' ')
-}
+import { usePathname } from 'next/navigation'
 
 export default function DashboardMenu() {
     const [sidebarOpen, setSidebarOpen] = useState(false)
+
+    function classNames(...classes: any) {
+        return classes.filter(Boolean).join(' ')
+    }
+
+    const pathname = usePathname()
+    console.log(pathname);
+
+    const navigation = [
+        { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: pathname === '/dashboard' },
+        { name: 'Employees', href: '/dashboard/employees', icon: UsersIcon, current: pathname === '/dashboard/employees' },
+        { name: 'Reservations', href: '/dashboard/appointments', icon: CalendarIcon, current: pathname === '/dashboard/appointments' },
+        { name: 'Statistics', href: '/dashboard/statistics', icon: ChartPieIcon, current: pathname === '/dashboard/statistics' },
+    ]
+
+    const userNavigation = [
+        { name: 'Your profile', href: '/dashboard/profile' },
+        { name: 'Sign out', href: '/dashboard/logout' },
+    ]
 
     return (
         <>
@@ -104,12 +106,12 @@ export default function DashboardMenu() {
 
                 {/* Static sidebar for desktop */}
                 <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-                    {/* Sidebar component, swap this element with another sidebar if you like */}
                     <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
                         <div className="flex h-16 shrink-0 items-center">
-                            <Image src="/logo.svg" className="h-6 w-auto mr-4" alt="logo" width={32} height={32} />
-                            <span
-                                className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Odicylens</span>
+                            <a href="/" className="inline-flex items-center justify-center">
+                                <Image src="/logo.svg" className="h-6 w-auto mr-4" alt="logo" width={32} height={32} />
+                                <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Odicylens</span>
+                            </a>
                         </div>
                         <nav className="flex flex-1 flex-col">
                             <ul role="list" className="flex flex-1 flex-col gap-y-7">
