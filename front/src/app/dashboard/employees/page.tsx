@@ -4,12 +4,17 @@ import DashboardMenu from '../DashboardMenu'
 
 export default function Employees() {
 
-    // Get the list of employees from the API
-    const [employees, setEmployees] = useState([]);
+    interface Employee {
+        id: number;
+        name: string;
+    }
+
+    // TODO: Get the list of employees from the API (replace once the api is ready)
+    const [employees, setEmployees] = useState<Employee[]>([]);
     useEffect(() => {
         fetch('https://jsonplaceholder.typicode.com/users')
-            .then(response => response.json())
-            .then(data => setEmployees(data));
+        .then(response => response.json())
+        .then(data => setEmployees(data));
     }, []);
 
     return (
