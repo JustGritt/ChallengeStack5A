@@ -14,7 +14,6 @@ import Faq from "./partials/Faq"
 export default function Home() {
   return (
     <main className="min-h-screen ">
-
       <section className='h-11/12 w-full relative min-h-[500px] max-h-[600px] overflow-hidden	'>
         <img
           src='https://images.unsplash.com/photo-1560785218-893cc779709b?q=80&w=2792&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' alt={'Bg'}
@@ -77,8 +76,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex flex-col lg:flex-row max-h-[500px] py-8  overflow-hidden">
-        <Faq />
+      <section className="flex flex-col lg:flex-row min-h-[600px] py-8  overflow-hidden justify-center items-center bg-[#FAFAFA]">
+        <Faq classNames={{
+          container: 'w-full lg:w-1/2 h-fit'
+        }} />
       </section>
     </main>
   )

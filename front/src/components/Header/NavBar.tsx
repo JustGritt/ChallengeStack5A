@@ -7,7 +7,7 @@ import Button from '@/components/Ui/Button'
 function NavBar() {
     const [navbarOpen, setNavbarOpen] = React.useState(false);
     return (
-        <header>
+        <header className='sticky z-10'>
             <nav className='justify-center items-center p-4 lg:px-8 h-18 
             border-t-0 border-l-0 border-r-0 border
             border-b-gray-600 bg-white'>
