@@ -22,6 +22,10 @@ jobs:
       MERCURE_URL: ${{ secrets.MERCURE_URL }}
       TRUSTED_PROXIES: ${{ secrets.TRUSTED_PROXIES }}
       TRUSTED_HOSTS: ${{ secrets.TRUSTED_HOSTS }}
+      JWT_PASSPHRASE: ${{ secrets.JWT_PASSPHRASE }}
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+      JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+
 
     steps:
       - name: Checkout code
@@ -56,6 +60,9 @@ jobs:
           echo "MERCURE_URL=${{ secrets.MERCURE_URL }}" >> ./server/api/.env
           echo "TRUSTED_HOSTS=^(localhost|php|api\.odicylens\.com)$" >> ./server/api/.env
           echo "TRUSTED_PROXIES=0.0.0.0" >> ./server/api/.env
+          echo "JWT_PUBLIC_KEY=${{ secrets.JWT_PUBLIC_KEY }}" >> ./server/api/.env
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> ./server/api/.env
+          echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> ./server/api/.env
 
       - name: Build and push Docker image for odicylens-api
         uses: docker/build-push-action@v2

@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
-import Button from "@/components/Header/Ui/Button"
+import Button from "@/components/Ui/Button"
 import Head from "next/head"
 import React from "react"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -9,6 +9,7 @@ import {
   faMagnifyingGlass,
   faSearch
 } from "@fortawesome/free-solid-svg-icons";
+import Faq from "./partials/Faq"
 
 export default function Home() {
   return (
@@ -74,6 +75,10 @@ export default function Home() {
           <p className="text-gray-500 text-center">Odicylens is on the lookout for dynamic individuals all over France, ready to revolutionize the shooting production sector through digital innovation</p>
           <Button title="Discover Our Offer" classNames="mt-4" />
         </div>
+      </section>
+
+      <section className="flex flex-col lg:flex-row max-h-[500px] py-8  overflow-hidden">
+        <Faq />
       </section>
     </main>
   )
