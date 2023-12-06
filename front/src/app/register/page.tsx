@@ -5,8 +5,8 @@ import { UserData } from '../utils/Types'
 import Image from 'next/image'
 import Button from '@/components/Ui/Button'
 import { useRegisterMutation } from '@/redux/api/authApi'
-import { User } from '@/redux/types/User'
-import { useState } from 'react'
+import { ApiErrorResponse, User } from '@/redux/types/User'
+import { useMemo, useState } from 'react'
 import Modal from '@/components/Modal'
 
 export default function Register() {
@@ -30,6 +30,10 @@ export default function Register() {
         data: registerData
     }] = useRegisterMutation()
 
+
+
+
+
     const validationSchema = Yup.object().shape({
         firstname: Yup.string().required('Required'),
         lastname: Yup.string().required('Required'),
@@ -40,7 +44,7 @@ export default function Register() {
         terms: Yup.boolean().oneOf([true], 'Must Accept Terms and Conditions')
     })
 
-    const formik = useFormik<User>({
+    const formik = useFormik<User & { terms: boolean }>({
         initialValues: initialValues,
         validationSchema: validationSchema,
         onSubmit: (values: User) => {
@@ -49,18 +53,29 @@ export default function Register() {
         }
     })
 
+    useMemo(() => {
+        if (isRegisterSuccess) {
+            return setShowModal(true)
+        }
+        if (isRegisterError) {
+            formik.setErrors({
+                terms: (registerError as ApiErrorResponse).data['detail']
+            });
+        }
+    }, [isRegisterError, isRegisterSuccess, registerError, formik])
+
     return (
         <div className='m-auto w-full flex justify-center items-center relative p-8 bg-[#EEF2FF] min-h-[70vh] flex-col-reverse lg:flex-row'>
             {showModal && (
                 <Modal
                     type='email-validate'
+                    closable={isRegisterSuccess}
                     title='Welcome to Odicylens !'
                     content='To complete the registration process and activate your account, please check your email inbox.
                     <br/>
                     <br/>
                     If you encounter any issues or have questions, feel free to contact our support team at : 
                     <a class="text-main hover:text-main-dark transition-all" href="mailto:support@example.com">support@example.com</a>'
-                    onClose={() => setShowModal(false)}
                 />
             )}
             <div className='flex-1 justify-end flex'>
@@ -120,4 +135,8 @@ export default function Register() {
             </div>
         </div>
     )
+}
+
+function useCallback(arg0: () => void, arg1: (import("@/redux/types/User").RegisterResponse | undefined)[]) {
+    throw new Error('Function not implemented.')
 }
