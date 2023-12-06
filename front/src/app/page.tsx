@@ -14,10 +14,10 @@ export default function Home() {
   return (
     <main className="min-h-screen ">
 
-      <section className='h-11/12 w-full relative min-h-[400px] max-h-[500px] overflow-hidden	'>
+      <section className='h-11/12 w-full relative min-h-[500px] max-h-[600px] overflow-hidden	'>
         <img
           src='https://images.unsplash.com/photo-1560785218-893cc779709b?q=80&w=2792&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' alt={'Bg'}
-          className='h-full w-full object-cover '
+          className='h-[600px] w-full object-cover '
         />
         <div className="absolute bottom-0 p-6 lg:p-12 w-full">
           <h1 className='text-xl font-inter font-thin text-white '>Explore Our Collaborators</h1>
@@ -44,7 +44,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="block flex-row min-h-[500px] lg:flex py-8">
+      <section className="block flex-row min-h-[500px] lg:flex py-8 bg-white">
         <div className="flex-1 justify-center items-center flex flex-col p-8">
           <h3 className="text-3xl text-bold font-inter">Are you a professional studio ?</h3>
           <p className="text-gray-500">Discover the ease of online appointment with Odicylens.</p>
@@ -65,13 +65,13 @@ export default function Home() {
 
       </section>
 
-      <section className="flex flex-row max-h-[500px] lg:flex py-8 bg-main-dark overflow-hidden">
-        <div className="flex-1">
+      <section className="flex flex-col lg:flex-row max-h-[500px] py-8 bg-main-dark overflow-hidden">
+        <div className="flex-1 hidden lg:block">
           <img src="/assets/iphone-mockup.png" alt="mock" className="w-full -mt-40 -ml-[100px]" />
         </div>
         <div className="flex-1 justify-center items-center flex flex-col p-8">
-          <h3 className="text-3xl text-bold font-inter">JOIN OUR COMMUNITY</h3>
-          <p className="text-gray-500">Odicylens is on the lookout for dynamic individuals all over France, ready to revolutionize the shooting production sector through digital innovation</p>
+          <h3 className="text-3xl text-bold font-inter text-white">JOIN OUR COMMUNITY</h3>
+          <p className="text-gray-500 text-center">Odicylens is on the lookout for dynamic individuals all over France, ready to revolutionize the shooting production sector through digital innovation</p>
           <Button title="Discover Our Offer" classNames="mt-4" />
         </div>
       </section>
