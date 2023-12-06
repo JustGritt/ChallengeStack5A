@@ -33,11 +33,7 @@ security:
         ROLE_USER: []
 
     access_control:
-        - { path: ^/api$, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
-        - { path: ^/api/login, roles: PUBLIC_ACCESS }
-        - { path: ^/api/user, roles: PUBLIC_ACCESS, methods: POST }
-        - { path: ^/api/*, roles: IS_AUTHENTICATED_FULLY }
-
+        - { path: ^/, roles: PUBLIC_ACCESS }
 when@test:
     security:
         password_hashers:

@@ -1,113 +1,134 @@
-import Image from 'next/image'
+/* eslint-disable @next/next/no-img-element */
+"use client"
+import Button from "@/components/Ui/Button"
+import Head from "next/head"
+import React from "react"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faDownload,
+  faMagnifyingGlass,
+  faSearch
+} from "@fortawesome/free-solid-svg-icons";
+import Faq from "./partials/Faq"
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+    <main className="min-h-screen ">
+      <section className='h-11/12 w-full relative min-h-[500px] max-h-[600px] overflow-hidden	'>
+        <img
+          src='https://images.unsplash.com/photo-1560785218-893cc779709b?q=80&w=2792&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' alt={'Bg'}
+          className='h-[600px] w-full object-cover '
         />
-      </div>
+        <div className="absolute bottom-0 p-6 lg:p-12 w-full">
+          <h1 className='text-xl font-inter font-thin text-white '>Explore Our Collaborators</h1>
+          <h2 className='text-3xl text-white font-bold'>The Gateway to Exceptional Professional Services</h2>
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+          <div className="rounded-xl items-left lg:items-center bg-white px-4 py-2 mt-5 flex max-w-[900px] gap-x-4 lg:flex-row flex-col">
+            <div className="flex-col flex">
+              <label htmlFor="search-service" className="text-gray-500 text-sm">Que cherchez vous ?</label>
+              <input id="search-service" type="text" placeholder='Search for a service' className='rounded-lg text-black focus:outline-none placeholder-black  border lg:border-0 p-2 lg:p-0 w-full lg:w-96' />
+            </div>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+            <div className="flex-col flex">
+              <label htmlFor="search-service" className="text-gray-500 text-sm">Où ?</label>
+              <input id="search-service" type="text" placeholder='Ex: Paris, France 75006' className='rounded-lg text-black focus:outline-none placeholder-black  border lg:border-0 p-2 lg:p-0 w-full lg:w-96' />
+            </div>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
+            <div className="mt-2">
+              <Button classNames="w-32 lg:w-auto">
+                <FontAwesomeIcon icon={faSearch} />
+              </Button>
+            </div>
+          </div>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+        </div>
+      </section>
+
+      <section className="block flex-row min-h-[500px] lg:flex py-8 bg-white">
+        <div className="flex-1 justify-center items-center flex flex-col p-8">
+          <h3 className="text-3xl text-bold font-inter">Are you a professional studio ?</h3>
+          <p className="text-gray-500">Discover the ease of online appointment with Odicylens.</p>
+          <Button title="Add Your Compagny" classNames="mt-4" />
+        </div>
+
+        <div className="flex-1 p-4 flex-wrap flex-row flex gap-x-4 gap-y-4 justify-center items-center">
+
+          {datasProfessionnal.map((d, i) => (<div key={i} className="flex items-center p-4 w-fit bg-white rounded-lg shadow-lg	h-fit">
+            <FontAwesomeIcon size="xl" icon={d.icon} className="bg-main-light p-2 rounded-md text-main tex-3xl h-fit" />
+            <div className="items-center flex flex-col pl-4">
+              <h3 className="h-4 text-black">{d.title}</h3>
+              <p className="text-gray-500 text-sm h-4 mt-1">{d.value}</p>
+            </div>
+          </div>))}
+
+        </div>
+
+      </section>
+
+      <section className="flex flex-col lg:flex-row max-h-[500px] py-8 bg-main-dark overflow-hidden">
+        <div className="flex-1 hidden lg:block">
+          <img src="/assets/iphone-mockup.png" alt="mock" className="w-full -mt-40 -ml-[100px]" />
+        </div>
+        <div className="flex-1 justify-center items-center flex flex-col p-8">
+          <h3 className="text-3xl text-bold font-inter text-white">JOIN OUR COMMUNITY</h3>
+          <p className="text-gray-500 text-center">Odicylens is on the lookout for dynamic individuals all over France, ready to revolutionize the shooting production sector through digital innovation</p>
+          <Button title="Discover Our Offer" classNames="mt-4" />
+        </div>
+      </section>
+
+      <section className="flex flex-col lg:flex-row min-h-[600px] py-8  overflow-hidden justify-center items-center bg-[#FAFAFA]">
+        <Faq classNames={{
+          container: 'w-full lg:w-1/2 h-fit'
+        }} />
+      </section>
     </main>
   )
 }
+
+const datasProfessionnal = [
+  {
+    title: "App downloads",
+    value: "100M+",
+    icon: faDownload
+  },
+  {
+    title: "App downloads",
+    value: "100M+",
+    icon: faDownload
+  },
+  {
+    title: "App downloads",
+    value: "100M+",
+    icon: faDownload
+  },
+  {
+    title: "App downloads",
+    value: "100M+",
+    icon: faDownload
+  },
+  {
+    title: "App downloads",
+    value: "100M+",
+    icon: faDownload
+  },
+  {
+    title: "App downloads",
+    value: "100M+",
+    icon: faDownload
+  },
+  {
+    title: "App downloads",
+    value: "100M+",
+    icon: faDownload
+  },
+  {
+    title: "App downloads",
+    value: "100M+",
+    icon: faDownload
+  },
+  {
+    title: "App downloads",
+    value: "100M+",
+    icon: faDownload
+  },
+]
