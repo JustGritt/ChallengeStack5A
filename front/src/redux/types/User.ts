@@ -4,6 +4,9 @@ export type User = {
     email: string
     confirmPassword: string
     plainPassword: string,
+} | {
+    email: string
+    password: string
 }
 
 export type RegisterResponse = {
@@ -13,7 +16,6 @@ export type RegisterResponse = {
     id: string,
     firstname: "string"
 }
-
 
 export type LoginResponse = {
     token: string,

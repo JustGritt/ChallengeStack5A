@@ -14,18 +14,15 @@ export const appApi = createApi({
                 body: user,
             }),
         }),
-        getAuthData: builder.query<LoginResponse, { token: string }>({
-            query: ({ token }) => ({
+        login: builder.mutation<LoginResponse, User>({
+            query: (user) => ({
                 url: '/login',
-                // this is the default but I'm leaving it here for reference
-                method: 'GET',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                method: 'POST',
+                body: user,
             }),
         }),
 
     }),
 });
 
-export const { useRegisterMutation, useGetAuthDataQuery } = appApi;
+export const { useRegisterMutation, useLoginMutation } = appApi;

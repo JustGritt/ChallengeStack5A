@@ -5,14 +5,32 @@ import Image from 'next/image'
 import user, { User } from '../User'
 import { UserData } from '../utils/Types'
 import Button from '@/components/Ui/Button'
+import { useLoginMutation } from '@/redux/api/authApi'
+import { useCallback, useMemo } from 'react'
+import { toast } from 'react-toastify'
 
-export default function Register() {
+export default function Login() {
 
     const initialValues = {
         email: '',
         password: '',
         remember: false
     }
+
+    const [login, {
+        isLoading: isLoginLoading,
+        isSuccess: isLoginSuccess,
+        isError: isLoginError,
+        error: loginError,
+        data: loginData
+    }] = useLoginMutation()
+
+    useMemo(() => {
+        if (loginError && isLoginError) {
+            toast(loginError.data.message)
+            console.log(loginError)
+        }
+    }, [loginError, isLoginError])
 
     const validationSchema = Yup.object().shape({
         email: Yup.string().email('Invalid email address').required('Required'),
@@ -24,7 +42,7 @@ export default function Register() {
         initialValues: initialValues,
         validationSchema: validationSchema,
         onSubmit: values => {
-            user.Login(values.email, values.password)
+            login(values)
         }
     })
 
@@ -56,7 +74,7 @@ export default function Register() {
                                 <ErrorMessage name='terms' component='span' className="text-red-600" />
                             </div>
                             <div className='flex flex-col justify-center items-center gap-2'>
-                                <Button title={'Login'} classNames='mt-4 w-full' />
+                                <Button title={'Login'} isLoading={isLoginLoading} classNames='mt-4 w-full' />
                                 <a href="#" className="text-sm text-main mt-2">Did you forget your password ?</a>
                                 <p className='text-center'>
                                     <span className="text-sm text-black">You don&apos;t have an account ?</span>

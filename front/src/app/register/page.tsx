@@ -44,6 +44,7 @@ export default function Register() {
         initialValues: initialValues,
         validationSchema: validationSchema,
         onSubmit: (values: User) => {
+            setShowModal(true)
             register(values)
         }
     })
