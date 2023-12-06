@@ -5,8 +5,12 @@ import user, { User } from '../User'
 import { UserData } from '../utils/Types'
 import Image from 'next/image'
 import Button from '@/components/Ui/Button'
+import { useState } from 'react'
+import Modal from '@/components/Modal'
 
 export default function Register() {
+
+    const [showModal, setShowModal] = useState(false)
 
     const initialValues = {
         firstName: '',
@@ -23,9 +27,7 @@ export default function Register() {
         email: Yup.string().email('Invalid email address').required('Required'),
         password: Yup.string().required('Required'),
         confirmPassword: Yup.string()
-            .test('passwords-match', 'Passwords must match', function (value) {
-                return this.parent.password === value
-            }),
+            .oneOf([Yup.ref('password')], 'Passwords must match'),
         terms: Yup.boolean().oneOf([true], 'Must Accept Terms and Conditions')
     })
 
@@ -33,12 +35,25 @@ export default function Register() {
         initialValues: initialValues,
         validationSchema: validationSchema,
         onSubmit: (values: UserData) => {
+            setShowModal(true)
             user.SignUp(values)
         }
     })
 
     return (
-        <div className='m-auto w-full flex justify-center items-center p-8 bg-[#EEF2FF] min-h-[70vh] flex-col-reverse lg:flex-row'>
+        <div className='m-auto w-full flex justify-center items-center relative p-8 bg-[#EEF2FF] min-h-[70vh] flex-col-reverse lg:flex-row'>
+            {showModal && (
+                <Modal
+                    type='email-validate'
+                    title='Welcome to Odicylens !'
+                    content='To complete the registration process and activate your account, please check your email inbox.
+                    <br/>
+                    <br/>
+                    If you encounter any issues or have questions, feel free to contact our support team at : 
+                    <a class="text-main hover:text-main-dark transition-all" href="mailto:support@example.com">support@example.com</a>'
+                    onClose={() => setShowModal(false)}
+                />
+            )}
             <div className='flex-1 justify-end flex'>
                 <div className="bg-white rounded p-10 max-w-[500px] flex-col flex justify-center items-center">
                     <div className='flex flex-col gap-2 justify-center w-full items-center'>
@@ -49,16 +64,31 @@ export default function Register() {
                     </div>
                     <FormikProvider value={formik}>
                         <Form id='register' className="flex flex-col px-4 gap-1">
-                            <Field type="text" placeholder="First Name" name='firstName' className="border border-gray-400 rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-600 placeholder:text-sm " />
-                            <ErrorMessage name='firstName' component='span' className="text-red-600 leading-3 text-sm" />
-                            <Field type="text" placeholder="Last Name" name='lastName' className="border border-gray-400 rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-600 placeholder:text-sm" />
-                            <ErrorMessage name='lastName' component='span' className="text-red-600 leading-3 text-sm" />
-                            <Field type="email" placeholder="Email" name='email' className="border border-gray-400 rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-600 placeholder:text-sm" />
-                            <ErrorMessage name='email' component='span' className="text-red-600 leading-3 text-sm" />
-                            <Field type="password" placeholder="Password" name='password' className="border border-gray-400 rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-600 placeholder:text-sm" />
-                            <ErrorMessage name='password' component='span' className="text-red-600 leading-3 text-sm" />
-                            <Field type="password" placeholder="Confirm Password" name='confirmPassword' className="border border-gray-400 rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-600 placeholder:text-sm" />
-                            <ErrorMessage name='confirmPassword' component='span' className="text-red-600 leading-3 text-sm" />
+                            <div className='flex justify-between w-full items-center'>
+                                <label htmlFor="firstName" className="text-black text-sm font-semibold">First Name <span className='text-red-600'>*</span></label>
+                                <ErrorMessage name='firstName' component='span' className="text-red-600 leading-3 text-sm" />
+                            </div>
+                            <Field type="text" placeholder="First Name" name='firstName' className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm " />
+                            <div className='flex justify-between w-full items-center'>
+                                <label htmlFor="lastName" className="text-black text-sm font-semibold">Last Name <span className='text-red-600'>*</span></label>
+                                <ErrorMessage name='lastName' component='span' className="text-red-600 leading-3 text-sm" />
+                            </div>
+                            <Field type="text" placeholder="Last Name" name='lastName' className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm" />
+                            <div className='flex justify-between w-full items-center'>
+                                <label htmlFor="email" className="text-black text-sm font-semibold">Email <span className='text-red-600'>*</span></label>
+                                <ErrorMessage name='email' component='span' className="text-red-600 leading-3 text-sm" />
+                            </div>
+                            <Field type="email" placeholder="Email" name='email' className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm" />
+                            <div className='flex justify-between w-full items-center'>
+                                <label htmlFor="password" className="text-black text-sm font-semibold">Password <span className='text-red-600'>*</span></label>
+                                <ErrorMessage name='password' component='span' className="text-red-600 leading-3 text-sm" />
+                            </div>
+                            <Field type="password" placeholder="Password" name='password' className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm" />
+                            <div className='flex justify-between w-full items-center'>
+                                <label htmlFor="confirmPassword" className="text-black text-sm font-semibold">Confirm Password <span className='text-red-600'>*</span></label>
+                                <ErrorMessage name='confirmPassword' component='span' className="text-red-600 leading-3 text-sm" />
+                            </div>
+                            <Field type="password" placeholder="Confirm Password" name='confirmPassword' className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm" />
                             <label className="mt-2">
                                 <Field type="checkbox" name="terms" className="mr-2 focus:outline-0 font-inter text-gray-600 placeholder:text-sm" />
                                 <span className='text-black text-sm font-inter'>
@@ -66,15 +96,16 @@ export default function Register() {
                                 </span>
                             </label>
                             <ErrorMessage name='terms' component='span' className="text-red-600 leading-3 text-sm" />
-                            <Button title={'Register'} classNames='mt-4' />
-                            <p className='text-black text-center text-sm font-inter'>
-                                Already a member? <a href="/login" className="text-blue-500 hover:text-blue-700">Login</a>
-                            </p>
+                            <div className='flex flex-col justify-center items-center gap-2'>
+                                <Button title={'Register'} classNames='mt-4 w-full' />
+                                <p className='text-black text-center text-sm font-inter'>
+                                    Already a member? <a href="/login" className="text-blue-500 hover:text-blue-700">Sign in</a>
+                                </p>
+                            </div>
                         </Form>
                     </FormikProvider>
                 </div>
             </div>
-
             <div className='flex-1 justify-start max-w-[300px] lg:max-w-full'>
                 <Image className='object-contain' src='/imgs/auth-img.png' width={600} height={600} alt='dancing man' />
             </div>
