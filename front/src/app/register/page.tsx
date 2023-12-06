@@ -11,9 +11,11 @@ import Modal from '@/components/Modal'
 
 export default function Register() {
 
-    const initialValues = {
-        firstName: '',
-        lastName: '',
+    const [showModal, setShowModal] = useState(false)
+
+    const initialValues: User & { terms: boolean } = {
+        firstname: '',
+        lastname: '',
         email: '',
         plainPassword: '',
         confirmPassword: '',
@@ -32,9 +34,9 @@ export default function Register() {
         firstname: Yup.string().required('Required'),
         lastname: Yup.string().required('Required'),
         email: Yup.string().email('Invalid email address').required('Required'),
-        password: Yup.string().required('Required'),
+        plainPassword: Yup.string().required('Required'),
         confirmPassword: Yup.string()
-            .oneOf([Yup.ref('password')], 'Passwords must match'),
+            .oneOf([Yup.ref('plainPassword')], 'Passwords must match'),
         terms: Yup.boolean().oneOf([true], 'Must Accept Terms and Conditions')
     })
 
@@ -42,11 +44,9 @@ export default function Register() {
         initialValues: initialValues,
         validationSchema: validationSchema,
         onSubmit: (values: User) => {
-            setShowModal(true)
             register(values)
         }
     })
-
 
     return (
         <div className='m-auto w-full flex justify-center items-center relative p-8 bg-[#EEF2FF] min-h-[70vh] flex-col-reverse lg:flex-row'>
@@ -73,15 +73,15 @@ export default function Register() {
                     <FormikProvider value={formik}>
                         <Form id='register' className="flex flex-col px-4 gap-1">
                             <div className='flex justify-between w-full items-center'>
-                                <label htmlFor="firstName" className="text-black text-sm font-semibold">First Name <span className='text-red-600'>*</span></label>
-                                <ErrorMessage name='firstName' component='span' className="text-red-600 leading-3 text-sm" />
+                                <label htmlFor="firstname" className="text-black text-sm font-semibold">First Name <span className='text-red-600'>*</span></label>
+                                <ErrorMessage name='firstname' component='span' className="text-red-600 leading-3 text-sm" />
                             </div>
-                            <Field type="text" placeholder="First Name" name='firstName' className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm " />
+                            <Field type="text" placeholder="First Name" name='firstname' className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm " />
                             <div className='flex justify-between w-full items-center'>
-                                <label htmlFor="lastName" className="text-black text-sm font-semibold">Last Name <span className='text-red-600'>*</span></label>
-                                <ErrorMessage name='lastName' component='span' className="text-red-600 leading-3 text-sm" />
+                                <label htmlFor="lastname" className="text-black text-sm font-semibold">Last Name <span className='text-red-600'>*</span></label>
+                                <ErrorMessage name='lastname' component='span' className="text-red-600 leading-3 text-sm" />
                             </div>
-                            <Field type="text" placeholder="Last Name" name='lastName' className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm" />
+                            <Field type="text" placeholder="Last Name" name='lastname' className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm" />
                             <div className='flex justify-between w-full items-center'>
                                 <label htmlFor="email" className="text-black text-sm font-semibold">Email <span className='text-red-600'>*</span></label>
                                 <ErrorMessage name='email' component='span' className="text-red-600 leading-3 text-sm" />
@@ -91,22 +91,12 @@ export default function Register() {
                                 <label htmlFor="password" className="text-black text-sm font-semibold">Password <span className='text-red-600'>*</span></label>
                                 <ErrorMessage name='password' component='span' className="text-red-600 leading-3 text-sm" />
                             </div>
-                            <Field type="password" placeholder="Password" name='password' className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm" />
+                            <Field type="password" placeholder="Password" name='plainPassword' className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm" />
                             <div className='flex justify-between w-full items-center'>
                                 <label htmlFor="confirmPassword" className="text-black text-sm font-semibold">Confirm Password <span className='text-red-600'>*</span></label>
                                 <ErrorMessage name='confirmPassword' component='span' className="text-red-600 leading-3 text-sm" />
                             </div>
                             <Field type="password" placeholder="Confirm Password" name='confirmPassword' className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm" />
-                            <Field type="text" placeholder="First Name" name='firstname' className="border border-gray-400 rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-600 placeholder:text-sm " />
-                            <ErrorMessage name='firstname' component='span' className="text-red-600 leading-3 text-sm" />
-                            <Field type="text" placeholder="Last Name" name='lastname' className="border border-gray-400 rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-600 placeholder:text-sm" />
-                            <ErrorMessage name='lastname' component='span' className="text-red-600 leading-3 text-sm" />
-                            <Field type="email" placeholder="Email" name='email' className="border border-gray-400 rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-600 placeholder:text-sm" />
-                            <ErrorMessage name='email' component='span' className="text-red-600 leading-3 text-sm" />
-                            <Field type="password" placeholder="Password" name='password' className="border border-gray-400 rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-600 placeholder:text-sm" />
-                            <ErrorMessage name='password' component='span' className="text-red-600 leading-3 text-sm" />
-                            <Field type="password" placeholder="Confirm Password" name='confirmPassword' className="border border-gray-400 rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-600 placeholder:text-sm" />
-                            <ErrorMessage name='confirmPassword' component='span' className="text-red-600 leading-3 text-sm" />
                             <label className="mt-2">
                                 <Field type="checkbox" name="terms" className="mr-2 focus:outline-0 font-inter text-gray-600 placeholder:text-sm" />
                                 <span className='text-black text-sm font-inter'>
