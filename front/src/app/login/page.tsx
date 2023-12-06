@@ -8,6 +8,7 @@ import Button from '@/components/Ui/Button'
 import { useLoginMutation } from '@/redux/api/authApi'
 import { useCallback, useMemo } from 'react'
 import { toast } from 'react-toastify'
+import { ApiErrorResponse } from '@/redux/types/User'
 
 export default function Login() {
 
@@ -27,8 +28,14 @@ export default function Login() {
 
     useMemo(() => {
         if (loginError && isLoginError) {
-            toast(loginError.data.message)
-            console.log(loginError)
+            toast((loginError as ApiErrorResponse).data['message'], {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: false
+            })
+            console.log((loginError as ApiErrorResponse).data['message'])
         }
     }, [loginError, isLoginError])
 

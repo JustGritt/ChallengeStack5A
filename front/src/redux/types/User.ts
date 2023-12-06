@@ -35,7 +35,8 @@ export type ApiErrorData = {
     "hydra:title": string,
     "hydra:description": string,
     "type": string,
-    "title": string
+    "title": string,
+    "message": string,
 }
 
 
