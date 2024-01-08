@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Faq from "./partials/Faq"
 
+
 export default function Home() {
   return (
     <main className="min-h-screen ">

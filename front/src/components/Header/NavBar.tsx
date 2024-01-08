@@ -38,7 +38,7 @@ function NavBar() {
                     </div>
                     <div className='gap-x-4 items-center hidden md:w-auto md:flex'>
                         <Link href='/about' className='ml-2 font-inter hover:text-gray-900 font-light text-[15px] underline'>Créer mon compte</Link>
-                        <Button title={'Connexion'} />
+                        <Button href='/login' title={'Connexion'} />
                     </div>
                 </div>
 
