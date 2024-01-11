@@ -25,7 +25,7 @@ const Modal: FC<ModalProps> = ({
             exit={{ opacity: 0, transform: 'translateY(20%)' }}
             transition={{ duration: .2 }}
             className="flex flex-col justify-center items-start gap-3 w-full h-full absolute z-50 backdrop-blur-sm">
-            <div className="m-auto w-[400px] bg-white p-5 rounded-md  shadow-xl">
+            <div className="m-auto w-[400px] bg-white p-5 rounded-md shadow-xl">
                 <div className="flex justify-between items-start w-full">
                     <div className="bg-[#EEF2FF] rounded-full p-3 mb-4">
                         <svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">

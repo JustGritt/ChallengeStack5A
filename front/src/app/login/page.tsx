@@ -6,8 +6,8 @@ import user, { User } from '../User'
 import { UserData } from '../utils/Types'
 import Button from '@/components/Ui/Button'
 import { useLoginMutation } from '@/redux/api/authApi'
-import { useCallback, useMemo } from 'react'
-import { toast } from 'react-toastify'
+import { useCallback, useEffect, useMemo } from 'react'
+import { ToastContainer, toast } from 'react-toastify'
 import { ApiErrorResponse } from '@/redux/types/User'
 
 export default function Login() {
@@ -25,6 +25,14 @@ export default function Login() {
         error: loginError,
         data: loginData
     }] = useLoginMutation()
+
+    useEffect(() => {
+        toast('Welcome back !', {
+            position: 'top-left',
+            autoClose: 10000,
+            closeOnClick: true
+        })
+    }, [])
 
     useMemo(() => {
         if (loginError && isLoginError) {
@@ -55,6 +63,7 @@ export default function Login() {
 
     return (
         <div className="m-auto w-full flex justify-center items-center p-8 bg-[#EEF2FF] min-h-[70vh] flex-col-reverse lg:flex-row">
+            <ToastContainer />
             <div className='flex-1 justify-end flex'>
                 <div className="bg-white rounded p-10 max-w-[500px] flex-col flex justify-center items-center">
                     <div className='flex flex-col gap-2 justify-center w-full items-center'>
