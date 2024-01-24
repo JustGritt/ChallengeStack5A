@@ -7,9 +7,9 @@ function StoreCard() {
   return (
     <div className="bg-white min-h-[400px] cursor-pointer hover:shadow-lg hover:z-30 shadow-gray-200 transition ease-in-out delay-150 flex items-center flex-col">
       <hr className="w-[90%] bg-gray-800" />
-      <div className="flex justify-evenly items-center m-auto w-full">
-        <div>
-          <Image src="/logo.svg" alt="" width={300} height={300} className="w-[90%] h-[300px] object-cover" />
+      <div className="flex justify-evenly items-center m-auto w-full lg:flex-row flex-col lg:p-0 p-3">
+        <div className="flex justify-center items-center">
+          <Image src="/logo.svg" alt="" width={300} height={300} className="w-[90%] h-[300px] object-cover m-auto" />
         </div>
         <div className="flex flex-col justify-start items-start">
           <h1 className="font-inter font-semibold text-xl text-black">StoreCard</h1>
