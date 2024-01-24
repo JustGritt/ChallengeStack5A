@@ -2,25 +2,32 @@
 
 namespace App\State;
 
+use ApiPlatform\Metadata\DeleteOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\State\PersistProcessor;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\State\RemoveProcessor;
-use ApiPlatform\Metadata\DeleteOperationInterface;
 use App\Entity\User;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Twig\Environment;
+use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 
-final class UserStateProcessor implements ProcessorInterface
+/**
+ * @implements ProcessorInterface<User, User|void>
+ */
+final class UserProcessor implements ProcessorInterface
 {
     public function __construct(
-        private RemoveProcessor $removeProcessor,
-        private PersistProcessor $persistProcessor,
+        #[Autowire('@api_platform.doctrine.orm.state.persist_processor')]
+        private ProcessorInterface $persistProcessor,
+        #[Autowire('@api_platform.doctrine.orm.state.remove_processor')]
+        private ProcessorInterface $removeProcessor,
         private MailerInterface $mailer,
-        private \Twig\Environment $twig
-    ) {
+        private Environment $twig,
+        private JWTEncoderInterface $jwtEncoder
+
+    )
+    {
     }
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = [])
@@ -37,13 +44,21 @@ final class UserStateProcessor implements ProcessorInterface
 
     private function sendWelcomeEmail(User $user): void
     {
+        //create a jwt token with the id of the user
+        //send the token in the email
+        dump($user);
+        $jwt = $this->jwtEncoder->encode(['id' => $user->getId(), 'exp' => time() + 3600]);
+
         $message = (new Email())
         ->from('contact@charlesparames.com')
         ->to('charles258@hotmail.fr')
         ->subject('Welcome to the blog')
-        ->html($this->twig->render('email/welcome.html.twig', ['user' => $user]));
+        ->html($this->twig->render('email/welcome.html.twig', [
+            'user' => $user->getFirstname(),
+            'action_url' => 'https://localhost:8000/confirm-email/' . $jwt,
+            'login_url' => 'Go to the blog',
+        ]));
 
         $this->mailer->send($message);
     }
- 
 }

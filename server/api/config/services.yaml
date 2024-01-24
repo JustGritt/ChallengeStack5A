@@ -20,11 +20,9 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    App\EventSubscriber\UserRegistrationMailEventSubscriber:
+    App\Controller\ConfirmUserEmail:
         arguments:
-            $mailer: '@mailer'
-            $twig: '@twig'
-        tags:
-            - { name: 'kernel.event_subscriber' }
+            $jwtEncoder: '@lexik_jwt_authentication.encoder'
+    
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

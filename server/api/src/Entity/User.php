@@ -15,36 +15,78 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\State\UserStateProcessor;
+use App\State\UserProcessor;
+use App\Controller\ConfirmUserEmail;
 
-/*
 #[ApiResource(
-    processor: UserProcessor::class,
     operations: [
         new Get(uriTemplate: '/users/me', name: "getuserinfo", normalizationContext: ['groups' => ['read-user-mutation']]),
         new Get(normalizationContext: ['groups' => ['read-user']]),
-//        new Get(uriTemplate: '/users/{id}/infos', normalizationContext: ['groups' => ['read-user', 'read-user-as-admin']], security: 'is_granted("ROLE_ADMIN")'),
         new Post(denormalizationContext: ['groups' => ['create-user']]),
         new Patch(denormalizationContext: ['groups' => ['update-user']]),
+        /*
+        new Get(uriTemplate: '/confirm-email/{id}/{token}', name: 'confirm_user_email', controller: ConfirmUserEmail::class, openapiContext: [
+            'summary' => 'Confirm user email',
+            'description' => 'Confirm user email',
+            'parameters' => [
+                [
+                    'name' => 'token',
+                    'in' => 'path',
+                    'required' => true,
+                    'type' => 'string',
+                    'description' => 'The confirmation token',
+                ],
+            ],
+            'responses' => [
+                '200' => [
+                    'description' => 'User email successfully confirmed',
+                ],
+            ],
+        ]),
+        */
+    new Get(name: 'confirm', routeName: 'confirm_email' , openapiContext: [
+            'summary' => 'Confirm user email',
+            'description' => 'Confirm user email',
+            'parameters' => [
+                [
+                    'name' => 'token',
+                    'in' => 'path',
+                    'required' => true,
+                    'type' => 'string',
+                    'description' => 'The confirmation token',
+                ],
+            ],
+            'responses' => [
+                '200' => [
+                    'description' => 'User email successfully confirmed',
+                ],
+                '404' => [
+                    'description' => 'User not found',
+                ],
+                '400' => [
+                    'description' => 'Invalid token',
+                ],
+            ],
+        ]),
+        
     ],
     normalizationContext: ['groups' => ['read-user', 'read-user-mutation']],
+    processor: UserProcessor::class,
 )]
-*/
-
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(['email'])]
-#[ApiResource(processor: UserStateProcessor::class)]
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[Groups(['read-user-mutation'])]
     #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
     private ?int $id = null;
 
     #[Assert\Email()]
-    #[Groups(['read-user-as-admin', 'create-user'])]
+    #[Groups(['read-user-as-admin', 'create-user', 'read-user-mutation'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
@@ -52,7 +94,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[Assert\NotBlank()]
-    #[Groups(['read-user', 'create-user', 'update-user', 'read-post'])]
+    #[Groups(['read-user', 'create-user', 'update-user', 'read-post', 'read-user-mutation'])]
     #[ORM\Column(length: 255)]
     private ?string $firstname = null;
 
@@ -64,6 +106,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Groups(['create-user', 'update-user'])]
     private string $plainPassword = '';
+
+    #[Groups(['read-user', 'create-user', 'update-user', 'read-post', 'read-user-mutation'])]
+    #[ORM\Column(nullable: true)]
+    private ?bool $isValid = null;
 
     public function getId(): ?int
     {
@@ -156,6 +202,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->plainPassword = $plainPassword;
         $this->password = $plainPassword;
+    }
+
+    public function isIsValid(): ?bool
+    {
+        return $this->isValid;
+    }
+
+    public function setIsValid(?bool $isValid): static
+    {
+        $this->isValid = $isValid;
+
+        return $this;
     }
 
 }

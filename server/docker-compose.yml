@@ -43,6 +43,16 @@ services:
       # you may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
       # - ./api/docker/db/data:/var/lib/postgresql/data
 ###< doctrine/doctrine-bundle ###
+  adminer:
+    image: adminer:${ADMINER_VERSION:-4.8.1}
+    restart: unless-stopped
+    ports:
+      - target: 8080
+        published: ${ADMINER_PORT:-8080}
+        protocol: tcp
+    environment:
+      ADMINER_DEFAULT_SERVER: database
+      ADMINER_DESIGN: ${ADMINER_DESIGN:-nette}
 
 # Mercure is installed as a Caddy module, prevent the Flex recipe from installing another service
 ###> symfony/mercure-bundle ###
