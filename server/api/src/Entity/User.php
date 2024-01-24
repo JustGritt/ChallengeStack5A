@@ -15,8 +15,11 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\State\UserStateProcessor;
 
+/*
 #[ApiResource(
+    processor: UserProcessor::class,
     operations: [
         new Get(uriTemplate: '/users/me', name: "getuserinfo", normalizationContext: ['groups' => ['read-user-mutation']]),
         new Get(normalizationContext: ['groups' => ['read-user']]),
@@ -26,10 +29,12 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     normalizationContext: ['groups' => ['read-user', 'read-user-mutation']],
 )]
+*/
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(['email'])]
+#[ApiResource(processor: UserStateProcessor::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[Groups(['read-user-mutation'])]
