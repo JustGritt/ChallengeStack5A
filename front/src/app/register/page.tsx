@@ -1,11 +1,11 @@
 "use client";
 import {
   Form,
-  Formik,
   Field,
   FormikProvider,
   useFormik,
   ErrorMessage,
+  FormikConfig,
 } from "formik";
 import * as Yup from "yup";
 import { UserData } from "../utils/Types";
@@ -13,13 +13,13 @@ import Image from "next/image";
 import Button from "@/components/Ui/Button";
 import { useRegisterMutation } from "@/redux/api/authApi";
 import { ApiErrorResponse, User } from "@/redux/types/User";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Modal from "@/components/Modal";
-import { CheckCircleIcon } from "@heroicons/react/24/outline";
+import AlertSuccess from "@/components/Alert/AlertSuccess";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function Register() {
-  const [showModal, setShowModal] = useState(false);
-
   const initialValues: User & { terms: boolean } = {
     firstname: "",
     lastname: "",
@@ -28,16 +28,10 @@ export default function Register() {
     confirmPassword: "",
     terms: false,
   };
-
+  const router = useRouter();
   const [
     register,
-    {
-      isLoading: isRegisterLoading,
-      isSuccess: isRegisterSuccess,
-      isError: isRegisterError,
-      error: registerError,
-      data: registerData,
-    },
+    { isLoading: isRegisterLoading}
   ] = useRegisterMutation();
 
   const validationSchema = Yup.object().shape({
@@ -52,78 +46,70 @@ export default function Register() {
     terms: Yup.boolean().oneOf([true], "Must Accept Terms and Conditions"),
   });
 
+  const onSubmit: FormikConfig<User & { terms: boolean }>["onSubmit"] = (
+    values
+  ) => {
+    register(values)
+      .unwrap()
+      .then((res) => {
+        router.push("login");
+        toast.custom((t) => (
+          <div
+            className={`${"animate-enter"} max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+          >
+            <div className="flex-1 w-0 p-4">
+              <div className="flex items-start">
+                <div className="ml-3 flex-1">
+                  <p className="text-sm font-medium text-gray-900">
+                    Inscription
+                  </p>
+                  <p className="mt-1 text-sm text-gray-500">
+                    To complete the registration process and activate your
+                    account, please check your email inbox.
+                    <br />
+                    <br />
+                    If you encounter any issues or have questions, feel free to
+                    contact our support team at :
+                    <a
+                      className="text-main hover:text-main-dark transition-all"
+                      href="mailto:support@example.com"
+                    >
+                      support@example.com
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="flex border-l border-gray-200">
+              <button
+                onClick={() => {
+                  toast.dismiss(t.id);
+                }}
+                className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        ));
+      })
+      .catch((registerError) => {
+        formik.setErrors({
+          terms: (registerError as ApiErrorResponse).data["detail"],
+        });
+      });
+  };
+
   const formik = useFormik<User & { terms: boolean }>({
     initialValues: initialValues,
     validationSchema: validationSchema,
-    onSubmit: (values: User) => {
-      register(values);
-    },
+    onSubmit: onSubmit,
   });
 
-  useMemo(() => {
-    if (isRegisterSuccess) {
-      return setShowModal(true);
-    }
-    if (isRegisterError) {
-      formik.setErrors({
-        terms: (registerError as ApiErrorResponse).data["detail"],
-      });
-    }
-  }, [isRegisterError, isRegisterSuccess, registerError, formik]);
 
   return (
     <>
-      <div className="rounded-md bg-green-50 p-4 max-w-[500px] absolute z-30 left-0 right-0 top-3" style={{margin: "0 auto"}}>
-        <div className="flex">
-          <div className="flex-shrink-0">
-            <CheckCircleIcon
-              className="h-5 w-5 text-green-400"
-              aria-hidden="true"
-            />
-          </div>
-          <div className="ml-3">
-            <h3 className="text-sm font-medium text-green-800">
-              Order completed
-            </h3>
-            <div className="mt-2 text-sm text-green-700">
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid
-                pariatur, ipsum similique veniam.
-              </p>
-            </div>
-            <div className="mt-4">
-              <div className="-mx-2 -my-1.5 flex">
-                <button
-                  type="button"
-                  className="rounded-md bg-green-50 px-2 py-1.5 text-sm font-medium text-green-800 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50"
-                >
-                  View status
-                </button>
-                <button
-                  type="button"
-                  className="ml-3 rounded-md bg-green-50 px-2 py-1.5 text-sm font-medium text-green-800 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50"
-                >
-                  Dismiss
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div className="m-auto w-full flex justify-center items-center relative p-8 bg-[#EEF2FF] min-h-[70vh] flex-col-reverse lg:flex-row ">
-        {showModal && (
-          <Modal
-            type="email-validate"
-            closable={isRegisterSuccess}
-            title="Welcome to Odicylens !"
-            content='To complete the registration process and activate your account, please check your email inbox.
-                    <br/>
-                    <br/>
-                    If you encounter any issues or have questions, feel free to contact our support team at : 
-                    <a class="text-main hover:text-main-dark transition-all" href="mailto:support@example.com">support@example.com</a>'
-          />
-        )}
         <div className="flex-1 justify-end flex">
           <div className="bg-white rounded p-10 max-w-[500px] flex-col flex justify-center items-center">
             <div className="flex flex-col gap-2 justify-center w-full items-center">

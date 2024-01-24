@@ -1,26 +1,25 @@
-"use client"
+"use client";
 /* eslint-disable @next/next/no-page-custom-font */
-import NavBar from '@/components/Header/NavBar'
-import './globals.css'
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import Head from 'next/head'
-import Link from 'next/link'
+import NavBar from "@/components/Header/NavBar";
+import "./globals.css";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import Head from "next/head";
+import Link from "next/link";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
-import Footer from '@/components/Footer'
-import { ApiProvider } from '@reduxjs/toolkit/query/react';
-import { appApi } from '@/redux/api/authApi'
+import Footer from "@/components/Footer";
+import { ApiProvider } from "@reduxjs/toolkit/query/react";
+import { appApi } from "@/redux/api/authApi";
+import { Toaster } from "react-hot-toast";
 
-
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 config.autoAddCss = false;
-
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <ApiProvider api={appApi}>
@@ -37,10 +36,11 @@ export default function RootLayout({
           <NavBar />
           <div>
             {children}
+            <Toaster />
           </div>
           <Footer />
         </body>
       </html>
     </ApiProvider>
-  )
+  );
 }
