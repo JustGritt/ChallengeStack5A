@@ -6,8 +6,8 @@ on:
       - main  # Change this to the branch you want to trigger the workflow on
     paths:
       - 'server/**'
-    paths-ignore:
-      - 'infra/environments/prod/odicylens-api/.argocd-source-odicylens-api.yaml'
+    #paths-ignore:
+     # - 'infra/environments/prod/odicylens-api/.argocd-source-odicylens-api.yaml'
 
 jobs:
   build_and_publish_docker_image:
