@@ -7,7 +7,7 @@ function SearchSection() {
       <div className="p-4">
         <h2 className="text-xl text-white font-bold">Trouvez votre magasin</h2>
         <p className="text-sm font-inter font-thin text-white ">
-          Sélectionnez votre magasin qui vous convient
+          Sélectionnez le magasin qui vous convient
         </p>
       </div>
       <div className="flex flex-col ">
