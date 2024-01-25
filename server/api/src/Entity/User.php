@@ -107,9 +107,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['create-user', 'update-user'])]
     private string $plainPassword = '';
 
-    #[Groups(['read-user', 'create-user', 'update-user', 'read-post', 'read-user-mutation'])]
+    #[Groups(['read-user',  'update-user', 'read-post', 'read-user-mutation'])]
     #[ORM\Column(nullable: true)]
-    private ?bool $isValid = null;
+    private ?bool $isValid = false;
 
     public function getId(): ?int
     {

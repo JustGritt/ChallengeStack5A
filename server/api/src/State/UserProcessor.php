@@ -46,13 +46,12 @@ final class UserProcessor implements ProcessorInterface
     {
         //create a jwt token with the id of the user
         //send the token in the email
-        dump($user);
         $jwt = $this->jwtEncoder->encode(['id' => $user->getId(), 'exp' => time() + 3600]);
 
         $message = (new Email())
         ->from('contact@charlesparames.com')
-        ->to('charles258@hotmail.fr')
-        ->subject('Welcome to the blog')
+        ->to($user->getEmail())
+        ->subject('Welcome to the Odicylens')
         ->html($this->twig->render('email/welcome.html.twig', [
             'user' => $user->getFirstname(),
             'action_url' => 'https://localhost:8000/confirm-email/' . $jwt,
