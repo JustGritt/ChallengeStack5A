@@ -6,26 +6,34 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\CompanieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CompanieRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['read-companie']],
+)]
 class Companie
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[Groups(['read-user-mutation', 'read-companie'])]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['read-user-mutation', 'read-companie'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Groups(['read-user-mutation', 'read-companie'])]
     #[ORM\Column(length: 255)]
     private ?string $kbis = null;
 
+    #[Groups(['read-user-mutation', 'read-companie'])]
     #[ORM\Column]
-    private ?bool $isValid = null;
+    private ?bool $isValid = false;
 
+    #[Groups(['read-companie'])]
     #[ORM\OneToMany(mappedBy: 'companie', targetEntity: Store::class)]
     private Collection $stores;
 

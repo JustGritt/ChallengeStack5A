@@ -24,59 +24,38 @@ use App\Controller\ConfirmUserEmail;
         new Get(normalizationContext: ['groups' => ['read-user']]),
         new Post(denormalizationContext: ['groups' => ['create-user']]),
         new Patch(denormalizationContext: ['groups' => ['update-user']]),
-        /*
-        new Get(uriTemplate: '/confirm-email/{id}/{token}', name: 'confirm_user_email', controller: ConfirmUserEmail::class, openapiContext: [
-            'summary' => 'Confirm user email',
-            'description' => 'Confirm user email',
-            'parameters' => [
-                [
-                    'name' => 'token',
-                    'in' => 'path',
-                    'required' => true,
-                    'type' => 'string',
-                    'description' => 'The confirmation token',
+        new Get(name: 'confirm', routeName: 'confirm_email' , openapiContext: [
+                'summary' => 'Confirm user email',
+                'description' => 'Confirm user email',
+                'parameters' => [
+                    [
+                        'name' => 'token',
+                        'in' => 'path',
+                        'required' => true,
+                        'type' => 'string',
+                        'description' => 'The confirmation token',
+                    ],
                 ],
-            ],
-            'responses' => [
-                '200' => [
-                    'description' => 'User email successfully confirmed',
+                'responses' => [
+                    '200' => [
+                        'description' => 'User email successfully confirmed',
+                    ],
+                    '404' => [
+                        'description' => 'User not found',
+                    ],
+                    '400' => [
+                        'description' => 'Invalid token',
+                    ],
                 ],
-            ],
-        ]),
-        */
-    new Get(name: 'confirm', routeName: 'confirm_email' , openapiContext: [
-            'summary' => 'Confirm user email',
-            'description' => 'Confirm user email',
-            'parameters' => [
-                [
-                    'name' => 'token',
-                    'in' => 'path',
-                    'required' => true,
-                    'type' => 'string',
-                    'description' => 'The confirmation token',
-                ],
-            ],
-            'responses' => [
-                '200' => [
-                    'description' => 'User email successfully confirmed',
-                ],
-                '404' => [
-                    'description' => 'User not found',
-                ],
-                '400' => [
-                    'description' => 'Invalid token',
-                ],
-            ],
-        ]),
-        
-    ],
+            ]),
+            
+        ],
     normalizationContext: ['groups' => ['read-user', 'read-user-mutation']],
     processor: UserProcessor::class,
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(['email'])]
-
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[Groups(['read-user-mutation'])]
@@ -86,15 +65,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[Assert\Email()]
-    #[Groups(['read-user-as-admin', 'create-user', 'read-user-mutation'])]
+    #[Groups(['read-user-as-admin', 'create-user', 'read-user-mutation', 'store-read'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Groups(['store-read'])]
     private array $roles = [];
 
     #[Assert\NotBlank()]
-    #[Groups(['read-user', 'create-user', 'update-user', 'read-post', 'read-user-mutation'])]
+    #[Groups(['read-user', 'create-user', 'update-user', 'read-post', 'read-user-mutation', 'store-read'])]
     #[ORM\Column(length: 255)]
     private ?string $firstname = null;
 
@@ -110,6 +90,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['read-user',  'update-user', 'read-post', 'read-user-mutation'])]
     #[ORM\Column(nullable: true)]
     private ?bool $isValid = false;
+
+    #[Groups(['read-user', 'update-user', 'read-user-mutation'])]
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?Store $work = null;
 
     public function getId(): ?int
     {
@@ -212,6 +196,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsValid(?bool $isValid): static
     {
         $this->isValid = $isValid;
+
+        return $this;
+    }
+
+    public function getWork(): ?Store
+    {
+        return $this->work;
+    }
+
+    public function setWork(?Store $work): static
+    {
+        $this->work = $work;
 
         return $this;
     }

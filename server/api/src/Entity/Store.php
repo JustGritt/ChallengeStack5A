@@ -4,34 +4,57 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\StoreRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
+
+#[ApiResource(
+    normalizationContext: ['groups' => ['store-read']],
+)]
 #[ORM\Entity(repositoryClass: StoreRepository::class)]
-#[ApiResource]
 class Store
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
     private ?int $id = null;
 
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
     #[ORM\Column(length: 255)]
     private ?string $postal_code = null;
 
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
     #[ORM\Column(length: 255)]
     private ?string $city = null;
 
+    #[Groups(['read-user-mutation'])]
     #[ORM\ManyToOne(inversedBy: 'stores')]
     private ?Companie $companie = null;
+
+    #[Groups(['store-read'])]
+    #[ORM\OneToMany(mappedBy: 'work', targetEntity: User::class)]
+    private Collection $users;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -106,6 +129,36 @@ class Store
     public function setCompanie(?Companie $companie): static
     {
         $this->companie = $companie;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->setWork($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getWork() === $this) {
+                $user->setWork(null);
+            }
+        }
 
         return $this;
     }
