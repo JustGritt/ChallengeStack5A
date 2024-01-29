@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
-
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     normalizationContext: ['groups' => ['store-read']],
@@ -25,22 +25,32 @@ class Store
 
     #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 255)]
     private ?string $name = null;
 
     #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 255)]
     private ?string $address = null;
 
     #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 255)]
     private ?string $postal_code = null;
 
     #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 255)]
     private ?string $country = null;
 
     #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 255)]
     private ?string $city = null;
 
     #[Groups(['read-user-mutation'])]

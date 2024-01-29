@@ -21,10 +21,6 @@ class UserDenormalizer implements DenormalizerInterface
         protected ObjectNormalizer $normalizer,
     ) {}
 
-    public function getSupportedTypes(): array
-    {
-        return [User::class];
-    }
     
     public function supportsDenormalization(mixed $data, string $type, string $format = null): bool
     {

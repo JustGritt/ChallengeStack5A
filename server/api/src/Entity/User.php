@@ -67,6 +67,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email()]
     #[Groups(['read-user-as-admin', 'create-user', 'read-user-mutation', 'store-read'])]
     #[Assert\NotBlank()]
+    #[Assert\Email()]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
@@ -75,6 +76,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[Assert\NotBlank()]
+    #[Assert\Length(min: 2, max: 255)]
     #[Groups(['read-user', 'create-user', 'update-user', 'read-post', 'read-user-mutation', 'store-read'])]
     #[ORM\Column(length: 255)]
     private ?string $firstname = null;
@@ -86,6 +88,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Groups(['create-user', 'update-user'])]
+    #[Assert\NotBlank()]
+    #[Assert\Length(min: 6, max: 255)]
     private string $plainPassword = '';
 
     #[Groups(['read-user',  'update-user', 'read-post', 'read-user-mutation'])]
