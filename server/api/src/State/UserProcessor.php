@@ -11,6 +11,8 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Twig\Environment;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
+use Postmark\PostmarkClient;
+
 
 /**
  * @implements ProcessorInterface<User, User|void>
@@ -48,6 +50,7 @@ final class UserProcessor implements ProcessorInterface
         //send the token in the email
         $jwt = $this->jwtEncoder->encode(['id' => $user->getId(), 'exp' => time() + 3600]);
 
+        $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
         $message = (new Email())
         ->from('contact@charlesparames.com')
         ->to($user->getEmail())
@@ -58,6 +61,17 @@ final class UserProcessor implements ProcessorInterface
             'login_url' => 'Go to the blog',
         ]));
 
-        $this->mailer->send($message);
+
+        $client->sendEmailWithTemplate(
+            'contact@charlesparames.com',
+            $user->getEmail(),
+            34574592,
+            [
+                'user' => $user->getFirstname(),
+                'action_url' => 'https://localhost:8000/confirm-email/' . $jwt,
+                'login_url' => 'Go to the blog',
+          ]);
+
+        #$this->mailer->send($message);
     }
 }
