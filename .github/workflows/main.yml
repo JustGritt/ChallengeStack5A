@@ -27,6 +27,7 @@ jobs:
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
       JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
       MAILER_DSN: ${{ secrets.MAILER_DSN }}
+      MAILER_TOKEN: ${{ secrets.MAILER_TOKEN }}
 
     steps:
       - name: Checkout code
@@ -65,6 +66,7 @@ jobs:
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> ./server/api/.env
           echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> ./server/api/.env
           echo "MAILER_DSN=${{ secrets.MAILER_DSN }}" >> ./server/api/.env
+          echo "MAILER_TOKEN=${{ secrets.MAILER_TOKEN }}" >> ./server/api/.env
 
       - name: Build and push Docker image for odicylens-api
         uses: docker/build-push-action@v2

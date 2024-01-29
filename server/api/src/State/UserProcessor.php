@@ -51,6 +51,7 @@ final class UserProcessor implements ProcessorInterface
         $jwt = $this->jwtEncoder->encode(['id' => $user->getId(), 'exp' => time() + 3600]);
 
         $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
+        /*
         $message = (new Email())
         ->from('contact@charlesparames.com')
         ->to($user->getEmail())
@@ -60,7 +61,7 @@ final class UserProcessor implements ProcessorInterface
             'action_url' => 'https://localhost:8000/confirm-email/' . $jwt,
             'login_url' => 'Go to the blog',
         ]));
-
+        */
 
         $client->sendEmailWithTemplate(
             'contact@charlesparames.com',
