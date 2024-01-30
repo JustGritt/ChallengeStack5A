@@ -54,7 +54,7 @@ class Companie
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Store::class)]
     private Collection $stores;
 
-    #[Groups(['read-user-mutation', 'read-companie'])]
+    #[Groups(['read-companie'])]
     #[ORM\OneToOne(inversedBy: 'companie', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;

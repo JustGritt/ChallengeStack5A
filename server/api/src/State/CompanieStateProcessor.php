@@ -40,6 +40,7 @@ class CompanieStateProcessor implements ProcessorInterface
             throw new AccessDeniedException('User already has a company. Cannot create a new one.');
         }
 
+
         if ($user instanceof User) {
             $data->setOwner($user);
         }
