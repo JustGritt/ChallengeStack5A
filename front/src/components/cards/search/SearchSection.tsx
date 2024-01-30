@@ -1,6 +1,7 @@
 "use client";
 import StoreCard from "@/components/Store/StoreCard";
 import { CITIES } from "@/lib/constants/fakeDatas";
+import { Company } from "@/redux/types/Companies";
 import React, {
   ForwardRefRenderFunction,
   LegacyRef,
@@ -21,9 +22,15 @@ type SearchSectionProps = {
   refSearch?: Ref<RefDivCardSearch>;
 };
 
-const SearchSection: ForwardRefRenderFunction<RefDivCardSearch, SearchSectionProps> = ({ refSearch }) => {
+const SearchSection: ForwardRefRenderFunction<
+  RefDivCardSearch,
+  SearchSectionProps
+> = ({ refSearch }) => {
   const allStore = CITIES;
   const containerRef = useRef<HTMLDivElement>(null);
+  const [currentStore, setCurrentStore] = React.useState<Company | undefined>(
+    undefined
+  );
   const inputRefs: React.RefObject<HTMLDivElement>[] = useMemo(
     () =>
       Array(allStore.length)
@@ -44,7 +51,7 @@ const SearchSection: ForwardRefRenderFunction<RefDivCardSearch, SearchSectionPro
           const targetDiv = inputRefs[storeIndex].current;
           const targetDivOffsetTop = targetDiv?.offsetTop;
           const containerOffsetTop = container.offsetTop;
-
+          setCurrentStore(allStore[storeIndex]);
           container.scroll({
             top: (targetDivOffsetTop ?? 0) - containerOffsetTop,
             left: 0,
@@ -66,18 +73,23 @@ const SearchSection: ForwardRefRenderFunction<RefDivCardSearch, SearchSectionPro
 
   return (
     <aside
-      className="flex-1 bg-gray-500 max-h-full overflow-y-scroll"
+      className="flex-1 bg-white max-h-full overflow-y-scroll"
       ref={containerRef}
     >
-      <div className="p-4">
+      <div className="p-4 bg-slate-400">
         <h2 className="text-xl text-white font-bold">Trouvez votre magasin</h2>
         <p className="text-sm font-inter font-thin text-white ">
           Sélectionnez le magasin qui vous convient
         </p>
       </div>
-      <div className="flex flex-col ">
+      <div className="flex flex-col pb-10 gap-2">
         {allStore.map((store, i) => (
-          <StoreCard store={store} key={store.name} refStore={inputRefs[i]} />
+          <StoreCard
+            active={currentStore?.name === store?.name}
+            store={store}
+            key={store.name}
+            refStore={inputRefs[i]}
+          />
         ))}
       </div>
     </aside>
