@@ -100,6 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Store $work = null;
 
+    #[Groups(['read-user', 'read-user-mutation'])]
     #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private ?Companie $companie = null;
 

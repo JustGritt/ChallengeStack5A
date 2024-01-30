@@ -103,6 +103,12 @@ class Store
     #[ORM\JoinColumn(nullable: false)]
     private ?Companie $company = null;
 
+    #[ORM\Column]
+    private ?float $latitude = null;
+
+    #[ORM\Column]
+    private ?float $longitude = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -211,6 +217,30 @@ class Store
     public function setCompany(?Companie $company): static
     {
         $this->company = $company;
+
+        return $this;
+    }
+
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(float $latitude): static
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(float $longitude): static
+    {
+        $this->longitude = $longitude;
 
         return $this;
     }
