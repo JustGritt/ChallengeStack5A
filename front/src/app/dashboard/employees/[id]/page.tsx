@@ -1,8 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
 import UserCalendar from '@/components/Calendar/UserCalendar';
-import Cal2 from '@/components/Calendar/Cal2';
-
 export default function Page({ params }: { params: { id: string } }) {
 
     // TODO: Get user/me from the API
