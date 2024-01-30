@@ -58,26 +58,26 @@ use App\Controller\ConfirmUserEmail;
 #[UniqueEntity(['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[Groups(['read-user-mutation'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read-full'])]
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue]
     private ?int $id = null;
 
     #[Assert\Email()]
-    #[Groups(['read-user-as-admin', 'create-user', 'read-user-mutation', 'store-read'])]
+    #[Groups(['read-user-as-admin', 'create-user', 'read-user-mutation',  'store-read-full', 'read-companie', 'add-user-to-store'])]
     #[Assert\NotBlank()]
     #[Assert\Email()]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
     #[ORM\Column]
-    #[Groups(['store-read'])]
+    #[Groups(['store-read-full', 'read-user-mutation'])]
     private array $roles = [];
 
     #[Assert\NotBlank()]
     #[Assert\Length(min: 2, max: 255)]
-    #[Groups(['read-user', 'create-user', 'update-user', 'read-post', 'read-user-mutation', 'store-read'])]
+    #[Groups(['read-user', 'create-user', 'update-user',  'read-user-mutation',  'store-read-full'])]
     #[ORM\Column(length: 255)]
     private ?string $firstname = null;
 
@@ -92,7 +92,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(min: 6, max: 255)]
     private string $plainPassword = '';
 
-    #[Groups(['read-user',  'update-user', 'read-post', 'read-user-mutation'])]
+    #[Groups(['read-user',  'update-user', 'read-user-mutation'])]
     #[ORM\Column(nullable: true)]
     private ?bool $isValid = false;
 
@@ -100,6 +100,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Store $work = null;
 
+    #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
+    private ?Companie $companie = null;
+
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -216,5 +220,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getCompanie(): ?Companie
+    {
+        return $this->companie;
+    }
+
+    public function setCompanie(Companie $companie): static
+    {
+        // set the owning side of the relation if necessary
+        if ($companie->getOwner() !== $this) {
+            $companie->setOwner($this);
+        }
+
+        $this->companie = $companie;
+
+        return $this;
+    }
+
 
 }

@@ -10,8 +10,49 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\GetCollection;
+use Doctrine\ORM\EntityManagerInterface;
 
 #[ApiResource(
+    operations: [
+        new GetCollection(normalizationContext: ['groups' => ['store-read']]),
+        new Get(normalizationContext: ['groups' => ['store-read', 'store-read-full']], security: 'is_granted("STORE_VIEW", object)'),
+        new Post(denormalizationContext: ['groups' => ['create-stores']], security: 'is_granted("STORE_POST", object)'),
+        new Patch(denormalizationContext: ['groups' => ['update-companie']], security: 'is_granted("STORE_PATCH", object)'),
+        /*
+        new Post(name: 'add-user-to-store', routeName: 'add_user_to_store', openapiContext: [
+                'summary' => 'Add user to store',
+                'description' => 'Add user to store',
+                'parameters' => [
+                    [
+                        'name' => 'store',
+                        'in' => 'path',
+                        'required' => true,
+                        'type' => 'string',
+                        'description' => 'The store id',
+                    ],
+                ],
+                'responses' => [
+                    '200' => [
+                        'description' => 'User added to store',
+                    ],
+                    '404' => [
+                        'description' => 'User or store not found',
+                    ],
+                    '400' => [
+                        'description' => 'Invalid token',
+                    ],
+                ],
+            ],
+
+        denormalizationContext: ['groups' => ['add-user']], security: 'is_granted("STORE_PATCH", object)',
+    ),
+        */
+    ],
     normalizationContext: ['groups' => ['store-read']],
 )]
 #[ORM\Entity(repositoryClass: StoreRepository::class)]
@@ -20,46 +61,47 @@ class Store
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read', 'create-stores'])]
     private ?int $id = null;
 
-    #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read', 'create-stores', 'update-companie'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 255)]
     private ?string $name = null;
 
-    #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read', 'create-stores', 'update-companie'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 255)]
     private ?string $address = null;
 
-    #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read', 'create-stores', 'update-companie'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 255)]
     private ?string $postal_code = null;
 
-    #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read', 'create-stores', 'update-companie'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 255)]
     private ?string $country = null;
 
-    #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read', 'create-stores', 'update-companie'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 255)]
     private ?string $city = null;
 
-    #[Groups(['read-user-mutation'])]
-    #[ORM\ManyToOne(inversedBy: 'stores')]
-    private ?Companie $companie = null;
-
-    #[Groups(['store-read'])]
-    #[ORM\OneToMany(mappedBy: 'work', targetEntity: User::class)]
+    #[Groups(['store-read-full', 'create-stores', 'update-companie'])]
+    #[ORM\OneToMany(mappedBy: 'work', targetEntity: User::class )]
     private Collection $users;
+
+    #[Groups(['store-read-full', 'create-stores'])]
+    #[ORM\ManyToOne(inversedBy: 'stores')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Companie $company = null;
 
     public function __construct()
     {
@@ -131,18 +173,6 @@ class Store
         return $this;
     }
 
-    public function getCompanie(): ?Companie
-    {
-        return $this->companie;
-    }
-
-    public function setCompanie(?Companie $companie): static
-    {
-        $this->companie = $companie;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, User>
      */
@@ -169,6 +199,18 @@ class Store
                 $user->setWork(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCompany(): ?Companie
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Companie $company): static
+    {
+        $this->company = $company;
 
         return $this;
     }
