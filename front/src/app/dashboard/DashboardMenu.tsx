@@ -60,7 +60,7 @@ export default function DashboardMenu() {
                                     {/* Sidebar component, swap this element with another sidebar if you like */}
                                     <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
                                         <div className="flex h-16 shrink-0 items-center">
-                                            <Image src="/logo.svg" className="h-6 w-auto mr-4" alt="logo" width={32}
+                                            <Image src="/logo.svg"  alt="logo" width={32}
                                                 height={32} />
                                             <span
                                                 className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Odicylens</span>
@@ -110,7 +110,7 @@ export default function DashboardMenu() {
                     <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
                         <div className="flex h-16 shrink-0 items-center">
                             <a href="/" className="inline-flex items-center justify-center">
-                                <Image src="/logo.svg" className="h-6 w-auto mr-4" alt="logo" width={32} height={32} />
+                                <Image src="/logo.svg"  alt="logo" width={32} height={32} />
                                 <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Odicylens</span>
                             </a>
                         </div>
