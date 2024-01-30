@@ -7,7 +7,7 @@ const Faq: FC<FaqProps> = ({ classNames }) => {
 
     return (
         <div className={`block w-full max-w-[90vw] lg:max-w-[70vw] p-6 bg-white border border-gray-200 rounded-lg shadow ${classNames?.container ?? ""}`}>
-            <h1 className='mb-3 text-2xl font-semibold text-center text-black'>FAQ</h1>
+            <h1 className='mb-3 text-2xl font-semibold text-center text-black'>Frequently Asked Questions</h1>
 
             <h2>
                 <button type="button" className="flex items-center justify-between w-full py-5 font-medium rtl:text-right text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 gap-3"
