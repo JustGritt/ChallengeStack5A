@@ -8,6 +8,7 @@ import { Inter } from "next/font/google";
 import Head from "next/head";
 import Link from "next/link";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { config } from "@fortawesome/fontawesome-svg-core";
 import { ApiProvider } from "@reduxjs/toolkit/query/react";
 import { appApi } from "@/redux/api/authApi";
