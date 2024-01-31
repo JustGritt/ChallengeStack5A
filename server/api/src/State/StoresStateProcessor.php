@@ -54,6 +54,9 @@ class StoresStateProcessor implements ProcessorInterface
         if ($operation->getUriTemplate() === '/stores{._format}' && $operation->getMethod() === 'POST') {
             //check if the user is admin of the company
             if (null !== $user->getCompanie() && $user->getCompanie()->getId()) {
+                if ($user->getCompanie()->isIsValid() === false) {
+                    throw new AccessDeniedException('You need to wait for the validation of your company.');
+                }
                 $data->setCompany($user->getCompanie());
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }

@@ -31,10 +31,10 @@ class Store
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read', 'service-read'])]
     private ?int $id = null;
 
-    #[Groups(['read-user-mutation', 'read-companie', 'store-read', 'create-stores', 'update-companie'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read', 'create-stores', 'update-companie', 'service-read'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 3, max: 255)]
@@ -81,9 +81,14 @@ class Store
     #[ORM\Column]
     private ?float $longitude = null;
 
+    #[Groups(['store-read-full'])]
+    #[ORM\OneToMany(mappedBy: 'store', targetEntity: Service::class, orphanRemoval: true)]
+    private Collection $services;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->services = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -213,6 +218,36 @@ class Store
     public function setLongitude(float $longitude): static
     {
         $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Service>
+     */
+    public function getServices(): Collection
+    {
+        return $this->services;
+    }
+
+    public function addService(Service $service): static
+    {
+        if (!$this->services->contains($service)) {
+            $this->services->add($service);
+            $service->setStore($this);
+        }
+
+        return $this;
+    }
+
+    public function removeService(Service $service): static
+    {
+        if ($this->services->removeElement($service)) {
+            // set the owning side to null (unless already changed)
+            if ($service->getStore() === $this) {
+                $service->setStore(null);
+            }
+        }
 
         return $this;
     }

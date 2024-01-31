@@ -37,7 +37,6 @@ final class UserProcessor implements ProcessorInterface
             return $this->removeProcessor->process($data, $operation, $uriVariables, $context);
         }
     
-    
         $result = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
         $this->sendWelcomeEmail($data);
 
@@ -51,17 +50,6 @@ final class UserProcessor implements ProcessorInterface
         $jwt = $this->jwtEncoder->encode(['id' => $user->getId(), 'exp' => time() + 3600]);
 
         $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
-        /*
-        $message = (new Email())
-        ->from('contact@charlesparames.com')
-        ->to($user->getEmail())
-        ->subject('Welcome to the Odicylens')
-        ->html($this->twig->render('email/welcome.html.twig', [
-            'user' => $user->getFirstname(),
-            'action_url' => 'https://localhost:8000/confirm-email/' . $jwt,
-            'login_url' => 'Go to the blog',
-        ]));
-        */
 
         $client->sendEmailWithTemplate(
             'contact@charlesparames.com',
@@ -73,6 +61,5 @@ final class UserProcessor implements ProcessorInterface
                 'login_url' => 'Go to the blog',
           ]);
 
-        #$this->mailer->send($message);
     }
 }
