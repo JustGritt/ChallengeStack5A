@@ -36,12 +36,9 @@ class StoresStateProcessor implements ProcessorInterface
             throw new AccessDeniedException('Cannot create a new store for this user.');
         }
 
-        if ($user instanceof User && $user->getCompanie() !== $data->getCompany()) {
-            throw new AccessDeniedException('Cannot create a new store for this user.');
-        }
 
         //check if the method is patch 
-        if ($operation->getUriTemplate() === '/stores/{id}.{_format}' && $operation->getMethod() === 'PATCH') {
+        if ($operation->getUriTemplate() === '/stores/{id}{._format}' && $operation->getMethod() === 'PATCH') {
             //check if the user is admin of the company
             if ($user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
@@ -54,7 +51,7 @@ class StoresStateProcessor implements ProcessorInterface
         }
 
         //check if the method is post
-        if ($operation->getUriTemplate() === '/stores.{_format}' && $operation->getMethod() === 'POST') {
+        if ($operation->getUriTemplate() === '/stores{._format}' && $operation->getMethod() === 'POST') {
             //check if the user is admin of the company
             if (null !== $user->getCompanie() && $user->getCompanie()->getId() === $data->getCompany()->getId()) {
                 $data->setCompany($user->getCompanie());
