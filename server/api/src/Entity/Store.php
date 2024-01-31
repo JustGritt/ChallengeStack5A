@@ -75,10 +75,12 @@ class Store
 
     #[Groups(['read-companie', 'store-read', 'create-stores', 'update-companie'])]
     #[ORM\Column]
+    #[Assert\NotBlank()]
     private ?float $latitude = null;
 
     #[Groups(['read-companie', 'store-read', 'create-stores', 'update-companie'])]
     #[ORM\Column]
+    #[Assert\NotBlank()]
     private ?float $longitude = null;
 
     #[Groups(['store-read-full'])]

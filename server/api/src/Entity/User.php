@@ -96,7 +96,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?bool $isValid = false;
 
-    #[Groups(['read-user', 'update-user', 'read-user-mutation'])]
+    #[Groups(['read-user', 'update-user', 'read-user-mutation', 'create-user'])]
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Store $work = null;
 
