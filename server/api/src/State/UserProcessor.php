@@ -42,24 +42,6 @@ final class UserProcessor implements ProcessorInterface
         }
 
         $user = $this->security->getUser();
-
-        /*
-        if ($operation->getUriTemplate() === '/users{._format}' && $operation->getMethod() === 'POST') {
-            if (null !== $user && $user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
-                $this->sendWelcomeEmail($data);
-                return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
-            }
-            if (null !== $data->getWork() && null !== $user && null !== $user->getCompanie() && $data->getWork()->getCompany()->getId() === $user->getCompanie()->getId() && $user->getCompanie()->isIsValid()) {
-                $this->sendWelcomeEmail($data);
-                return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
-            }
-            if (null == $data->getWork()) {
-                $this->sendWelcomeEmail($data);
-                return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
-            }
-            throw new AccessDeniedException('Cannot create this user.');
-        }
-        */
     
         if ($operation->getUriTemplate() === '/users{._format}' && $operation->getMethod() === 'POST') {
             $user = $this->security->getUser();
@@ -67,7 +49,7 @@ final class UserProcessor implements ProcessorInterface
             $companyOwner = null !== $user && $user && $user->getCompanie() !== null && $data->getWork() && $data->getWork()->getCompany()->getId() === $user->getCompanie()->getId() && $user->getCompanie()->isIsValid();
         
             if ($isAdmin || $companyOwner || null === $data->getWork()) {
-                #$this->sendWelcomeEmail($data);
+                $this->sendWelcomeEmail($data);
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
         
