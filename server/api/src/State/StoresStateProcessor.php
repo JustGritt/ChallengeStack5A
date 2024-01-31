@@ -53,7 +53,7 @@ class StoresStateProcessor implements ProcessorInterface
         //check if the method is post
         if ($operation->getUriTemplate() === '/stores{._format}' && $operation->getMethod() === 'POST') {
             //check if the user is admin of the company
-            if (null !== $user->getCompanie() && $user->getCompanie()->getId() === $data->getCompany()->getId()) {
+            if (null !== $user->getCompanie() && $user->getCompanie()->getId()) {
                 $data->setCompany($user->getCompanie());
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
