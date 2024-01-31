@@ -11,12 +11,13 @@ class CompanieVoter extends Voter
 
     public const PATCH = 'COMPANIE_PATCH';
     public const POST = 'COMPANIE_POST';
+    public const VIEW = 'COMPANIE_VIEW';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::PATCH, self::POST])
+        return in_array($attribute, [self::PATCH, self::VIEW])
             && $subject instanceof \App\Entity\Companie;
     }
 
@@ -30,10 +31,19 @@ class CompanieVoter extends Voter
 
         switch ($attribute) {
            
-            case self::POST:
-               
-                dump($user, $subject, $token);
-                return true;
+            case self::VIEW:
+                
+                if ($user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
+                    return true;
+                }
+                
+                if (null !== $user->getCompanie() && $user->getCompanie()->getId() === $subject->getId()) {
+                    return true;
+                }
+
+                if (null !== $user->getWork() && $user->getWork()->getId() === $subject->getId()) {
+                    return true;
+                }
                  
                 break;
 
@@ -43,8 +53,8 @@ class CompanieVoter extends Voter
                     return true;
                 }
                 break;
-
-            return false;
         }
+
+        return false;
     }
 }

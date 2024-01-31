@@ -21,9 +21,9 @@ use App\State\CompanieStateProcessor;
 #[ApiResource(
     operations: [
         new GetCollection(normalizationContext: ['groups' => ['read-companie']]),
-        new Get(normalizationContext: ['groups' => ['read-companie']]),
+        new Get(normalizationContext: ['groups' => ['read-companie']], security: 'is_granted("COMPANIE_VIEW", object)'),
         new Post(denormalizationContext: ['groups' => ['create-companie']]),
-        new Patch(denormalizationContext: ['groups' => ['update-companie']], security: 'is_granted("COMPANIE_PATCH", object)'),
+        new Patch(denormalizationContext: ['groups' => ['update-companie']]),
     ],
     normalizationContext: ['groups' => ['read-companie']],
     processor: CompanieStateProcessor::class,

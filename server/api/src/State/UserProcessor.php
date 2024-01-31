@@ -13,7 +13,6 @@ use Twig\Environment;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Postmark\PostmarkClient;
 
-
 /**
  * @implements ProcessorInterface<User, User|void>
  */
@@ -37,6 +36,7 @@ final class UserProcessor implements ProcessorInterface
         if ($operation instanceof DeleteOperationInterface) {
             return $this->removeProcessor->process($data, $operation, $uriVariables, $context);
         }
+    
     
         $result = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
         $this->sendWelcomeEmail($data);
