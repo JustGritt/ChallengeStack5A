@@ -151,7 +151,7 @@ export default function DashboardMenu() {
                                 Search
                             </label>
                             <MagnifyingGlassIcon className="pointer-events-none absolute inset-y-0 left-4 h-full w-5 text-gray-400 dark:text-gray-300" aria-hidden="true" />
-                            <input id="search-field" className="block h-12 w-full border-0 py-0 pl-12 pr-4 text-gray-900 dark:text-gray-300 placeholder:text-gray-400 dark:placeholder:text-gray-400 focus:ring-0 sm:text-sm dark:bg-slate-700 rounded-xl" placeholder="Search..." type="search" name="search" />
+                            <input id="search-field" className="block h-10 w-full border-0 py-0 pl-12 pr-4 text-gray-900 dark:text-gray-300 placeholder:text-gray-400 dark:placeholder:text-gray-400 focus:ring-0 sm:text-sm dark:bg-slate-700 rounded-xl" placeholder="Search..." type="search" name="search" />
                         </form>
                         <div className="flex items-center gap-x-4 lg:gap-x-6">
                             <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400">

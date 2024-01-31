@@ -8,7 +8,7 @@ const currentDate = new Date().getDate();
 export default function Example() {
     return (
         <div className="lg:flex lg:h-full lg:flex-col">
-            <header className="flex items-center justify-between border-b border-gray-200 py-4 lg:flex-none">
+            <header className="flex items-center justify-between py-4 lg:flex-none">
                 <p className="text-2xl font-medium text-gray-900 dark:text-white">{currentMonth.name} {new Date().getFullYear()}</p>
                 <div className="flex items-center">
                     <div className="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
@@ -38,20 +38,20 @@ export default function Example() {
                     </div>
                 </div>
             </header>
-            <div className="shadow ring-1 ring-black ring-opacity-5 lg:flex lg:flex-auto lg:flex-col">
-                <div className="grid grid-cols-7 bg-gray-200 text-center font-semibold leading-6 text-gray-700 lg:flex-none border-none">
-                    <div className="border border-transparent text-white bg-indigo-600 py-4 rounded-tl">Mon<span className="hidden lg:inline">day</span></div>
-                    <div className="border border-transparent text-white bg-indigo-600 py-4">Tues<span className="hidden lg:inline">day</span></div>
-                    <div className="border border-transparent text-white bg-indigo-600 py-4">Wed<span className="hidden lg:inline">nesday</span></div>
-                    <div className="border border-transparent text-white bg-indigo-600 py-4">Thu<span className="hidden lg:inline">rsday</span></div>
-                    <div className="border border-transparent text-white bg-indigo-600 py-4">Fri<span className="hidden lg:inline">day</span></div>
-                    <div className="border border-transparent text-white bg-indigo-600 py-4">Sat<span className="hidden lg:inline">urday</span></div>
-                    <div className="border border-transparent text-white bg-indigo-600 py-4 rounded-tr">Sun<span className="hidden lg:inline">day</span></div>
+            <div className="shadow ring-1 ring-black ring-opacity-5 lg:flex lg:flex-auto lg:flex-col dark:bg-gray-800">
+                <div className="grid grid-cols-7 text-center font-semibold leading-6 text-gray-700 dark:text-gray-300 lg:flex-none ">
+                    <div className="text-white bg-indigo-600 dark:bg-slate-700 py-4 rounded-tl">Mon<span className="hidden lg:inline">day</span></div>
+                    <div className="text-white bg-indigo-600 dark:bg-slate-700 py-4">Tues<span className="hidden lg:inline">day</span></div>
+                    <div className="text-white bg-indigo-600 dark:bg-slate-700 py-4">Wed<span className="hidden lg:inline">nesday</span></div>
+                    <div className="text-white bg-indigo-600 dark:bg-slate-700 py-4">Thu<span className="hidden lg:inline">rsday</span></div>
+                    <div className="text-white bg-indigo-600 dark:bg-slate-700 py-4">Fri<span className="hidden lg:inline">day</span></div>
+                    <div className="text-white bg-indigo-600 dark:bg-slate-700 py-4">Sat<span className="hidden lg:inline">urday</span></div>
+                    <div className="text-white bg-indigo-600 dark:bg-slate-700 py-4 rounded-tr">Sun<span className="hidden lg:inline">day</span></div>
                 </div>
-                <div className="flex bg-gray-200 text-xs leading-6 text-gray-700 lg:flex-auto">
-                    <div className="hidden w-full lg:grid lg:grid-cols-7 lg:grid-rows-5 lg:gap-px">
+                <div className="flex bg-gray-200 text-xs leading-6 text-gray-700 dark:bg-gray-900 dark:text-gray-300 lg:flex-auto">
+                    <div className="hidden w-full lg:grid lg:grid-cols-7 lg:grid-rows-5 lg:gap-px dark:border-white">
                         {days.map((day) => (
-                            <div key={day.date} className={`block h-40 bg-white relative p-4 transition-colors hover:border ${day.date.split('/')[0] < String(currentDate) ? 'bg-gray-100' : ''}`}>
+                            <div key={day.date} className={`block h-40 bg-white relative p-4 transition-colors hover:border dark:bg-gray-700 ${day.date.split('/')[0] < String(currentDate) ? 'bg-gray-100 dark:bg-slate-600' : ''}`}>
                                 <time dateTime={day.date} className={`text-lg flex h-8 w-8 items-center justify-center font-semibold ${day.date.split('/')[0] == String(currentDate) ? 'rounded-full bg-indigo-600 text-white' : ''}`}>
                                     {day.date.split('/')[0]}
                                 </time>
@@ -60,7 +60,7 @@ export default function Example() {
                     </div>
                     <div className="isolate grid w-full grid-cols-7 grid-rows-5 gap-px lg:hidden">
                         {days.map((day) => (
-                            <div key={day.date} className={`block h-20 bg-white relative p-4 transition-colors hover:border ${day.date.split('/')[0] < String(currentDate) ? 'bg-gray-100' : ''}`}>
+                            <div key={day.date} className={`block h-20 bg-white relative p-4 transition-colors hover:border dark:bg-gray-700 ${day.date.split('/')[0] < String(currentDate) ? 'bg-gray-100 dark:bg-gray-800' : ''}`}>
                                 <time dateTime={day.date} className={`text-lg flex h-8 w-8 items-center justify-center font-semibold ${day.date.split('/')[0] == String(currentDate) ? 'rounded-full bg-indigo-600 text-white' : ''}`}>
                                     {day.date.split('/')[0]}
                                 </time>
