@@ -6,19 +6,16 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class CompanieVoter extends Voter
+class ServiceVoter extends Voter
 {
-
-    public const PATCH = 'COMPANIE_PATCH';
-    public const POST = 'COMPANIE_POST';
-    public const VIEW = 'COMPANIE_VIEW';
+    public const VIEW = 'SERVICE_VIEW';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::PATCH, self::VIEW])
-            && $subject instanceof \App\Entity\Companie;
+        return in_array($attribute, [self::VIEW])
+            && $subject instanceof \App\Entity\Service;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -29,27 +26,19 @@ class CompanieVoter extends Voter
             return false;
         }
 
+        $companie = $user->getCompanie();
+        $work = $user->getWork();
+
+        // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
-           
             case self::VIEW:
-                
-                if ($user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
+                if (null !== $user && $user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
+                   return true;
+                }
+                if (null !== $companie && $companie->getId() && $subject->getStore()->getCompany()->getId() === $companie->getId() && $companie->isIsValid() === true) {
                     return true;
                 }
-                
-                if (null !== $user->getCompanie() && $user->getCompanie()->getId() === $subject->getId()) {
-                    return true;
-                }
-
-                if (null !== $user->getWork() && $user->getWork()->getId() === $subject->getId()) {
-                    return true;
-                }
-                 
-                break;
-
-            case self::PATCH:
-                //check if the user is admin for this companie or super admin
-                if ($user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
+                if (null !== $work && $work->getId() && $subject->getStore()->getId() === $work->getId()) {
                     return true;
                 }
                 break;

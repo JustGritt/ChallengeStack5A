@@ -16,7 +16,7 @@ class StoreVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::POST, self::PATCH, self::VIEW])
+        return in_array($attribute, [self::VIEW])
             && $subject instanceof \App\Entity\Store;
     }
 
@@ -39,29 +39,7 @@ class StoreVoter extends Voter
                     return true;
                 }
                 //user should be admin of the company
-                if ($user->getCompanie()->getId() === $subject->getCompany()->getId()) {
-                    return true;
-                }
-                break;
-
-            case self::POST:
-                //user should be admin of the company
-                if ($user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
-                    return true;
-                }
-                //user should be admin of the company
-                if ($user->getCompanie()->getId() === $subject->getCompany()->getId()) {
-                    return true;
-                }
-                break;
-
-            case self::PATCH:
-                //user should be admin of the company
-                if ($user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
-                    return true;
-                }
-                //user should be admin of the company
-                if ($user->getCompanie()->getId() === $subject->getCompany()->getId()) {
+                if (null !== $user->getCompanie() && $user->getCompanie()->getId() === $subject->getCompany()->getId()) {
                     return true;
                 }
                 break;

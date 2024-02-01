@@ -21,9 +21,9 @@ use App\State\CompanieStateProcessor;
 #[ApiResource(
     operations: [
         new GetCollection(normalizationContext: ['groups' => ['read-companie']]),
-        new Get(normalizationContext: ['groups' => ['read-companie']]),
+        new Get(normalizationContext: ['groups' => ['read-companie']], security: 'is_granted("COMPANIE_VIEW", object)'),
         new Post(denormalizationContext: ['groups' => ['create-companie']]),
-        new Patch(denormalizationContext: ['groups' => ['update-companie']], security: 'is_granted("COMPANIE_PATCH", object)'),
+        new Patch(denormalizationContext: ['groups' => ['update-companie']]),
     ],
     normalizationContext: ['groups' => ['read-companie']],
     processor: CompanieStateProcessor::class,
@@ -32,21 +32,21 @@ class Companie
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[Groups(['read-user-mutation', 'read-companie'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['read-user-mutation', 'read-companie', 'create-companie', 'update-companie'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'create-companie', 'update-companie', 'store-read'])]
     #[ORM\Column(length: 255, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 255)]
     private ?string $name = null;
 
-    #[Groups(['read-user-mutation', 'read-companie' , 'create-companie', 'update-companie'])]
+    #[Groups(['read-user-mutation', 'read-companie' , 'create-companie', 'update-companie', 'store-read'])]
     #[ORM\Column(length: 255)]
     private ?string $kbis = null;
 
-    #[Groups(['read-user-mutation', 'read-companie', 'update-companie'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'update-companie', 'store-read'])]
     #[ORM\Column]
     private ?bool $isValid = false;
 
