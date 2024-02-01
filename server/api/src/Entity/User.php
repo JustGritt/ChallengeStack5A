@@ -17,11 +17,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\State\UserProcessor;
 use App\Controller\ConfirmUserEmail;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 
 #[ApiResource(
     operations: [
-        new Get(uriTemplate: '/users/me', name: "getuserinfo", normalizationContext: ['groups' => ['read-user-mutation']]),
         new Get(normalizationContext: ['groups' => ['read-user']]),
+        new Get(uriTemplate: '/users/me', name: "getuserinfo", normalizationContext: ['groups' => ['read-user-mutation']]),
         new Post(denormalizationContext: ['groups' => ['create-user']]),
         new Patch(denormalizationContext: ['groups' => ['update-user']]),
         new Get(name: 'confirm', routeName: 'confirm_email' , openapiContext: [
@@ -53,6 +55,7 @@ use App\Controller\ConfirmUserEmail;
     normalizationContext: ['groups' => ['read-user', 'read-user-mutation']],
     processor: UserProcessor::class,
 )]
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(['email'])]
@@ -65,7 +68,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[Assert\Email()]
-    #[Groups(['read-user-as-admin', 'create-user', 'read-user-mutation',  'store-read-full', 'read-companie', 'add-user-to-store'])]
+    #[Groups(['read-user-as-admin', 'create-user', 'read-user-mutation',  'store-read-full', 'read-companie', 'add-user-to-store', 'schedule-read'])]
     #[Assert\NotBlank()]
     #[Assert\Email()]
     #[ORM\Column(length: 180, unique: true)]
@@ -96,12 +99,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?bool $isValid = false;
 
-    #[Groups(['read-user', 'update-user', 'read-user-mutation'])]
+    #[Groups(['read-user', 'update-user', 'read-user-mutation', 'create-user'])]
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Store $work = null;
 
+    #[Groups(['read-user', 'read-user-mutation'])]
     #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private ?Companie $companie = null;
+
+    #[ORM\OneToMany(mappedBy: 'employee', targetEntity: Schedule::class, orphanRemoval: true)]
+    private Collection $schedules;
+
+    public function __construct()
+    {
+        $this->schedules = new ArrayCollection();
+    }
 
     
     public function getId(): ?int
@@ -234,6 +246,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->companie = $companie;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Schedule>
+     */
+    public function getSchedules(): Collection
+    {
+        return $this->schedules;
+    }
+
+    public function addSchedule(Schedule $schedule): static
+    {
+        if (!$this->schedules->contains($schedule)) {
+            $this->schedules->add($schedule);
+            $schedule->setEmployee($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSchedule(Schedule $schedule): static
+    {
+        if ($this->schedules->removeElement($schedule)) {
+            // set the owning side to null (unless already changed)
+            if ($schedule->getEmployee() === $this) {
+                $schedule->setEmployee(null);
+            }
+        }
 
         return $this;
     }

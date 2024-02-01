@@ -13,12 +13,7 @@ function NavBar() {
             border-b-gray-600 bg-white'>
                 <div className='flex lg:flex-1 justify-between items-center'>
                     <a href='/' className='-m-1.5 p-1.5'>
-                        <Image
-                            src="/assets/logo.svg"
-                            width={120}
-                            height={20}
-                            alt="Logo"
-                        />
+                        <Image src="/assets/logo.svg" className="h-6 w-auto" width={120} height={20} alt="Logo" />
                     </a>
 
                     <button onClick={() => {
@@ -31,7 +26,7 @@ function NavBar() {
                     </button>
 
 
-                    <div className='items-center flex gap-x-6 hidden md:w-auto md:flex'>
+                    <div className='items-center md:flex gap-x-6 md:w-auto hidden'>
                         <Link href='/blog' className='font-inter hover:text-gray-900 font-light	text-[15px]'>Vidéastes</Link>
                         <Link href='/about' className='ml-2 font-inter hover:text-gray-900 font-light text-[15px]'>Producers</Link>
                         <Link href='/about' className='ml-2 font-inter hover:text-gray-900 font-light text-[15px]'>Musician</Link>

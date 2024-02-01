@@ -12,6 +12,8 @@ use Symfony\Component\Mime\Email;
 use Twig\Environment;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Postmark\PostmarkClient;
+use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 
 /**
@@ -26,7 +28,8 @@ final class UserProcessor implements ProcessorInterface
         private ProcessorInterface $removeProcessor,
         private MailerInterface $mailer,
         private Environment $twig,
-        private JWTEncoderInterface $jwtEncoder
+        private JWTEncoderInterface $jwtEncoder,
+        private Security $security
 
     )
     {
@@ -37,11 +40,23 @@ final class UserProcessor implements ProcessorInterface
         if ($operation instanceof DeleteOperationInterface) {
             return $this->removeProcessor->process($data, $operation, $uriVariables, $context);
         }
-    
-        $result = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
-        $this->sendWelcomeEmail($data);
 
-        return $result;
+        $user = $this->security->getUser();
+    
+        if ($operation->getUriTemplate() === '/users{._format}' && $operation->getMethod() === 'POST') {
+            $user = $this->security->getUser();
+            $isAdmin = null !== $user && $user && in_array('ROLE_SUPER_ADMIN', $user->getRoles(), true);
+            $companyOwner = null !== $user && $user && $user->getCompanie() !== null && $data->getWork() && $data->getWork()->getCompany()->getId() === $user->getCompanie()->getId() && $user->getCompanie()->isIsValid();
+        
+            if ($isAdmin || $companyOwner || null === $data->getWork()) {
+                $this->sendWelcomeEmail($data);
+                return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
+            }
+        
+            throw new AccessDeniedException('Cannot create this user.');
+        }
+
+        return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
     }
 
     private function sendWelcomeEmail(User $user): void
@@ -51,17 +66,6 @@ final class UserProcessor implements ProcessorInterface
         $jwt = $this->jwtEncoder->encode(['id' => $user->getId(), 'exp' => time() + 3600]);
 
         $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
-        /*
-        $message = (new Email())
-        ->from('contact@charlesparames.com')
-        ->to($user->getEmail())
-        ->subject('Welcome to the Odicylens')
-        ->html($this->twig->render('email/welcome.html.twig', [
-            'user' => $user->getFirstname(),
-            'action_url' => 'https://localhost:8000/confirm-email/' . $jwt,
-            'login_url' => 'Go to the blog',
-        ]));
-        */
 
         $client->sendEmailWithTemplate(
             'contact@charlesparames.com',
@@ -73,6 +77,5 @@ final class UserProcessor implements ProcessorInterface
                 'login_url' => 'Go to the blog',
           ]);
 
-        #$this->mailer->send($message);
     }
 }

@@ -37,8 +37,12 @@ security:
 
     access_control:
         - { path: ^/docs, roles: PUBLIC_ACCESS }
-        - { path: ^/companies$, roles: PUBLIC_ACCESS, methods: [GET, POST] }
+        - { path: ^/companies$, roles: PUBLIC_ACCESS, methods: GET }
         - { path: ^/stores$, roles: PUBLIC_ACCESS, methods: GET }
+        - { path: ^/stores/\d+, roles: PUBLIC_ACCESS, methods: GET }
+        - { path: ^/stores/\d+/schedules, roles: PUBLIC_ACCESS, methods: GET }
+        - { path: ^/users/\d+/schedules, roles: PUBLIC_ACCESS, methods: GET }
+        - { path: ^/stores/\d+/services, roles: PUBLIC_ACCESS, methods: GET }
         - { path: '^/users/\d+/token/.+', roles: PUBLIC_ACCESS }
         - { path: ^/$, roles: PUBLIC_ACCESS }
         - { path: '^/forgot_password', roles: PUBLIC_ACCESS }
