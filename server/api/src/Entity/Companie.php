@@ -21,7 +21,7 @@ use App\State\CompanieStateProcessor;
 #[ApiResource(
     operations: [
         new GetCollection(normalizationContext: ['groups' => ['read-companie']]),
-        new Get(normalizationContext: ['groups' => ['read-companie']], security: 'is_granted("COMPANIE_VIEW", object)'),
+        #new Get(normalizationContext: ['groups' => ['read-companie']], security: 'is_granted("COMPANIE_VIEW", object)'),
         new Post(denormalizationContext: ['groups' => ['create-companie']]),
         new Patch(denormalizationContext: ['groups' => ['update-companie']]),
     ],
@@ -42,11 +42,11 @@ class Companie
     #[Assert\Length(min: 3, max: 255)]
     private ?string $name = null;
 
-    #[Groups(['read-user-mutation', 'read-companie' , 'create-companie', 'update-companie', 'store-read'])]
+    #[Groups(['read-user-mutation', 'read-companie' , 'create-companie', 'update-companie'])]
     #[ORM\Column(length: 255)]
     private ?string $kbis = null;
 
-    #[Groups(['read-user-mutation', 'read-companie', 'update-companie', 'store-read'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'update-companie'])]
     #[ORM\Column]
     private ?bool $isValid = false;
 

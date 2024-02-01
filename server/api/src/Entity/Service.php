@@ -16,11 +16,13 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Delete;
 use App\State\ServiceStateProcessor;
 use App\Security\Voter\ServiceVoter;
+use ApiPlatform\Metadata\Link; 
+use ApiPlatform\Metadata\GetCollection;
 
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['service-read']], security: 'is_granted("SERVICE_VIEW", object)'),
+        #new Get(normalizationContext: ['groups' => ['service-read']], security: 'is_granted("SERVICE_VIEW", object)'),
         new Post(denormalizationContext: ['groups' => ['service-mutation']]),
         new Patch(denormalizationContext: ['groups' => ['service-mutation']]),
         new Delete(),

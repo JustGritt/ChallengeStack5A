@@ -14,27 +14,30 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\GetCollection;
 use App\State\StoresStateProcessor;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 
 #[ApiResource(
     operations: [
         new GetCollection(normalizationContext: ['groups' => ['store-read']]),
-        new Get(normalizationContext: ['groups' => ['store-read', 'store-read-full']], security: 'is_granted("STORE_VIEW", object)'),
+        new Get(normalizationContext: ['groups' => ['store-read', 'store-read-full']]),
         new Post(denormalizationContext: ['groups' => ['create-stores']]),
         new Patch(denormalizationContext: ['groups' => ['update-companie']]),
     ],  
     normalizationContext: ['groups' => ['store-read']],
     processor: StoresStateProcessor::class,
 )]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'ipartial', 'address' => 'ipartial', 'postalCode' => 'ipartial', 'country' => 'ipartial', 'city' => 'ipartial'])]
 #[ORM\Entity(repositoryClass: StoreRepository::class)]
 class Store
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read-user-mutation', 'read-companie', 'store-read', 'service-read'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
     private ?int $id = null;
 
-    #[Groups(['read-user-mutation', 'read-companie', 'store-read', 'create-stores', 'update-companie', 'service-read'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read', 'create-stores', 'update-companie'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 3, max: 255)]
@@ -64,15 +67,6 @@ class Store
     #[Assert\Length(min: 3, max: 255)]
     private ?string $city = null;
 
-    #[Groups(['store-read-full', 'update-companie'])]
-    #[ORM\OneToMany(mappedBy: 'work', targetEntity: User::class)]
-    private Collection $users;
-
-    #[Groups(['store-read-full'])]
-    #[ORM\ManyToOne(inversedBy: 'stores')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Companie $company = null;
-
     #[Groups(['read-companie', 'store-read', 'create-stores', 'update-companie'])]
     #[ORM\Column]
     #[Assert\NotBlank()]
@@ -83,14 +77,27 @@ class Store
     #[Assert\NotBlank()]
     private ?float $longitude = null;
 
+    #[Groups(['store-read-full', 'update-companie'])]
+    #[ORM\OneToMany(mappedBy: 'work', targetEntity: User::class)]
+    private Collection $users;
+
+    #[Groups(['store-read-full'])]
+    #[ORM\ManyToOne(inversedBy: 'stores')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Companie $company = null;
+
     #[Groups(['store-read-full'])]
     #[ORM\OneToMany(mappedBy: 'store', targetEntity: Service::class, orphanRemoval: true)]
     private Collection $services;
+
+    #[ORM\OneToMany(mappedBy: 'store', targetEntity: Schedule::class, orphanRemoval: true)]
+    private Collection $schedules;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->services = new ArrayCollection();
+        $this->schedules = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -248,6 +255,36 @@ class Store
             // set the owning side to null (unless already changed)
             if ($service->getStore() === $this) {
                 $service->setStore(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Schedule>
+     */
+    public function getSchedules(): Collection
+    {
+        return $this->schedules;
+    }
+
+    public function addSchedule(Schedule $schedule): static
+    {
+        if (!$this->schedules->contains($schedule)) {
+            $this->schedules->add($schedule);
+            $schedule->setStore($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSchedule(Schedule $schedule): static
+    {
+        if ($this->schedules->removeElement($schedule)) {
+            // set the owning side to null (unless already changed)
+            if ($schedule->getStore() === $this) {
+                $schedule->setStore(null);
             }
         }
 

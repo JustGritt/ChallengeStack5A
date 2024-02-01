@@ -39,6 +39,7 @@ class CompanieStateProcessor implements ProcessorInterface
        
         //check if the method is post
         if ($operation->getUriTemplate() === "/companies{._format}"  && $operation->getMethod() === 'POST') {
+            
 
             //check if the user is working for a company
             if (null !== $user->getWork()) {
@@ -49,6 +50,7 @@ class CompanieStateProcessor implements ProcessorInterface
                 throw new AccessDeniedException('User already has a company. Cannot create a new one.');
             }
 
+            dump($user);
             $data->setOwner($user);
             return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
         }
@@ -56,11 +58,11 @@ class CompanieStateProcessor implements ProcessorInterface
         //check if the method is patch
         if ($operation->getUriTemplate() === "/companies/{id}{._format}" && $operation->getMethod() === 'PATCH') {
             //check if the user is admin of the company
-            if ($user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
+            if (null !== $user && $user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
             //check if the user is admin of the company
-            if (null !== $user->getCompanie() && $user->getCompanie()->getId() === $data->getId()) {
+            if (null !== $user && null !== $user->getCompanie() && $user->getCompanie()->getId() === $data->getId()) {
                 if (null !== $context['previous_data']->isIsValid() && $data->isIsValid() !== $context['previous_data']->isIsValid()) {
                     throw new AccessDeniedException('Cannot update this company.');
                 }
