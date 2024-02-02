@@ -23,7 +23,8 @@ export const authApi = api.injectEndpoints({
     getMyProfile: build.query<User, string>({
       query: (token) => {
         return {
-          url: `/getMyProfile`,
+          url: `/users/me`,
+          method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
           },

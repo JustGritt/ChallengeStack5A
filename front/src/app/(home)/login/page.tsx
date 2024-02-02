@@ -19,9 +19,11 @@ import {
   useRegisterMutation,
 } from "@/lib/services/auth";
 import React from "react";
-import { ApiSuccessBase } from "@/types/ApiBase";
+import { ApiErrorResponse, ApiSuccessBase } from "@/types/ApiBase";
 import { LoginResponse } from "@/types/Auth";
 import { useCookies } from "react-cookie";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 type RegisterProps = {
   className?: string;
@@ -41,6 +43,8 @@ export default function Register(props: RegisterProps) {
     remember: Yup.boolean().optional(),
   });
 
+  const router = useRouter()
+
   const [login, { error, data, isError, isLoading }] = useLoginMutation();
   const [_, setCookie] = useCookies(["yoken"]);
   const [getMyProfileQuery] = useLazyGetMyProfileQuery();
@@ -52,18 +56,20 @@ export default function Register(props: RegisterProps) {
       login({
         email: values.email,
         password: values.password,
-      }).then((res) => {
-        if ((res as ApiSuccessBase<LoginResponse>).data) {
-          setCookie(
-            "yoken",
-            (res as ApiSuccessBase<LoginResponse>).data.token,
-            {
+      })
+        .unwrap()
+        .then(async (res) => {
+          if (res.token) {
+            setCookie("yoken", res.token, {
               path: "/",
-            }
-          );
-          getMyProfileQuery((res as ApiSuccessBase<LoginResponse>).data.token);
-        }
-      });
+            });
+            router.push("/dashboard");
+            await getMyProfileQuery(res.token);
+          }
+        })
+        .catch((err) => {
+          toast.error("Invalid email or password");
+        });
     },
   });
 

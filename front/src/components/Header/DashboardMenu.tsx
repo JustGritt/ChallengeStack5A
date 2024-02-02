@@ -5,10 +5,13 @@ import { Bars3Icon, BellIcon, CalendarIcon, ChartPieIcon, Cog6ToothIcon, HomeIco
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '@/lib/services/slices/authSlice';
 
 export default function DashboardMenu() {
     const [sidebarOpen, setSidebarOpen] = useState(false)
-
+    // get the current logged user
+    const user = useSelector(selectCurrentUser);
     function classNames(...classes: any) {
         return classes.filter(Boolean).join(' ')
     }
@@ -89,7 +92,7 @@ export default function DashboardMenu() {
                     </div>
                 </Dialog>
             </Transition.Root>
-
+            
             {/* Static sidebar for desktop */}
             <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col dark:bg-slate-600">
                 <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 pb-4">
@@ -119,7 +122,7 @@ export default function DashboardMenu() {
                                     ))}
                                 </ul>
                             </li>
-
+                            <li>{user?.firstname}</li>
                             <li className="mt-auto">
                                 <a href="/dashboard/profile"
                                     className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 hover:text-indigo-600 dark:hover:text-indigo-200">

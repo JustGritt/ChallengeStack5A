@@ -36,8 +36,8 @@ const slice = createSlice({
       state.user = user;
       state.token = token;
       state.isAdmin = user.roles.includes('ROLE_SUPER_ADMIN');
-      state.isWorker = user.work !== null;
-      state.isOwner = user.companie !== null;
+      state.isWorker = !!user.work;
+      state.isOwner = !!user.companie;
       state.isClient = !state.isAdmin && !state.isWorker && !state.isOwner;
     },
     resetCredentials: () => initialState,
