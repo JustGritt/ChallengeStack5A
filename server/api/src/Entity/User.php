@@ -22,8 +22,8 @@ use ApiPlatform\Metadata\Link;
 
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['read-user']]),
         new Get(uriTemplate: '/users/me', name: "getuserinfo", normalizationContext: ['groups' => ['read-user-mutation']]),
+        new Get(normalizationContext: ['groups' => ['read-user']]),
         new Post(denormalizationContext: ['groups' => ['create-user']]),
         new Patch(denormalizationContext: ['groups' => ['update-user']]),
         new Get(name: 'confirm', routeName: 'confirm_email' , openapiContext: [
