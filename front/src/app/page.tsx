@@ -12,7 +12,7 @@ import {
   faMagnifyingGlass,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
-import Faq from "./partials/Faq";
+import Faq from "../components/partials/Faq";
 import { useRouter } from "next/navigation";
 import { ErrorMessage, Field, Form, FormikProvider, useFormik } from "formik";
 

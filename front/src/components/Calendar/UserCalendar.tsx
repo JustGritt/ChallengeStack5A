@@ -1,5 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon, EllipsisHorizontalIcon } from '@heroicons/react/20/solid'
-import { CalendarDates } from '@/app/utils/Calendar';
+import { CalendarDates } from '@/lib/helpers/CalendarHelper';
 
 const currentMonth = CalendarDates[0].months[new Date().getMonth()];
 const days = currentMonth.days;

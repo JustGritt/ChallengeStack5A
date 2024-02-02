@@ -1,14 +1,17 @@
-import DashboardMenu from "@/components/Header/DashboardMenu"
+import DashboardMenu from "@/components/Header/DashboardMenu";
+import AuthMiddleware from "@/middlewares/AuthMiddleware";
 
 export default function DashboardLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode
+  children: React.ReactNode;
 }) {
-    return (
-        <main>
-            <DashboardMenu />
-            {children}
-        </main>
-    )
+  return (
+    <AuthMiddleware>
+      <main>
+        <DashboardMenu />
+        {children}
+      </main>
+    </AuthMiddleware>
+  );
 }
