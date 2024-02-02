@@ -30,7 +30,8 @@
         "symfony/twig-bundle": "6.3.*",
         "symfony/validator": "6.3.*",
         "symfony/yaml": "6.3.*",
-        "tilleuls/forgot-password-bundle": "^1.5"
+        "tilleuls/forgot-password-bundle": "^1.5",
+        "wildbit/postmark-php": "^6.0"
     },
     "require-dev": {
         "api-platform/schema-generator": "^5.0",

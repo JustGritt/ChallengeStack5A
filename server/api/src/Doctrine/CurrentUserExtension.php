@@ -23,15 +23,14 @@ final class CurrentUserExtension implements QueryItemExtensionInterface
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass, Operation $operation): void
     {
         $user = $this->security->getUser();
-        dump($user, $operation);
        
         if (User::class !== $resourceClass || null === $user || $operation->getName() !== 'getuserinfo') {
             return;
         }
 
-        dump($user);
         $rootAlias = $queryBuilder->getRootAliases()[0];
         $queryBuilder->andWhere(sprintf('%s.id = :idUser', $rootAlias));
         $queryBuilder->setParameter('idUser', $user->getId());
+
     }
 }

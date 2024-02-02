@@ -8,6 +8,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Twig\Environment;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Postmark\PostmarkClient;
 
 
 final class ForgotPasswordEventSubscriber implements EventSubscriberInterface
@@ -30,6 +31,8 @@ final class ForgotPasswordEventSubscriber implements EventSubscriberInterface
         $passwordToken = $event->getPasswordToken();
         $user = $passwordToken->getUser();
 
+        $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
+        /*
         $message = (new Email())
             ->from('contact@charlesparames.com')
             ->to($user->getEmail())
@@ -39,7 +42,19 @@ final class ForgotPasswordEventSubscriber implements EventSubscriberInterface
                     'token' =>  $passwordToken->getToken(),
                 ]
             ));
-        $this->mailer->send($message);
+            */
+        $action_url = 'https://localhost:8000/forgot-password/' . $passwordToken->getToken();
+        $client->sendEmailWithTemplate(
+            'contact@charlesparames.com',
+            $user->getEmail(),
+            123456,
+            [
+                'email' => $user->getEmail(),
+                'action_url' =>  $action_url,
+            ]
+        );
+
+        #$this->mailer->send($message);
     }
 
     public function onUpdatePassword(UpdatePasswordEvent $event): void
