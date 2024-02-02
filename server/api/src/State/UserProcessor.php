@@ -29,7 +29,7 @@ final class UserProcessor implements ProcessorInterface
         private MailerInterface $mailer,
         private Environment $twig,
         private JWTEncoderInterface $jwtEncoder,
-        private Security $security
+        private Security $security,
 
     )
     {
@@ -49,8 +49,9 @@ final class UserProcessor implements ProcessorInterface
             $companyOwner = null !== $user && $user && $user->getCompanie() !== null && $data->getWork() && $data->getWork()->getCompany()->getId() === $user->getCompanie()->getId() && $user->getCompanie()->isIsValid();
         
             if ($isAdmin || $companyOwner || null === $data->getWork()) {
+                $result = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
                 $this->sendWelcomeEmail($data);
-                return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
+                return $result;
             }
         
             throw new AccessDeniedException('Cannot create this user.');
@@ -61,8 +62,6 @@ final class UserProcessor implements ProcessorInterface
 
     private function sendWelcomeEmail(User $user): void
     {
-        //create a jwt token with the id of the user
-        //send the token in the email
         $jwt = $this->jwtEncoder->encode(['id' => $user->getId(), 'exp' => time() + 3600]);
 
         $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
