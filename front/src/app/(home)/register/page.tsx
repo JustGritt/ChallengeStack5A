@@ -8,11 +8,10 @@ import {
   FormikConfig,
 } from "formik";
 import * as Yup from "yup";
-import { UserData } from "../utils/Types";
 import Image from "next/image";
 import Button from "@/components/Ui/Button";
 import { useRegisterMutation } from "@/redux/api/authApi";
-import { ApiErrorResponse, User } from "@/redux/types/User";
+import { ApiErrorResponse, User } from "@/types/User";
 import { useEffect, useMemo, useState } from "react";
 import Modal from "@/components/Modal";
 import AlertSuccess from "@/components/Alert/AlertSuccess";
