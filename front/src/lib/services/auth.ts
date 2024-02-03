@@ -1,13 +1,13 @@
 import api from "./api";
 import { ApiSuccessBase } from "@/types/ApiBase";
 import { LoginResponse } from "@/types/Auth";
-import { User } from "@/types/User";
+import { User, UserRegister } from "@/types/User";
 import { setCredentials } from "./slices/authSlice";
 
 export const authApi = api.injectEndpoints({
   endpoints: (build) => ({
-    register: build.mutation({
-      query: (user: Record<"email" | "password", string>) => ({
+    register: build.mutation<User, UserRegister>({
+      query: (user) => ({
         url: "/users",
         method: "POST",
         body: user,

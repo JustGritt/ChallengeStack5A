@@ -7,6 +7,7 @@ import { useCookies } from "react-cookie";
 import { selectCurrentUser } from "@/lib/services/slices/authSlice";
 import { BarLoader } from "react-spinners";
 import Navigate from "@/components/Navigate";
+import toast from "react-hot-toast";
 
 type AuthMiddlewareProps = {
   children: JSX.Element;
@@ -15,8 +16,8 @@ type AuthMiddlewareProps = {
 const AuthMiddleware: FC<AuthMiddlewareProps> = ({ children }) => {
   const user = useSelector(selectCurrentUser);
   const [cookies, _, removeCookie] = useCookies(["yoken"]);
-  const [getMyProfileAsync] = useLazyGetMyProfileQuery();
-  const [hasError, setHasError] = useState(false);
+  const [getMyProfileAsync, { isError, isLoading }] =
+    useLazyGetMyProfileQuery();
 
   useEffect(() => {
     (async () => {
@@ -30,17 +31,17 @@ const AuthMiddleware: FC<AuthMiddlewareProps> = ({ children }) => {
         }
       } catch (e) {
         removeCookie("yoken", { path: "/" });
-        setHasError(true);
+        toast.error("Please login to continue");
       }
     })();
   }, []);
 
-  return user ? (
-    children
-  ) : hasError ? (
+  return isLoading ? (
+    <BarLoader color="#36d7b7" />
+  ) : isError ? (
     <Navigate to="/login" replace />
   ) : (
-    <BarLoader color="#36d7b7" />
+    children
   );
 };
 

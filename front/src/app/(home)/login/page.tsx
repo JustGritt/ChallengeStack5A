@@ -25,12 +25,8 @@ import { useCookies } from "react-cookie";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-type RegisterProps = {
-  className?: string;
-  callbackUrl?: string;
-};
 
-export default function Register(props: RegisterProps) {
+export default function Login() {
   const initialValues = {
     email: "",
     password: "",
