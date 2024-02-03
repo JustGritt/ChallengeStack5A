@@ -27,7 +27,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
     normalizationContext: ['groups' => ['store-read']],
     processor: StoresStateProcessor::class,
 )]
-#[ApiFilter(SearchFilter::class, properties: ['name' => 'ipartial', 'address' => 'ipartial', 'postalCode' => 'ipartial', 'country' => 'ipartial', 'city' => 'ipartial'])]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'ipartial', 'address' => 'ipartial', 'postalCode' => 'ipartial', 'country' => 'ipartial', 'city' => 'ipartial', 'services.name' => 'ipartial'])]
 #[ORM\Entity(repositoryClass: StoreRepository::class)]
 class Store
 {
@@ -86,7 +86,7 @@ class Store
     #[ORM\JoinColumn(nullable: false)]
     private ?Companie $company = null;
 
-    #[Groups(['store-read-full'])]
+    #[Groups([ 'store-read', 'store-read-full'])]
     #[ORM\OneToMany(mappedBy: 'store', targetEntity: Service::class, orphanRemoval: true)]
     private Collection $services;
 
