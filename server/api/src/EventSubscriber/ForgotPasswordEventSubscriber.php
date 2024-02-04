@@ -13,7 +13,7 @@ use Postmark\PostmarkClient;
 
 final class ForgotPasswordEventSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private readonly UserPasswordHasherInterface $hasher, private readonly MailerInterface $mailer, private readonly Environment $twig)
+    public function __construct(private UserPasswordHasherInterface $hasher, private MailerInterface $mailer, private Environment $twig)
     {
     }
 
@@ -32,17 +32,6 @@ final class ForgotPasswordEventSubscriber implements EventSubscriberInterface
         $user = $passwordToken->getUser();
 
         $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
-        /*
-        $message = (new Email())
-            ->from('contact@charlesparames.com')
-            ->to($user->getEmail())
-            ->subject('Reset your password')
-            ->html($this->twig->render('ResetPassword/mail.html.twig', 
-                [
-                    'token' =>  $passwordToken->getToken(),
-                ]
-            ));
-            */
         $action_url = 'https://localhost:8000/forgot-password/' . $passwordToken->getToken();
         $client->sendEmailWithTemplate(
             'contact@charlesparames.com',
