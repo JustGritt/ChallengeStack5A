@@ -11,10 +11,8 @@ export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,
     prepareHeaders: async (headers, { getState, endpoint }) => {
-      // const token = (getState() as RootState).auth.token;
-      // if (token && endpoint !== 'downloadCompanyFile') {
-      //   headers.set('Authorization', `Bearer ${token}`);
-      // }
+      const token = (getState() as RootState).auth.token;
+      if (token) headers.set('Authorization', `Bearer ${token}`);
 
       return headers;
     },

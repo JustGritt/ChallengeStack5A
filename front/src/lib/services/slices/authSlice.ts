@@ -11,7 +11,7 @@ type AuthState = {
   isWorker: boolean;
   isOwner: boolean;
   isClient: boolean;
-  token: string | null;
+  token: string | undefined;
 };
 
 const initialState: AuthState = {
@@ -20,7 +20,7 @@ const initialState: AuthState = {
   isWorker: false,
   isClient: false,
   isOwner: false,
-  token: null,
+  token: undefined,
 };
 
 const slice = createSlice({
@@ -31,13 +31,13 @@ const slice = createSlice({
       state,
       {
         payload: { user, token },
-      }: PayloadAction<{ user: User; token: string }>
+      }: PayloadAction<{ user: User; token?: string }>
     ) => {
       state.user = user;
       state.token = token;
       state.isAdmin = user.roles.includes('ROLE_SUPER_ADMIN');
-      state.isWorker = user.work !== null;
-      state.isOwner = user.companie !== null;
+      state.isWorker = !!user.work;
+      state.isOwner = !!user.companie;
       state.isClient = !state.isAdmin && !state.isWorker && !state.isOwner;
     },
     resetCredentials: () => initialState,

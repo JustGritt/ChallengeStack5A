@@ -1,0 +1,9 @@
+**/**.env
+front/.env
+server/api/ectf0rt3st
+server/api/kecretf0rt3st
+server/api/.idea/workspace.xml
+server/api/src/State/UserProcessor.php
+server/api/config/packages/security.yaml
+server/api/config/jwt/public.pem
+server/api/config/jwt/private.pem

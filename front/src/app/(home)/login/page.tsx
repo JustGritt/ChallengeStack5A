@@ -10,7 +10,6 @@ import {
 import { signIn } from "next-auth/react";
 import * as Yup from "yup";
 import Image from "next/image";
-import user, { User } from "../../User";
 import Button from "@/components/Ui/Button";
 import {
   useGetMyProfileQuery,
@@ -18,17 +17,14 @@ import {
   useLoginMutation,
   useRegisterMutation,
 } from "@/lib/services/auth";
-import React from "react";
-import { ApiSuccessBase } from "@/types/ApiBase";
+import React, { useEffect } from "react";
+import { ApiErrorResponse, ApiSuccessBase } from "@/types/ApiBase";
 import { LoginResponse } from "@/types/Auth";
 import { useCookies } from "react-cookie";
+import toast from "react-hot-toast";
+import { useRouter, useSearchParams } from "next/navigation";
 
-type RegisterProps = {
-  className?: string;
-  callbackUrl?: string;
-};
-
-export default function Register(props: RegisterProps) {
+export default function Login() {
   const initialValues = {
     email: "",
     password: "",
@@ -41,9 +37,20 @@ export default function Register(props: RegisterProps) {
     remember: Yup.boolean().optional(),
   });
 
+  const router = useRouter();
+
+  //get query params
+  const searchParams = useSearchParams();
+
+  const redirect = searchParams?.get("redirect");
+  useEffect(() => {
+    if (redirect) {
+      toast.error("You need to login to access this page");
+    }
+  }, [redirect]);
+
   const [login, { error, data, isError, isLoading }] = useLoginMutation();
   const [_, setCookie] = useCookies(["yoken"]);
-  const [getMyProfileQuery] = useLazyGetMyProfileQuery();
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -52,18 +59,23 @@ export default function Register(props: RegisterProps) {
       login({
         email: values.email,
         password: values.password,
-      }).then((res) => {
-        if ((res as ApiSuccessBase<LoginResponse>).data) {
-          setCookie(
-            "yoken",
-            (res as ApiSuccessBase<LoginResponse>).data.token,
-            {
+      })
+        .unwrap()
+        .then(async (res) => {
+          if (res.token) {
+            setCookie("yoken", res.token, {
               path: "/",
-            }
-          );
-          getMyProfileQuery((res as ApiSuccessBase<LoginResponse>).data.token);
-        }
-      });
+            });
+            router.push("/dashboard");
+            //await getMyProfileQuery(res.token);
+          }
+        })
+        .catch((err) => {
+          if (err.status === "FETCH_ERROR") {
+            return toast.error(`API Error ${err.error}`);
+          }
+          toast.error("Invalid email or password");
+        });
     },
   });
 
