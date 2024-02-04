@@ -10,7 +10,6 @@ import {
 import { signIn } from "next-auth/react";
 import * as Yup from "yup";
 import Image from "next/image";
-import user, { User } from "../../User";
 import Button from "@/components/Ui/Button";
 import {
   useGetMyProfileQuery,

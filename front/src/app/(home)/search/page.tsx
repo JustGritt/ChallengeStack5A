@@ -4,7 +4,6 @@ import SearchSection, {
   RefDivCardSearch,
 } from "@/components/cards/search/SearchSection";
 import { selectCompany } from "@/lib/helpers/SearchCompanyHelper";
-import { Company } from "@/redux/types/Companies";
 import React, { createRef, useRef, useState } from "react";
 
 function SearchPage() {

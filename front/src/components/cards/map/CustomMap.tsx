@@ -12,8 +12,8 @@ import Map, {
 import type { CircleLayer } from "react-map-gl";
 import type { FeatureCollection } from "geojson";
 import { CITIES } from "@/lib/constants/fakeDatas";
-import { Company } from "@/redux/types/Companies";
 import Pin from "./Pin";
+import { Company } from "@/types/Company";
 
 type ViewportProps = {
   latitude: number;
@@ -44,9 +44,9 @@ const CustomMap: FC<CustomMapProps> = ({ callBackMarker }) => {
           onClick={(e) => {
             // If we let the click event propagates to the map, it will immediately close the popup
             // with `closeOnClick: true`
-            callBackMarker(city);
+            callBackMarker(city as any);
             e.originalEvent.stopPropagation();
-            setCityInfo(city);
+            setCityInfo(city as any);
           }}
         >
           <Pin color={cityInfo?.name === city.name ? "#e1edff" : undefined} />

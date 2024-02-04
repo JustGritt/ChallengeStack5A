@@ -1,7 +1,7 @@
 "use client";
 import StoreCard from "@/components/Store/StoreCard";
 import { CITIES } from "@/lib/constants/fakeDatas";
-import { Company } from "@/redux/types/Companies";
+import { Company } from "@/types/Company";
 import React, {
   ForwardRefRenderFunction,
   LegacyRef,
@@ -51,7 +51,7 @@ const SearchSection: ForwardRefRenderFunction<
           const targetDiv = inputRefs[storeIndex].current;
           const targetDivOffsetTop = targetDiv?.offsetTop;
           const containerOffsetTop = container.offsetTop;
-          setCurrentStore(allStore[storeIndex]);
+          setCurrentStore(allStore[storeIndex] as any);
           container.scroll({
             top: (targetDivOffsetTop ?? 0) - containerOffsetTop,
             left: 0,
