@@ -45,9 +45,6 @@ export default function Login() {
   const redirect = searchParams?.get("redirect");
   useEffect(() => {
     if (redirect) {
-      console.log("====================================");
-      console.log(redirect);
-      console.log("====================================");
       toast.error("You need to login to access this page");
     }
   }, [redirect]);

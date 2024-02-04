@@ -89,7 +89,7 @@ function NavBar() {
             {!user ? (
               <>
                 <Link
-                  href="/about"
+                  href="/register"
                   className="ml-2 font-inter hover:text-gray-900 font-light text-[15px] underline dark:text-white"
                 >
                   Créer mon compte
