@@ -8,6 +8,7 @@ import { selectCurrentUser } from "@/lib/services/slices/authSlice";
 import { BarLoader } from "react-spinners";
 import Navigate from "@/components/Navigate";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 type AuthMiddlewareProps = {
   children: JSX.Element;
@@ -16,9 +17,12 @@ type AuthMiddlewareProps = {
 const AuthMiddleware: FC<AuthMiddlewareProps> = ({ children }) => {
   const user = useSelector(selectCurrentUser);
   const [cookies, _, removeCookie] = useCookies(["yoken"]);
-  const [getMyProfileAsync, { isError, isLoading }] =
+  const [getMyProfileAsync, { isError, isLoading, data }] =
     useLazyGetMyProfileQuery();
+  const router = useRouter();
+  const [hasError, setHasError] = useState(false);
 
+  const token = cookies.yoken;
   useEffect(() => {
     (async () => {
       try {
@@ -32,16 +36,20 @@ const AuthMiddleware: FC<AuthMiddlewareProps> = ({ children }) => {
       } catch (e) {
         removeCookie("yoken", { path: "/" });
         toast.error("Please login to continue");
+        setHasError(true);
       }
     })();
   }, []);
 
-  return isLoading ? (
-    <BarLoader color="#36d7b7" />
-  ) : isError ? (
+  return user ? (
+    children
+  ) : hasError ? (
     <Navigate to="/login" replace />
   ) : (
-    children
+    <BarLoader
+      color="#36d7b7"
+      className="absolute bottom-0 left-0 right-0 top-0"
+    />
   );
 };
 

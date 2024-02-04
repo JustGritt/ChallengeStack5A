@@ -12,7 +12,7 @@ import {
   faMagnifyingGlass,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
-import Faq from "../components/partials/Faq";
+import Faq from "../../components/partials/Faq";
 import { useRouter } from "next/navigation";
 import { ErrorMessage, Field, Form, FormikProvider, useFormik } from "formik";
 
@@ -39,7 +39,6 @@ export default function Home() {
 
   return (
     <>
-      <NavBar />
       <main className="min-h-screen ">
         <section className="h-11/12 w-full relative min-h-[500px] max-h-[600px] overflow-hidden	">
           <img

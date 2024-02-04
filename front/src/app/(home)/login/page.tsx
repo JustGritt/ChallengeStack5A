@@ -18,13 +18,12 @@ import {
   useLoginMutation,
   useRegisterMutation,
 } from "@/lib/services/auth";
-import React from "react";
+import React, { useEffect } from "react";
 import { ApiErrorResponse, ApiSuccessBase } from "@/types/ApiBase";
 import { LoginResponse } from "@/types/Auth";
 import { useCookies } from "react-cookie";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
-
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function Login() {
   const initialValues = {
@@ -39,11 +38,23 @@ export default function Login() {
     remember: Yup.boolean().optional(),
   });
 
-  const router = useRouter()
+  const router = useRouter();
+
+  //get query params
+  const searchParams = useSearchParams();
+
+  const redirect = searchParams?.get("redirect");
+  useEffect(() => {
+    if (redirect) {
+      console.log("====================================");
+      console.log(redirect);
+      console.log("====================================");
+      toast.error("You need to login to access this page");
+    }
+  }, [redirect]);
 
   const [login, { error, data, isError, isLoading }] = useLoginMutation();
   const [_, setCookie] = useCookies(["yoken"]);
-  const [getMyProfileQuery] = useLazyGetMyProfileQuery();
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -60,10 +71,13 @@ export default function Login() {
               path: "/",
             });
             router.push("/dashboard");
-            await getMyProfileQuery(res.token);
+            //await getMyProfileQuery(res.token);
           }
         })
         .catch((err) => {
+          if (err.status === "FETCH_ERROR") {
+            return toast.error(`API Error ${err.error}`);
+          }
           toast.error("Invalid email or password");
         });
     },

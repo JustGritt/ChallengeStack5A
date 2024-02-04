@@ -20,7 +20,7 @@ export const authApi = api.injectEndpoints({
         body: user,
       }),
     }),
-    getMyProfile: build.query<User, string>({
+    getMyProfile: build.query<User, string | undefined>({
       query: (token) => {
         return {
           url: `/users/me`,
