@@ -70,7 +70,7 @@ function NavBar() {
               href="/blog"
               className="font-inter hover:text-gray-900 font-light	text-[15px] dark:text-white"
             >
-              Vidéastes
+              Videographer
             </Link>
             <Link
               href="/about"
@@ -92,9 +92,9 @@ function NavBar() {
                   href="/register"
                   className="ml-2 font-inter hover:text-gray-900 font-light text-[15px] underline dark:text-white"
                 >
-                  Créer mon compte
+                  Create an account
                 </Link>
-                <Button href="/login" title={"Connexion"} />
+                <Button href="/login" title={"Login"} />
               </>
             ) : (
               <DashboardProfileHeader {...user} />
@@ -115,7 +115,7 @@ function NavBar() {
                 className="block py-2 px-3 text-black bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-black md:dark:text-blue-500"
                 aria-current="page"
               >
-                Vidéastes
+                Videographer
               </a>
             </li>
             <li>
@@ -136,10 +136,10 @@ function NavBar() {
             </li>
             <li>
               <a
-                href="#"
+                href="/register"
                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
-                Créer mon compte
+                Create an account
               </a>
             </li>
             <li>
@@ -147,7 +147,7 @@ function NavBar() {
                 href="#"
                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
-                Connexion
+                Login
               </a>
             </li>
           </ul>
