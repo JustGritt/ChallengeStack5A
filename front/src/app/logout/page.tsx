@@ -16,8 +16,8 @@ export default function Logout() {
     router.push("/login");
   }, []);
   return (
-    <section className="lg:pl-72 block min-h-screen">
+    <main className="lg:pl-72 block min-h-screen">
       <div className="p-4 sm:p-6 lg:p-8 h-full">Merci de patienter nous vous déconnectons.</div>
-    </section>
+    </main>
   );
 }

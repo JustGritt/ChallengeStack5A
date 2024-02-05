@@ -2,7 +2,7 @@
 import { Fragment, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, CalendarIcon, ClockIcon, Cog6ToothIcon, HomeIcon, UsersIcon, XMarkIcon, UserIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { ChartPieIcon, ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useSelector } from 'react-redux';
