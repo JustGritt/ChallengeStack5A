@@ -87,7 +87,84 @@ class OpenApiFactory implements OpenApiFactoryInterface
             ),
         );
 
+        $resendEmail = new Model\PathItem(
+            post: new Model\Operation(
+                operationId: 'resendEmail',
+                tags: ['Confirm Email'],
+                summary: 'Resend email confirmation',
+                description: 'Resend email confirmation',
+                requestBody: new Model\RequestBody(
+                    description: 'The email to resend the confirmation',
+                    content: new \ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'email' => [
+                                        'type' => 'string',
+                                        'description' => 'The email to resend the confirmation',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]),
+                ),
+                responses: [
+                    '200' => [
+                        'description' => 'Email confirmation sent',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'message' => [
+                                            'type' => 'string',
+                                            'description' => 'Email confirmation sent',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    '400' => [
+                        'description' => 'Invalid email',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'message' => [
+                                            'type' => 'string',
+                                            'description' => 'Invalid email',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    '403' => [
+                        'description' => 'Email already confirmed',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'message' => [
+                                            'type' => 'string',
+                                            'description' => 'Email already confirmed',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ),
+        );
+
         $openApi->getPaths()->addPath('/users/token/{token}', $pathItem);
+        
+        $openApi->getPaths()->addPath('/users/resend-email', $resendEmail);
         return $openApi;
     }
 }
