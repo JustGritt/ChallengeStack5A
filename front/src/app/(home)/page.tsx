@@ -2,7 +2,7 @@
 "use client";
 import NavBar from "@/components/Header/NavBar";
 import Footer from "@/components/Footer";
-import Button from "@/components/Ui/Button";
+import Button from "@/components/Button";
 import Head from "next/head";
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,6 +15,7 @@ import {
 import Faq from "../../components/partials/Faq";
 import { useRouter } from "next/navigation";
 import { ErrorMessage, Field, Form, FormikProvider, useFormik } from "formik";
+import { SelectField } from "@/components/Ui/SelectField";
 
 export default function Home() {
   const router = useRouter();
@@ -63,6 +64,15 @@ export default function Home() {
                     >
                       What are you looking for?
                     </label>
+                    <SelectField
+                      label="Users"
+                      
+                      options={[
+                        { label: "user1", value: 1 },
+                        { label: "user1", value: 1 },
+                      ]}
+                      isSearchable={true}
+                    />
                     <Field
                       id="search-service"
                       name="domainSearch"
@@ -103,7 +113,10 @@ export default function Home() {
                       classNames="w-full my-2 py-2 lg:w-auto h-12 lg:my-0 lg:py-0 lg:px-4 grid place-items-center transition-colors"
                       type="submit"
                     >
-                      <FontAwesomeIcon icon={faSearch} className="text-white h-4 w-4 font-bold" />
+                      <FontAwesomeIcon
+                        icon={faSearch}
+                        className="text-white h-4 w-4 font-bold"
+                      />
                     </Button>
                   </div>
                 </div>
@@ -121,7 +134,10 @@ export default function Home() {
               Discover the ease of online appointment with Odicylens.
             </p>
             {/* letter spacing 1px */}
-            <Button title="Become a Odicylens affiliate" classNames="mt-8 h-16 px-8 grid place-items-center transition-colors rounded-full text-lg" />
+            <Button
+              title="Become a Odicylens affiliate"
+              classNames="mt-8 h-16 px-8 grid place-items-center transition-colors rounded-full text-lg"
+            />
           </div>
 
           <div className="flex-1 p-4 flex-wrap flex-row flex gap-x-4 gap-y-4 justify-center items-center">
@@ -157,9 +173,9 @@ export default function Home() {
               JOIN OUR COMMUNITY
             </h3>
             <p className="text-gray-500 text-center">
-              Odicylens is on the lookout for dynamic individuals all over France,
-              ready to revolutionize the shooting production sector through
-              digital innovation
+              Odicylens is on the lookout for dynamic individuals all over
+              France, ready to revolutionize the shooting production sector
+              through digital innovation
             </p>
             <Button title="Discover Our Offer" classNames="mt-4" />
           </div>
@@ -169,7 +185,6 @@ export default function Home() {
           <Faq classNames={{ container: "w-full lg:w-1/2 h-fit" }} />
         </section>
       </main>
-      <Footer />
     </>
   );
 }

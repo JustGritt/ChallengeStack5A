@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { Fragment } from "react";
-import Button from "@/components/Ui/Button";
+import Button from "@/components/Button";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "@/lib/services/slices/authSlice";
 import DashboardProfileHeader from "../Dashboard/DashboardProfileHeader";

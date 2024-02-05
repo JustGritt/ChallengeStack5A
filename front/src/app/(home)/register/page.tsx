@@ -9,7 +9,7 @@ import {
 } from "formik";
 import * as Yup from "yup";
 import Image from "next/image";
-import Button from "@/components/Ui/Button";
+import Button from "@/components/Button";
 import {  User, UserRegister } from "@/types/User";
 import { useEffect, useMemo, useState } from "react";
 import Modal from "@/components/Modal";
