@@ -16,7 +16,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\State\UserProcessor;
-use App\Controller\ConfirmUserEmail;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 
@@ -26,32 +25,7 @@ use ApiPlatform\Metadata\Link;
         new Get(normalizationContext: ['groups' => ['read-user']]),
         new Post(denormalizationContext: ['groups' => ['create-user']]),
         new Patch(denormalizationContext: ['groups' => ['update-user']]),
-        new Get(name: 'confirm', routeName: 'confirm_email' , openapiContext: [
-                'summary' => 'Confirm user email',
-                'description' => 'Confirm user email',
-                'parameters' => [
-                    [
-                        'name' => 'token',
-                        'in' => 'path',
-                        'required' => true,
-                        'type' => 'string',
-                        'description' => 'The confirmation token',
-                    ],
-                ],
-                'responses' => [
-                    '200' => [
-                        'description' => 'User email successfully confirmed',
-                    ],
-                    '404' => [
-                        'description' => 'User not found',
-                    ],
-                    '400' => [
-                        'description' => 'Invalid token',
-                    ],
-                ],
-            ]),
-            
-        ],
+    ],
     normalizationContext: ['groups' => ['read-user', 'read-user-mutation']],
     processor: UserProcessor::class,
 )]

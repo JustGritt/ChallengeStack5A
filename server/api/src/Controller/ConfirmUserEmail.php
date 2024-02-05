@@ -12,29 +12,29 @@ use Doctrine\ORM\EntityManagerInterface;
 #[AsController]
 class ConfirmUserEmail extends AbstractController
 {
+
     private JWTEncoderInterface $jwtEncoder;
 
-    public function __construct(JWTEncoderInterface $jwtEncoder, EntityManagerInterface $entityManager)
+    public function __construct (JWTEncoderInterface $jwtEncoder, EntityManagerInterface $entityManager)
     {
-        
-        $this->jwtEncoder = $jwtEncoder;
+        $this->jwtEncoder =  $jwtEncoder;
         $this->entityManager = $entityManager;
     }
 
 
-    public function confirmUser(string $token, User $user): JsonResponse
+    public function confirmUser(string $token): JsonResponse
     {
-       try {
+        try {
             $token = $this->jwtEncoder->decode($token);
-            if ($token['id'] !== $user->getId()) {
-                return $this->json(['message' => 'Invalid token'], 400);
-            }
+            $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $token['email']]);
             if ($user->isIsValid()) {
-                return $this->json(['message' => 'Email already confirmed'], 400);
+                return $this->json(['message' => 'Email already confirmed'], 403);
             }
             $user->setIsValid(true);
             $this->entityManager->flush();
+
             return $this->json(['message' => 'User email successfully confirmed']);
+
         }catch (\Exception $e) {
             return new JsonResponse(['message' => 'Invalid token'], 400);
         }

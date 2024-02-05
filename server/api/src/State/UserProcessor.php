@@ -59,22 +59,20 @@ final class UserProcessor implements ProcessorInterface
 
     private function sendWelcomeEmail(User $user): void
     {
-        //create a jwt token with the id of the user
-        //send the token in the email
         $jwt = $this->jwtEncoder->encode(['email' => $user->getEmail(), 'exp' => time() + 3600]);
 
-        if(getenv('MAILER_TOKEN') !== false) {
-            $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
+    
+        $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
 
-            $client->sendEmailWithTemplate(
-                'contact@charlesparames.com',
-                $user->getEmail(),
-                34574592,
-                [
-                    'user' => $user->getFirstname(),
-                    'action_url' => 'https://localhost:8000/confirm-email/' . $jwt,
-                    'login_url' => 'Go to the blog',
-                ]);
-        }
+        $client->sendEmailWithTemplate(
+            'contact@charlesparames.com',
+            $user->getEmail(),
+            34574592,
+            [
+                'user' => $user->getFirstname(),
+                'action_url' => 'https://localhost:8000/confirm-email/' . $jwt,
+                'login_url' => 'Go to the blog',
+            ]);
+        
     }
 }
