@@ -2,38 +2,29 @@
 
 import NavBar from "@/components/Header/NavBar";
 import Footer from "@/components/Footer";
-import {
-  useGetMyProfileQuery,
-  useLazyGetMyProfileQuery,
-} from "@/lib/services/auth";
-import { useCookies } from "react-cookie";
 import { useEffect } from "react";
-import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { UserCookieType } from "@/types/User";
+import { getUserCookie } from "@/lib/helpers/UserHelper";
+import { setCredentials } from "@/lib/services/slices/authSlice";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [cookies, _, removeCookie] = useCookies(["yoken"]);
-  const [getMyProfileAsync, { isError, isLoading, data: user }] =
-    useLazyGetMyProfileQuery();
-
+  const dispatch = useDispatch();
   useEffect(() => {
     (async () => {
-      try {
-        if (!user) {
-          const token = cookies.yoken;
-          if (!token) {
-            throw new Error("No token");
-          }
-          await getMyProfileAsync(token).unwrap();
-        }
-      } catch (e) {
-        removeCookie("yoken", { path: "/" });
+      const session = await getUserCookie(UserCookieType.SESSION);
+      const parsedSession = JSON.parse(session?.value || "{}");
+      if (parsedSession.user) {
+        dispatch(setCredentials({ user: parsedSession.user }));
+        return;
       }
     })();
   }, []);
+
   return (
     <>
       <NavBar />

@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { Fragment } from "react";
-import Button from "@/components/Ui/Button";
+import Button from "@/components/Button";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "@/lib/services/slices/authSlice";
 import DashboardProfileHeader from "../Dashboard/DashboardProfileHeader";
@@ -10,6 +10,7 @@ import DashboardProfileHeader from "../Dashboard/DashboardProfileHeader";
 function NavBar() {
   const [navbarOpen, setNavbarOpen] = React.useState(false);
   const user = useSelector(selectCurrentUser);
+
   return (
     <header className="sticky z-10">
       <nav

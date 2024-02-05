@@ -31,14 +31,16 @@ const slice = createSlice({
       state,
       {
         payload: { user, token },
-      }: PayloadAction<{ user: User; token?: string }>
+      }: PayloadAction<{ user?: User; token?: string }>
     ) => {
-      state.user = user;
       state.token = token;
-      state.isAdmin = user.roles.includes('ROLE_SUPER_ADMIN');
-      state.isWorker = !!user.work;
-      state.isOwner = !!user.companie;
-      state.isClient = !state.isAdmin && !state.isWorker && !state.isOwner;
+      if (user) {
+        state.user = user;
+        state.isAdmin = user.roles.includes('ROLE_SUPER_ADMIN');
+        state.isWorker = !!user.work;
+        state.isOwner = !!user.companie;
+        state.isClient = !state.isAdmin && !state.isWorker && !state.isOwner;
+      }
     },
     resetCredentials: () => initialState,
   },

@@ -10,6 +10,8 @@ import { selectCurrentUser } from '@/lib/services/slices/authSlice';
 import { classNames } from '@/lib/helpers/utils';
 import DashboardProfileHeader from '../Dashboard/DashboardProfileHeader';
 import Link from 'next/link';
+import { getUserCookie } from '@/lib/helpers/UserHelper';
+import { UserCookieType } from '@/types/User';
 
 export default function DashboardMenu() {
 
@@ -19,7 +21,7 @@ export default function DashboardMenu() {
 
 
     const pathname = usePathname()
-    console.log(pathname);
+
 
     const navigation = [
         { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: pathname === '/dashboard' },
