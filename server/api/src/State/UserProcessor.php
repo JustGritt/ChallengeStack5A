@@ -3,13 +3,11 @@
 namespace App\State;
 
 use ApiPlatform\Metadata\DeleteOperationInterface;
+use ApiPlatform\Metadata\PatchOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\User;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
-use Twig\Environment;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Postmark\PostmarkClient;
 use Symfony\Component\Security\Core\Security;
@@ -26,8 +24,6 @@ final class UserProcessor implements ProcessorInterface
         private ProcessorInterface $persistProcessor,
         #[Autowire('@api_platform.doctrine.orm.state.remove_processor')]
         private ProcessorInterface $removeProcessor,
-        private MailerInterface $mailer,
-        private Environment $twig,
         private JWTEncoderInterface $jwtEncoder,
         private Security $security
 
@@ -54,13 +50,42 @@ final class UserProcessor implements ProcessorInterface
             throw new AccessDeniedException('Cannot create this user.');
         }
 
+    
+        if ($operation->getUriTemplate() === '/users/{id}{._format}' && $operation->getMethod() === 'PATCH') {
+            $user = $this->security->getUser();
+            $isAdmin = $user && in_array('ROLE_SUPER_ADMIN', $user->getRoles(), true);
+            $companyOwner = null !== $user && $user && $user->getCompanie() !== null && $data->getWork() && $data->getWork()->getCompany()->getId() === $user->getCompanie()->getId() && $user->getCompanie()->isIsValid();
+            
+            if ($isAdmin) {
+                return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
+            }
+            
+            if ($data->getId() === $user->getId()) {
+                if (null !== $data->isIsValid()) {
+                    throw new AccessDeniedException('You cannot edit your profile with the isvalid field.');
+                }
+                if (null !== $data->getWork()) {
+                    throw new AccessDeniedException('You cannot edit your profile with the work field.');
+                }
+                return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
+            }
+
+            if ($companyOwner) {
+                if (null !== $data->isIsValid()) {
+                    throw new AccessDeniedException('You cannot edit this user with the isvalid field.');
+                }
+                return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
+            }
+        
+            throw new AccessDeniedException('Cannot update this user.');
+        }
+
         return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
     }
 
     private function sendWelcomeEmail(User $user): void
     {
         $jwt = $this->jwtEncoder->encode(['email' => $user->getEmail(), 'exp' => time() + 3600]);
-
     
         $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
 

@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Postmark\PostmarkClient;
+use Symfony\Component\HttpFoundation\Request;
 
 #[AsController]
 class ConfirmUserEmail extends AbstractController
@@ -39,5 +41,39 @@ class ConfirmUserEmail extends AbstractController
             return new JsonResponse(['message' => 'Invalid token'], 400);
         }
         
+    }
+
+    public function sendNewEmailConfirmation(Request $request): JsonResponse
+    {
+       
+        try {
+            $data = json_decode($request->getContent(), true);
+            $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+        
+            if (!$user instanceof User) {
+                return $this->json(['message' => 'Invalid email'], 400);
+            }
+            if ($user->isIsValid()) {
+                return $this->json(['message' => 'Email already confirmed'], 403);
+            }
+            
+            $token = $this->jwtEncoder->encode(['email' =>  $data['email'], 'exp' => time() + 3600]);
+      
+            $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
+
+            $client->sendEmailWithTemplate(
+                'contact@charlesparames.com',
+                $user->getEmail(),
+                34574592,
+                [
+                    'user' => $user->getFirstname(),
+                    'action_url' => 'https://localhost:8000/confirm-email/' . $token,
+                    'login_url' => 'Go to the blog',
+                ]);
+            
+            return $this->json(['message' => 'Email confirmation sent']);
+        }catch (\Exception $e) {
+            return new JsonResponse(['message' => 'Invalid email test'], 400);
+        }
     }
 }
