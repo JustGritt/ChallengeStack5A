@@ -232,7 +232,7 @@ export default function Register() {
                     className="mr-2 focus:outline-0 font-inter text-gray-600 placeholder:text-sm"
                   />
                   <span className="text-black text-sm font-inter">
-                    I have read and agree to the Terms and Conditions
+                    I have read and agree to the <a href="/terms" className="text-blue-500 hover:text-blue-700">Terms and Conditions</a>
                   </span>
                 </label>
                 <ErrorMessage

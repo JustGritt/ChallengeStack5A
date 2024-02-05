@@ -165,7 +165,7 @@ export default function Login() {
                   type="submit"
                   classNames="mt-4 w-full"
                 />
-                <a href="#" className="text-sm text-main mt-2">
+                <a href="/forget-password" className="text-sm text-main mt-2">
                   Did you forget your password ?
                 </a>
                 <p className="text-center">

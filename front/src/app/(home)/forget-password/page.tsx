@@ -32,11 +32,7 @@ export default function ForgetPassword() {
                                     Password reset link sent
                                 </p>
                                 <p className="mt-1 text-sm text-gray-500">
-                                    We have sent a password reset link to your email address. If you have not received the email within a few minutes, please check your spam folder. If you need further assistance, please contact our support team at{' '}
-                                    <a className="text-main hover:text-main-dark transition-all"
-                                    href="mailto:support@odicylens.com">
-                                        support@odicylens.com
-                                    </a>
+                                    We have sent a password reset link to your email address. Please check your email.
                                 </p>
                             </div>
                         </div>

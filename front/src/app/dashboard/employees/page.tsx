@@ -1,19 +1,15 @@
 "use client";
 import { useState, useEffect } from 'react';
+import { User } from "@/types/User";
 
 export default function Employees() {
 
-    interface Employee {
-        id: number;
-        name: string;
-    }
-
-    // TODO: Get the list of employees from the API (replace once the api is ready)
-    const [employees, setEmployees] = useState<Employee[]>([]);
+    const [employees, setEmployees] = useState<User[]>([]);
     useEffect(() => {
-        fetch('https://jsonplaceholder.typicode.com/users')
-        .then(response => response.json())
-        .then(data => setEmployees(data));
+        // TODO: Use service to fetch employees
+        fetch('https://api.odicylens.com/employees')
+            .then(response => response.json())
+            .then(data => setEmployees(data));
     }, []);
 
     return (
@@ -22,8 +18,16 @@ export default function Employees() {
                 <ul className="bg-white dark:bg-gray-700 p-4 rounded-xl flex flex-col">
                     {employees.map((employee) => (
                         <a href={`/dashboard/employees/${employee.id}`} key={employee.id}>
-                            <li className="w-full block p-4 rounded hover:bg-gray-200 dark:hover:bg-gray-600 text-black dark:text-gray-300">
-                                {employee.name}
+                            <li key={employee.email} className="flex justify-between gap-x-6 py-5">
+                                <div className="flex min-w-0 gap-x-4">
+                                    <div className="h-12 w-12 flex-none rounded-full bg-gray-50">
+                                        <span>{employee.firstname.charAt(0)}</span>
+                                    </div>
+                                    <div className="min-w-0 flex-auto">
+                                    <p className="text-sm font-semibold leading-6 text-gray-900">{employee.firstname}</p>
+                                    <p className="mt-1 truncate text-xs leading-5 text-gray-500">{employee.email}</p>
+                                    </div>
+                                </div>
                             </li>
                         </a>
                     ))}
