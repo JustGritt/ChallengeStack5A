@@ -1,4 +1,4 @@
-import { Company } from "@/redux/types/Companies";
+import { Company } from "@/types/Company";
 import { faLocationDot, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
@@ -6,7 +6,7 @@ import React, { LegacyRef, RefObject, useImperativeHandle } from "react";
 
 export type StoreCardProps = {
   refStore: LegacyRef<HTMLDivElement>;
-  store: Company;
+  store: Company|any;
   active?: boolean;
 };
 

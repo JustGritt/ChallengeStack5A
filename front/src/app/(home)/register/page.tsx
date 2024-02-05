@@ -10,18 +10,18 @@ import {
 import * as Yup from "yup";
 import Image from "next/image";
 import Button from "@/components/Ui/Button";
-import { useRegisterMutation } from "@/redux/api/authApi";
-import { ApiErrorResponse, User } from "@/types/User";
+import {  User, UserRegister } from "@/types/User";
 import { useEffect, useMemo, useState } from "react";
 import Modal from "@/components/Modal";
 import AlertSuccess from "@/components/Alert/AlertSuccess";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useRegisterMutation } from "@/lib/services/auth";
+import { ApiErrorResponse } from "@/types/ApiBase";
 
 export default function Register() {
-  const initialValues: User & { terms: boolean } = {
+  const initialValues: UserRegister = {
     firstname: "",
-    lastname: "",
     email: "",
     plainPassword: "",
     confirmPassword: "",
@@ -45,7 +45,7 @@ export default function Register() {
     terms: Yup.boolean().oneOf([true], "Must Accept Terms and Conditions"),
   });
 
-  const onSubmit: FormikConfig<User & { terms: boolean }>["onSubmit"] = (
+  const onSubmit: FormikConfig<UserRegister>["onSubmit"] = (
     values
   ) => {
     register(values)
@@ -99,7 +99,7 @@ export default function Register() {
       });
   };
 
-  const formik = useFormik<User & { terms: boolean }>({
+  const formik = useFormik<UserRegister>({
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: onSubmit,
@@ -243,6 +243,7 @@ export default function Register() {
                 <div className="flex flex-col justify-center items-center gap-2">
                   <Button
                     title={"Register"}
+                    type="submit"
                     isLoading={isRegisterLoading}
                     classNames="mt-4 w-full"
                   />

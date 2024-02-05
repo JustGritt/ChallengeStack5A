@@ -3,17 +3,14 @@ import { Store } from "./Store"
 
 export type UserRegister = {
     firstname: string
-    lastname: string
     email: string
     confirmPassword: string
     plainPassword: string,
+    terms: boolean
 }
 
 
-export type UserLogin = {
-    email: string
-    password: string
-}
+
 
 type UserROLES = "ROLE_ADMIN" | "ROLE_USER" | "ROLE_SUPER_ADMIN"
 
@@ -28,4 +25,10 @@ export type User = {
     isValid: boolean,
     work: Store,
     companie: Company
+}
+
+
+export type UserLogin = {
+    email: string
+    password: string
 }

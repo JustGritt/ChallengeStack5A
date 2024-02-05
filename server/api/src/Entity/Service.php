@@ -41,7 +41,7 @@ class Service
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 3, max: 255)]
-    #[Groups(['service-read', 'service-mutation', 'store-read-full'])]
+    #[Groups(['service-read', 'service-mutation', 'store-read-full', 'store-read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -57,10 +57,6 @@ class Service
     #[Groups(['service-read', 'service-mutation', 'store-read-full'])]
     private ?int $time = null;
 
-    #[ORM\Column]
-    #[Groups(['service-read', 'service-mutation', 'store-read-full'])]
-    private ?bool $valid = null;
-
     #[ORM\ManyToOne(inversedBy: 'services')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['service-read',  'service-mutation'])]
@@ -69,7 +65,7 @@ class Service
     #[ORM\Column]
     #[Assert\NotBlank()]
     #[Assert\PositiveOrZero()]
-    #[Groups(['service-read',  'service-mutation'])]
+    #[Groups(['service-read',  'service-mutation', 'store-read-full'])]
     private ?float $price = null;
 
     public function getId(): ?int
@@ -109,18 +105,6 @@ class Service
     public function setTime(int $time): static
     {
         $this->time = $time;
-
-        return $this;
-    }
-
-    public function isValid(): ?bool
-    {
-        return $this->valid;
-    }
-
-    public function setValid(bool $valid): static
-    {
-        $this->valid = $valid;
 
         return $this;
     }

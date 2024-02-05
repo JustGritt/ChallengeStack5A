@@ -29,7 +29,7 @@ final class UserProcessor implements ProcessorInterface
         private MailerInterface $mailer,
         private Environment $twig,
         private JWTEncoderInterface $jwtEncoder,
-        private Security $security,
+        private Security $security
 
     )
     {
@@ -40,18 +40,15 @@ final class UserProcessor implements ProcessorInterface
         if ($operation instanceof DeleteOperationInterface) {
             return $this->removeProcessor->process($data, $operation, $uriVariables, $context);
         }
-
-        $user = $this->security->getUser();
     
         if ($operation->getUriTemplate() === '/users{._format}' && $operation->getMethod() === 'POST') {
             $user = $this->security->getUser();
-            $isAdmin = null !== $user && $user && in_array('ROLE_SUPER_ADMIN', $user->getRoles(), true);
+            $isAdmin = $user && in_array('ROLE_SUPER_ADMIN', $user->getRoles(), true);
             $companyOwner = null !== $user && $user && $user->getCompanie() !== null && $data->getWork() && $data->getWork()->getCompany()->getId() === $user->getCompanie()->getId() && $user->getCompanie()->isIsValid();
         
             if ($isAdmin || $companyOwner || null === $data->getWork()) {
-                $result = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
                 $this->sendWelcomeEmail($data);
-                return $result;
+                return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
         
             throw new AccessDeniedException('Cannot create this user.');
@@ -62,19 +59,22 @@ final class UserProcessor implements ProcessorInterface
 
     private function sendWelcomeEmail(User $user): void
     {
-        $jwt = $this->jwtEncoder->encode(['id' => $user->getId(), 'exp' => time() + 3600]);
+        //create a jwt token with the id of the user
+        //send the token in the email
+        $jwt = $this->jwtEncoder->encode(['email' => $user->getEmail(), 'exp' => time() + 3600]);
 
-        $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
+        if(getenv('MAILER_TOKEN') !== false) {
+            $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
 
-        $client->sendEmailWithTemplate(
-            'contact@charlesparames.com',
-            $user->getEmail(),
-            34574592,
-            [
-                'user' => $user->getFirstname(),
-                'action_url' => 'https://localhost:8000/confirm-email/' . $jwt,
-                'login_url' => 'Go to the blog',
-          ]);
-
+            $client->sendEmailWithTemplate(
+                'contact@charlesparames.com',
+                $user->getEmail(),
+                34574592,
+                [
+                    'user' => $user->getFirstname(),
+                    'action_url' => 'https://localhost:8000/confirm-email/' . $jwt,
+                    'login_url' => 'Go to the blog',
+                ]);
+        }
     }
 }

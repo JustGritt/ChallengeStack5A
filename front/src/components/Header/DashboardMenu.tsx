@@ -5,14 +5,18 @@ import { Bars3Icon, BellIcon, CalendarIcon, ClockIcon, Cog6ToothIcon, HomeIcon, 
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '@/lib/services/slices/authSlice';
+import { classNames } from '@/lib/helpers/utils';
+import DashboardProfileHeader from '../Dashboard/DashboardProfileHeader';
+import Link from 'next/link';
 
 export default function DashboardMenu() {
 
     const [sidebarOpen, setSidebarOpen] = useState(false)
+    // get the current logged user
+    const user = useSelector(selectCurrentUser);
 
-    function classNames(...classes: any) {
-        return classes.filter(Boolean).join(' ')
-    }
 
     const pathname = usePathname()
     console.log(pathname);
@@ -22,7 +26,7 @@ export default function DashboardMenu() {
         { name: 'Stores', href: '/dashboard/stores', icon: UsersIcon, current: pathname === '/dashboard/stores' },
         { name: 'Employees', href: '/dashboard/stores/employees', icon: UsersIcon, current: pathname === '/dashboard/store/employees' },
         { name: 'Reservations', href: '/dashboard/appointments', icon: CalendarIcon, current: pathname === '/dashboard/appointments' },
-        { name: 'History', href: '/dashboard/history', icon: ClockIcon, current: pathname === '/dashboard/history' },
+        { name: 'Statistics', href: '/dashboard/statistics', icon: ChartPieIcon, current: pathname === '/dashboard/statistics' },
     ]
 
     const userNavigation = [
@@ -71,9 +75,9 @@ export default function DashboardMenu() {
                                                 <ul role="list" className="-mx-2 space-y-1">
                                                     {navigation.map((item) => (
                                                     <li key={item.name}>
-                                                        <a href={item.href} className={classNames( item.current
-                                                            ? 'bg-gray-50 text-indigo-600'
-                                                            : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50'
+                                                        <Link href={item.href} className={classNames( item.current
+                                                            ? 'bg-gray-50 dark:bg-gray-700 text-indigo-600 dark:text-indigo-300'
+                                                            : 'text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-200 hover:bg-gray-50 dark:hover:bg-gray-600'
                                                             , 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                                             )}>
                                                             <item.icon className={classNames( item.current
@@ -81,7 +85,7 @@ export default function DashboardMenu() {
                                                                 : 'text-gray-400 group-hover:text-indigo-600'
                                                                 , 'h-6 w-6 shrink-0' )} aria-hidden="true" />
                                                             {item.name}
-                                                        </a>
+                                                        </Link>
                                                     </li>
                                                     ))}
                                                 </ul>
@@ -104,7 +108,7 @@ export default function DashboardMenu() {
                     </div>
                 </Dialog>
             </Transition.Root>
-
+            
             {/* Static sidebar for desktop */}
             <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
                 <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
@@ -120,6 +124,7 @@ export default function DashboardMenu() {
                                 <ul role="list" className="-mx-2 space-y-1">
                                     {navigation.map((item) => (
                                     <li key={item.name}>
+
                                         <a href={item.href} className={classNames( item.current
                                             ? 'bg-gray-50 text-indigo-600'
                                             : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50'
@@ -133,7 +138,7 @@ export default function DashboardMenu() {
                                     ))}
                                 </ul>
                             </li>
-
+                            <li>{user?.firstname}</li>
                             <li className="mt-auto">
                                 <a href="/dashboard/profile"
                                     className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600">
@@ -182,38 +187,7 @@ export default function DashboardMenu() {
                             <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" aria-hidden="true" />
 
                             {/* Profile dropdown */}
-                            <Menu as="div" className="relative">
-                                <Menu.Button className="-m-1.5 flex items-center p-1.5">
-                                    <span className="sr-only">Open user menu</span>
-                                    <UserIcon className="h-6 w-6" aria-hidden="true" />
-                                    <span className="hidden lg:flex lg:items-center">
-                                        <span className="ml-4 text-sm font-semibold leading-6 text-gray-900"
-                                            aria-hidden="true">
-                                            {/* TODO: Replace with Firstname + Lastname */}
-                                            John Doe
-                                        </span>
-                                        <ChevronDownIcon className="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                    </span>
-                                </Menu.Button>
-                                <Transition as={Fragment} enter="transition ease-out duration-100"
-                                    enterFrom="transform opacity-0 scale-95" enterTo="transform opacity-100 scale-100"
-                                    leave="transition ease-in duration-75" leaveFrom="transform opacity-100 scale-100"
-                                    leaveTo="transform opacity-0 scale-95">
-                                    <Menu.Items
-                                        className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
-                                        {userNavigation.map((item) => (
-                                        <Menu.Item key={item.name}>
-                                            {({ active }) => (
-                                            <a href={item.href} className={classNames( active ? 'bg-gray-50' : ''
-                                                , 'block px-3 py-1 text-sm leading-6 text-gray-900' )}>
-                                                {item.name}
-                                            </a>
-                                            )}
-                                        </Menu.Item>
-                                        ))}
-                                    </Menu.Items>
-                                </Transition>
-                            </Menu>
+                            {user && <DashboardProfileHeader {...user} />}
                         </div>
                     </div>
                 </div>

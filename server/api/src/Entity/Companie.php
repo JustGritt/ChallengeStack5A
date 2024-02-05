@@ -16,11 +16,12 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 use App\State\CompanieStateProcessor;
+use App\State\CompanieStateProvider;
 
 #[ORM\Entity(repositoryClass: CompanieRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(normalizationContext: ['groups' => ['read-companie']]),
+        new GetCollection(normalizationContext: ['groups' => ['read-companie']], provider: CompanieStateProvider::class),
         #new Get(normalizationContext: ['groups' => ['read-companie']], security: 'is_granted("COMPANIE_VIEW", object)'),
         new Post(denormalizationContext: ['groups' => ['create-companie']]),
         new Patch(denormalizationContext: ['groups' => ['update-companie']]),
@@ -42,7 +43,7 @@ class Companie
     #[Assert\Length(min: 3, max: 255)]
     private ?string $name = null;
 
-    #[Groups(['read-user-mutation', 'read-companie' , 'create-companie', 'update-companie'])]
+    #[Groups(['read-user-mutation', 'read-companie' , 'create-companie'])]
     #[ORM\Column(length: 255)]
     private ?string $kbis = null;
 
