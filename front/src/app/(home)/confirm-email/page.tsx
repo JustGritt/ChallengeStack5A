@@ -1,7 +1,21 @@
 "use client"
 
-export default function Page() {
-    window.location.href = '/login';
+import { resetCredentials } from "@/lib/services/slices/authSlice";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useCookies } from "react-cookie";
+import { useDispatch } from "react-redux";
+
+export default function ConfirmEmail() {
+
+    const dispatch = useDispatch();
+    const [cookies, _, removeCookie] = useCookies(["yoken"]);
+    const router = useRouter();
+    useEffect(() => {
+        dispatch(resetCredentials());
+        removeCookie("yoken", { path: "/" });
+        router.push("/login");
+    }, [dispatch, removeCookie, router]);
 
     return (
         <section className="block min-h-screen">
