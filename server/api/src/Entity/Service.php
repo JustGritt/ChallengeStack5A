@@ -18,11 +18,14 @@ use App\State\ServiceStateProcessor;
 use App\Security\Voter\ServiceVoter;
 use ApiPlatform\Metadata\Link; 
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
 #[ApiResource(
     operations: [
-        #new Get(normalizationContext: ['groups' => ['service-read']], security: 'is_granted("SERVICE_VIEW", object)'),
+        new GetCollection(normalizationContext: ['groups' => ['service-read']]),
         new Post(denormalizationContext: ['groups' => ['service-mutation']]),
         new Patch(denormalizationContext: ['groups' => ['service-mutation']]),
         new Delete(),
@@ -30,6 +33,8 @@ use ApiPlatform\Metadata\GetCollection;
     normalizationContext: ['groups' => ['service-read']],
     processor: ServiceStateProcessor::class,
 )]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'ipartial'])]
+#[ApiFilter(RangeFilter::class, properties: ['price'])]
 class Service
 {
     #[ORM\Id]
