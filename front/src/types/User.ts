@@ -9,7 +9,9 @@ export type UserRegister = {
     terms: boolean
 }
 
-
+export enum UserCookieType {
+    SESSION = "session",
+}
 
 
 type UserROLES = "ROLE_ADMIN" | "ROLE_USER" | "ROLE_SUPER_ADMIN"

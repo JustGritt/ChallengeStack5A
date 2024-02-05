@@ -10,6 +10,7 @@ import DashboardProfileHeader from "../Dashboard/DashboardProfileHeader";
 function NavBar() {
   const [navbarOpen, setNavbarOpen] = React.useState(false);
   const user = useSelector(selectCurrentUser);
+
   return (
     <header className="sticky z-10">
       <nav
