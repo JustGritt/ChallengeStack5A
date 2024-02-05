@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 use App\State\StoresStateProcessor;
 use ApiPlatform\Metadata\ApiFilter;
@@ -23,6 +24,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
         new Get(normalizationContext: ['groups' => ['store-read', 'store-read-full']]),
         new Post(denormalizationContext: ['groups' => ['create-stores']]),
         new Patch(denormalizationContext: ['groups' => ['update-companie']]),
+        new Delete(),
     ],  
     normalizationContext: ['groups' => ['store-read']],
     processor: StoresStateProcessor::class,
@@ -78,7 +80,7 @@ class Store
     private ?float $longitude = null;
 
     #[Groups(['store-read-full', 'update-companie'])]
-    #[ORM\OneToMany(mappedBy: 'work', targetEntity: User::class)]
+    #[ORM\OneToMany(mappedBy: 'work', targetEntity: User::class, orphanRemoval: true)]
     private Collection $users;
 
     #[Groups(['store-read-full'])]
