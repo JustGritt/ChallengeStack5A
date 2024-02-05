@@ -169,7 +169,6 @@ export default function Home() {
           <Faq classNames={{ container: "w-full lg:w-1/2 h-fit" }} />
         </section>
       </main>
-      <Footer />
     </>
   );
 }
