@@ -19,7 +19,7 @@ export default function ConfirmemailToken({ params }: { params: { token: string 
         removeCookie("yoken", { path: "/" });
         // TODO: Use service
         fetch(`https://api.odicylens.com/users/token/${token}`, {
-            method: "POST",
+            method: "GET",
         }).then((res) => {
             setReq(res.status);
         });
@@ -29,17 +29,20 @@ export default function ConfirmemailToken({ params }: { params: { token: string 
         200: {
             emoji: "🎉",
             title: "Your email has been confirmed.",
-            message: "You can now login to your account."
+            message: "You can now login to your account.",
+            buttonUrl: "/login",
         },
         400: {
             emoji: "🤔",
-            title: "The token is invalid.",
-            message: "Please check your email for the correct link."
+            title: "The token is invalid or has expired.",
+            message: "Please request a new confirmation email by clicking the button below.",
+            buttonUrl: "/forget-password",
         },
         403: {
             emoji: "🤔",
             title: "Your email has already been confirmed.",
-            message: "You can now login to your account."
+            message: "You can now login to your account.",
+            buttonUrl: "/login",
         },
         // TODO: Add Expired token status
     };
