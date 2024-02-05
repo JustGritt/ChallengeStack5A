@@ -1,7 +1,7 @@
 "use client";
 import { Form, Field, FormikProvider, useFormik, ErrorMessage, FormikConfig } from "formik";
 import * as Yup from "yup";
-import Button from "@/components/Ui/Button";
+import { Button } from "@/components/Ui/Button";
 import { User, UserForgetPassword } from "@/types/User";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
