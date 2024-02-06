@@ -8,19 +8,17 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use Postmark\PostmarkClient;
 use Symfony\Component\HttpFoundation\Request;
+use Twig\Environment;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 #[AsController]
 class ConfirmUserEmail extends AbstractController
 {
 
-    private JWTEncoderInterface $jwtEncoder;
-
-    public function __construct (JWTEncoderInterface $jwtEncoder, EntityManagerInterface $entityManager)
+    public function __construct (private JWTEncoderInterface $jwtEncoder, private EntityManagerInterface $entityManager, private MailerInterface $mailer, private Environment $twig)
     {
-        $this->jwtEncoder =  $jwtEncoder;
-        $this->entityManager = $entityManager;
     }
 
 
@@ -58,7 +56,23 @@ class ConfirmUserEmail extends AbstractController
             }
             
             $token = $this->jwtEncoder->encode(['email' =>  $data['email'], 'exp' => time() + 3600]);
-      
+            
+            $email = (new Email())
+                ->from('contact@charlesparames.com')
+                ->to($user->getEmail())
+                ->subject('Welcome to Odicylens!')
+                ->text($this->twig->render('email/welcome.txt.twig', [
+                    'email' => $user->getFirstname(),
+                    'action_url' => 'https://challenge-stack5-a.vercel.app/confirm-email/' . $token,
+                ]))
+                ->html($this->twig->render('email/welcome.html.twig', [
+                    'email' => $user->getFirstname(),
+                    'action_url' => 'https://challenge-stack5-a.vercel.app/confirm-email/' . $token,
+                ]));
+
+            $this->mailer->send($email);
+
+            /*
             $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
 
             $client->sendEmailWithTemplate(
@@ -67,9 +81,10 @@ class ConfirmUserEmail extends AbstractController
                 34574592,
                 [
                     'user' => $user->getFirstname(),
-                    'action_url' => 'https://localhost:8000/confirm-email/' . $token,
+                    'action_url' => 'https://challenge-stack5-a.vercel.app/confirm-email/' . $token,
                     'login_url' => 'Go to the blog',
                 ]);
+            */
             
             return $this->json(['message' => 'Email confirmation sent']);
         }catch (\Exception $e) {

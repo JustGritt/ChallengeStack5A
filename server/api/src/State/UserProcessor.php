@@ -12,7 +12,9 @@ use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Postmark\PostmarkClient;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-
+use Twig\Environment;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 /**
  * @implements ProcessorInterface<User, User|void>
@@ -25,6 +27,8 @@ final class UserProcessor implements ProcessorInterface
         #[Autowire('@api_platform.doctrine.orm.state.remove_processor')]
         private ProcessorInterface $removeProcessor,
         private JWTEncoderInterface $jwtEncoder,
+        private MailerInterface $mailer,
+        private Environment $twig,
         private Security $security
 
     )
@@ -87,6 +91,22 @@ final class UserProcessor implements ProcessorInterface
     {
         $jwt = $this->jwtEncoder->encode(['email' => $user->getEmail(), 'exp' => time() + 3600]);
     
+
+        $email = (new Email())
+            ->from('contact@charlesparames.com')
+            ->to($user->getEmail())
+            ->subject('Welcome to Odicylens!')
+            ->text($this->twig->render('email/welcome.txt.twig', [
+                'email' => $user->getFirstname(),
+                'action_url' => 'https://challenge-stack5-a.vercel.app/confirm-email/' . $jwt,
+            ]))
+            ->html($this->twig->render('email/welcome.html.twig', [
+                'email' => $user->getFirstname(),
+                'action_url' => 'https://challenge-stack5-a.vercel.app/confirm-email/' . $jwt,
+            ]));
+
+        $this->mailer->send($email);
+        /*
         $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
 
         $client->sendEmailWithTemplate(
@@ -95,9 +115,9 @@ final class UserProcessor implements ProcessorInterface
             34574592,
             [
                 'user' => $user->getFirstname(),
-                'action_url' => 'https://localhost:8000/confirm-email/' . $jwt,
+                'action_url' => ''https://challenge-stack5-a.vercel.app/forgot-password/' . $jwt,
                 'login_url' => 'Go to the blog',
             ]);
-        
+        */
     }
 }

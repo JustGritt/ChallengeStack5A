@@ -1,16 +1,16 @@
 <?php
-// api/src/Controller/CreateBookPublication.php
+
 namespace App\Controller;
 
 use App\Entity\Service;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use App\Entity\User;
+use App\Entity\Store;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use Postmark\PostmarkClient;
 use Symfony\Component\HttpFoundation\Request;
 
 #[AsController]
@@ -25,25 +25,34 @@ class CreateService extends AbstractController
     }
 
 
-    public function __invoke(Request $request): Service
+    public function __invoke(Request $request): JsonResponse
     {
-        dump($this->getUser());
         $user = $this->getUser();
-
-        //check if the user is admin of the company
-        if ($user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
-            $this->createService(json_decode($request->getContent(), true), $user->getWork()->getId());
+        //get the parames from the request path uri
+        $params = $request->attributes->get('_route_params');
+        $storeId = $params['id'];
+        $store = $this->entityManager->getRepository(Store::class)->find($storeId);
+        
+        if (!$store instanceof Store) {
+            return $this->json(['message' => 'Store not found'], 404);
         }
+        //only the company owner can create a service for the store
+        if ($store->getCompany() !== $user->getCompanie()) {
+            return $this->json(['message' => 'You are not allowed to create a service for this store'], 403);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
         $service = new Service();
-        $service->setStore($user->getWork());
-        $service->setName(json_decode($request->getContent(), true)['name']);
-        $service->setDescription(json_decode($request->getContent(), true)['description']);
-        $service->setPrice(json_decode($request->getContent(), true)['price']);
-        $service->setTime(json_decode($request->getContent(), true)['time']);
+        $service->setStore($store);
+        $service->setName(htmlspecialchars($data['name']));
+        $service->setDescription(htmlspecialchars($data['description']));
+        $service->setPrice(htmlspecialchars($data['price']));
+        $service->setTime(htmlspecialchars($data['time']));
         $this->entityManager->persist($service);
         $this->entityManager->flush();
-        
-        return $service;
+
+        return $this->json($service, 201);
     }
 
 
@@ -57,7 +66,8 @@ class CreateService extends AbstractController
         $service->setTime($data['time']);
         $this->entityManager->persist($service);
         $this->entityManager->flush();
-        
+
         return $service;
     }
+  
 }
