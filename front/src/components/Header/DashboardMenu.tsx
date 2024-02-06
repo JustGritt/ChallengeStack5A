@@ -1,8 +1,8 @@
 "use client";
 import { Fragment, useState } from 'react'
-import { Dialog, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, CalendarIcon, ChartPieIcon, ShoppingCartIcon, Cog6ToothIcon, HomeIcon, UsersIcon, XMarkIcon, UserIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { Dialog, Transition } from '@headlessui/react'
+import { Bars3Icon, BellIcon, CalendarIcon, ChartPieIcon, ShoppingCartIcon, Cog6ToothIcon, HomeIcon, UsersIcon, XMarkIcon, ClockIcon, UserIcon } from '@heroicons/react/24/outline'
+import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useSelector } from 'react-redux';
@@ -20,10 +20,11 @@ export default function DashboardMenu() {
     const pathname = usePathname()
 
     const navigation = [
-        { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: pathname === '/dashboard' },
+        { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: pathname === '/dashboard', role: ['admin', 'owner'] },
         { name: 'Stores', href: '/dashboard/stores', icon: ShoppingCartIcon, current: pathname === '/dashboard/stores' },
         { name: 'Employees', href: '/dashboard/stores/employees', icon: UsersIcon, current: pathname === '/dashboard/store/employees' },
         { name: 'Reservations', href: '/dashboard/appointments', icon: CalendarIcon, current: pathname === '/dashboard/appointments' },
+        { name: 'History', href: '/dashboard/history', icon: ClockIcon, current: pathname === '/dashboard/history' },
         { name: 'Statistics', href: '/dashboard/statistics', icon: ChartPieIcon, current: pathname === '/dashboard/statistics' },
     ]
 
@@ -117,7 +118,7 @@ export default function DashboardMenu() {
                                                     <Cog6ToothIcon
                                                         className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600"
                                                         aria-hidden="true" />
-                                                    Settings
+                                                    Profile
                                                 </a>
                                             </li>
                                         </ul>
@@ -128,7 +129,7 @@ export default function DashboardMenu() {
                     </div>
                 </Dialog>
             </Transition.Root>
-            
+
             {/* Static sidebar for desktop */}
             <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
                 <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
@@ -161,10 +162,10 @@ export default function DashboardMenu() {
                             <li className="mt-auto">
                                 <a href="/dashboard/profile"
                                     className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600">
-                                    <Cog6ToothIcon
+                                    <UserIcon
                                         className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600"
                                         aria-hidden="true" />
-                                    Settings
+                                    Edit Profile
                                 </a>
                             </li>
                         </ul>
