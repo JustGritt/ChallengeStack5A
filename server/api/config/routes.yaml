@@ -6,3 +6,8 @@ api_confirm_email:
     path: /users/token/{token}
     methods: ['GET']
     controller: App\Controller\ConfirmUserEmail::confirmUser
+
+api_resend_email:
+    path: /users/resend-email
+    methods: ['POST']
+    controller: App\Controller\ConfirmUserEmail::sendNewEmailConfirmation

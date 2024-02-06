@@ -35,12 +35,10 @@ class CompanieStateProcessor implements ProcessorInterface
         }
     
         $user = $this->security->getUser();
-
        
         //check if the method is post
         if ($operation->getUriTemplate() === "/companies{._format}"  && $operation->getMethod() === 'POST') {
             
-
             //check if the user is working for a company
             if (null !== $user->getWork()) {
                 throw new AccessDeniedException('User already work for a company. Cannot create.');
@@ -50,8 +48,8 @@ class CompanieStateProcessor implements ProcessorInterface
                 throw new AccessDeniedException('User already has a company. Cannot create a new one.');
             }
 
-            dump($user);
             $data->setOwner($user);
+            $this->sendAdminMail($data);
             return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
         }
         
@@ -73,8 +71,6 @@ class CompanieStateProcessor implements ProcessorInterface
         }
     
         $result = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
-        $this->sendAdminMail($data);
-
         return $result;
     }
 

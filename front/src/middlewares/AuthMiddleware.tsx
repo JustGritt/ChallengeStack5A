@@ -24,7 +24,6 @@ type AuthMiddlewareProps = {
 
 const AuthMiddleware: FC<AuthMiddlewareProps> = ({ children }) => {
   const [getMyProfileAsync] = useLazyGetMyProfileQuery();
-
   const router = useRouter();
 
   useEffect(() => {
@@ -38,7 +37,18 @@ const AuthMiddleware: FC<AuthMiddlewareProps> = ({ children }) => {
     })();
   }, []);
 
-  return children;
+  // return user ? (
+  //   children
+  // ) : hasError ? (
+  //   <Navigate to="/login" replace />
+  // ) : (
+  //   <BarLoader
+  //     color="#36d7b7"
+  //     className="absolute bottom-0 left-0 right-0 top-0"
+  //   />
+  // );
+
+  return children
 };
 
 export default AuthMiddleware;

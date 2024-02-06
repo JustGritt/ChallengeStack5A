@@ -9,9 +9,10 @@ import React from "react";
 import * as Yup from "yup";
 import { AsyncSelectComponent } from "../Ui/SelectField";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Button from "../Button";
+
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Store } from "@/types/Store";
+import { Button } from "../Ui/Button";
 
 type FormValues = {
   domainSearch: ISelectOption<Service> | undefined;
@@ -43,8 +44,8 @@ const FormSearchHome = () => {
   return (
     <FormikProvider value={formik}>
       <Form id="search">
-        <div className="rounded-xl items-left lg:items-center bg-white px-4 py-2 mt-5 flex  max-w-[900px] justify-around lg:px-0 lg:flex-row flex-col">
-          <div className="flex-col flex">
+        <div className="rounded-xl xl:items-end items-center bg-white px-4 py-2 mt-5 flex  max-w-[900px] justify-around lg:px-0 lg:flex-row flex-col">
+          <div className="flex-col flex lg:w-fit w-full">
             <label
               htmlFor="search-service"
               className="text-gray-500 text-md mt-1"
@@ -73,7 +74,7 @@ const FormSearchHome = () => {
             />
           </div>
 
-          <div className="flex-col flex mt-2 lg:mt-0">
+          <div className="flex-col flex lg:w-fit w-full">
             <label
               htmlFor="search-service"
               className="text-gray-500 text-md mt-1"
@@ -101,11 +102,8 @@ const FormSearchHome = () => {
             />
           </div>
 
-          <div>
-            <Button
-              classNames="w-full my-2 py-2 lg:w-auto h-12 lg:my-0 lg:py-0 lg:px-4 grid place-items-center transition-colors"
-              type="submit"
-            >
+          <div className="mt-4 lg:mt-0">
+            <Button type="submit">
               <FontAwesomeIcon
                 icon={faSearch}
                 className="text-white h-4 w-4 font-bold"

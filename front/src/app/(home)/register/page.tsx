@@ -9,7 +9,7 @@ import {
 } from "formik";
 import * as Yup from "yup";
 import Image from "next/image";
-import Button from "@/components/Button";
+import { Button } from "@/components/Ui/Button";
 import { UserRegister } from "@/types/User";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -223,7 +223,7 @@ export default function Register() {
                     className="mr-2 focus:outline-0 font-inter text-gray-600 placeholder:text-sm"
                   />
                   <span className="text-black text-sm font-inter">
-                    I have read and agree to the Terms and Conditions
+                    I have read and agree to the <a href="/terms" className="text-blue-500 hover:text-blue-700">Terms and Conditions</a>
                   </span>
                 </label>
                 <ErrorMessage
@@ -232,12 +232,9 @@ export default function Register() {
                   className="text-red-600 leading-3 text-sm"
                 />
                 <div className="flex flex-col justify-center items-center gap-2">
-                  <Button
-                    title={"Register"}
-                    type="submit"
-                    isLoading={isRegisterLoading}
-                    classNames="mt-4 w-full"
-                  />
+                  <Button intent="default" type="submit" className="mt-4 w-full">
+                    Register
+                  </Button>
                   <p className="text-black text-center text-sm font-inter">
                     Already a member?{" "}
                     <a

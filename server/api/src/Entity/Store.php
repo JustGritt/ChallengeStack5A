@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 use App\State\StoresStateProcessor;
 use ApiPlatform\Metadata\ApiFilter;
@@ -23,6 +24,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
         new Get(normalizationContext: ['groups' => ['store-read', 'store-read-full']]),
         new Post(denormalizationContext: ['groups' => ['create-stores']]),
         new Patch(denormalizationContext: ['groups' => ['update-companie']]),
+        new Delete(),
     ],  
     normalizationContext: ['groups' => ['store-read']],
     processor: StoresStateProcessor::class,
@@ -78,7 +80,7 @@ class Store
     private ?float $longitude = null;
 
     #[Groups(['store-read-full', 'update-companie'])]
-    #[ORM\OneToMany(mappedBy: 'work', targetEntity: User::class)]
+    #[ORM\OneToMany(mappedBy: 'work', targetEntity: User::class, orphanRemoval: true)]
     private Collection $users;
 
     #[Groups(['store-read-full'])]
@@ -93,11 +95,15 @@ class Store
     #[ORM\OneToMany(mappedBy: 'store', targetEntity: Schedule::class, orphanRemoval: true)]
     private Collection $schedules;
 
+    #[ORM\OneToMany(mappedBy: 'store', targetEntity: Booking::class)]
+    private Collection $bookings;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->services = new ArrayCollection();
         $this->schedules = new ArrayCollection();
+        $this->bookings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -285,6 +291,36 @@ class Store
             // set the owning side to null (unless already changed)
             if ($schedule->getStore() === $this) {
                 $schedule->setStore(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Booking>
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): static
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings->add($booking);
+            $booking->setStore($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): static
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getStore() === $this) {
+                $booking->setStore(null);
             }
         }
 

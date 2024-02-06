@@ -1,20 +1,30 @@
 "use client";
 import { useState, useEffect } from 'react';
+import { Company } from "@/types/Company";
+import { useCookies } from "react-cookie";
+import { useGetMyProfileQuery, useLazyGetMyProfileQuery } from "@/lib/services/auth";
 
 export default function Stores() {
+    const [stores, setStores] = useState<Company[]>([]);
+    const [cookies, _, removeCookie] = useCookies(["yoken"]);
+    const [getMyProfileAsync, { isError, isLoading, data: user }] = useLazyGetMyProfileQuery();
 
-    interface Store {
-        id: number;
-        name: string;
-    }
-
-    const [stores, setStores] = useState<Store[]>([]);
     useEffect(() => {
-        fetch(`https://api.odicylens.com/companies/2`)
-            .then(response => response.json())
-            .then(data => console.log(data));
-            // .then(data => setEmployees(data));
-    }, []);
+        (async () => {
+            try {
+                if (!user) {
+                    const token = cookies.yoken;
+
+                    if (!token) {
+                        throw new Error("No token");
+                    }
+                    await getMyProfileAsync(token).unwrap();
+                }
+            } catch (e) {
+                removeCookie("yoken", { path: "/" });
+            }
+        })();
+    }, [cookies.yoken, getMyProfileAsync, removeCookie, user]);
 
     return (
         <section className="lg:pl-72 block min-h-screen">

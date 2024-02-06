@@ -13,6 +13,9 @@ export enum UserCookieType {
     SESSION = "session",
 }
 
+export type UserForgetPassword = {
+    email: string
+}
 
 type UserROLES = "ROLE_ADMIN" | "ROLE_USER" | "ROLE_SUPER_ADMIN"
 
@@ -29,6 +32,10 @@ export type User = {
     companie: Company
 }
 
+export type Owner = {
+    id: number,
+    email: string,
+}
 
 export type UserLogin = {
     email: string

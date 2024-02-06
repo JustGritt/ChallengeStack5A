@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { Fragment } from "react";
-import Button from "@/components/Button";
+import { Button } from "@/components/Ui/Button";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "@/lib/services/slices/authSlice";
 import DashboardProfileHeader from "../Dashboard/DashboardProfileHeader";
@@ -17,7 +17,7 @@ function NavBar() {
         className="justify-center items-center p-4 lg:px-8 h-18
             border-t-0 border-l-0 border-r-0 border
             dark:bg-gray-800
-            border-b-gray-600 
+            border-b-gray-600
             bg-white"
       >
         <div className="flex lg:flex-1 justify-between items-center">
@@ -71,7 +71,7 @@ function NavBar() {
               href="/blog"
               className="font-inter hover:text-gray-900 font-light	text-[15px] dark:text-white"
             >
-              Vidéastes
+              Videographer
             </Link>
             <Link
               href="/about"
@@ -93,9 +93,9 @@ function NavBar() {
                   href="/register"
                   className="ml-2 font-inter hover:text-gray-900 font-light text-[15px] underline dark:text-white"
                 >
-                  Créer mon compte
+                  Create an account
                 </Link>
-                <Button href="/login" title={"Connexion"} />
+                <a href="/login" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Login</a>
               </>
             ) : (
               <DashboardProfileHeader {...user} />
@@ -116,7 +116,7 @@ function NavBar() {
                 className="block py-2 px-3 text-black bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-black md:dark:text-blue-500"
                 aria-current="page"
               >
-                Vidéastes
+                Videographer
               </a>
             </li>
             <li>
@@ -137,10 +137,10 @@ function NavBar() {
             </li>
             <li>
               <a
-                href="#"
+                href="/register"
                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
-                Créer mon compte
+                Create an account
               </a>
             </li>
             <li>
@@ -148,7 +148,7 @@ function NavBar() {
                 href="#"
                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
-                Connexion
+                Login
               </a>
             </li>
           </ul>

@@ -46,7 +46,7 @@ class Service
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 3, max: 255)]
-    #[Groups(['service-read', 'service-mutation', 'store-read-full', 'store-read'])]
+    #[Groups(['service-read', 'service-mutation', 'store-read-full', 'store-read', 'booking-read-full'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -72,6 +72,14 @@ class Service
     #[Assert\PositiveOrZero()]
     #[Groups(['service-read',  'service-mutation', 'store-read-full'])]
     private ?float $price = null;
+
+    #[ORM\OneToMany(mappedBy: 'service', targetEntity: Booking::class)]
+    private Collection $bookings;
+
+    public function __construct()
+    {
+        $this->bookings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -134,6 +142,36 @@ class Service
     public function setPrice(float $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Booking>
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): static
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings->add($booking);
+            $booking->setService($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): static
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getService() === $this) {
+                $booking->setService(null);
+            }
+        }
 
         return $this;
     }
