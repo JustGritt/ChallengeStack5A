@@ -1,21 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import NavBar from "@/components/Header/NavBar";
-import Footer from "@/components/Footer";
-import Button from "@/components/Button";
-import Head from "next/head";
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Yup from "yup";
-import {
-  faDownload,
-  faMagnifyingGlass,
-  faSearch,
-} from "@fortawesome/free-solid-svg-icons";
+import React from "react";
 import Faq from "../../components/partials/Faq";
+import { Button } from "@/components/Ui/Button";
 import { useRouter } from "next/navigation";
-import { ErrorMessage, Field, Form, FormikProvider, useFormik } from "formik";
 import { SelectField } from "@/components/Ui/SelectField";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDownload, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { ErrorMessage, Field, Form, FormikProvider, useFormik } from "formik";
 
 export default function Home() {
   const router = useRouter();
@@ -66,7 +59,7 @@ export default function Home() {
                     </label>
                     <SelectField
                       label="Users"
-                      
+
                       options={[
                         { label: "user1", value: 1 },
                         { label: "user1", value: 1 },
@@ -109,10 +102,7 @@ export default function Home() {
                   </div>
 
                   <div>
-                    <Button
-                      classNames="w-full my-2 py-2 lg:w-auto h-12 lg:my-0 lg:py-0 lg:px-4 grid place-items-center transition-colors"
-                      type="submit"
-                    >
+                    <Button intent="default" type="submit" className="w-full my-2 py-2 lg:w-auto h-12 lg:my-0 lg:py-0 lg:px-4 grid place-items-center transition-colors">
                       <FontAwesomeIcon
                         icon={faSearch}
                         className="text-white h-4 w-4 font-bold"
@@ -133,11 +123,9 @@ export default function Home() {
             <p className="text-gray-500">
               Discover the ease of online appointment with Odicylens.
             </p>
-            {/* letter spacing 1px */}
-            <Button
-              title="Become a Odicylens affiliate"
-              classNames="mt-8 h-16 px-8 grid place-items-center transition-colors rounded-full text-lg"
-            />
+            <Button intent="default" className="mt-8 h-16 px-8 grid place-items-center transition-colors rounded-full text-lg">
+              Become a Odicylens affiliate
+            </Button>
           </div>
 
           <div className="flex-1 p-4 flex-wrap flex-row flex gap-x-4 gap-y-4 justify-center items-center">
@@ -177,7 +165,9 @@ export default function Home() {
               France, ready to revolutionize the shooting production sector
               through digital innovation
             </p>
-            <Button title="Discover Our Offer" classNames="mt-4" />
+            <Button intent="default" className="mt-4">
+              Discover Our Offer
+            </Button>
           </div>
         </section>
 

@@ -2,7 +2,7 @@
 
 import { Form, Field, FormikProvider, useFormik, ErrorMessage, FormikConfig } from "formik";
 import * as Yup from "yup";
-import Button from "@/components/Ui/Button";
+import { Button } from "@/components/Ui/Button";
 import { UserForgetPassword } from "@/types/User";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -85,12 +85,9 @@ export default function ResetToken() {
                         <Field type="email" placeholder="user@odicylens.com" name="email" className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm" />
 
                         <div className="flex flex-col justify-center items-center gap-2">
-                            <Button
-                                title={"Send reset link"}
-                                type="submit"
-                                isLoading={isLoading}
-                                classNames="mt-4 w-full"
-                            />
+                            <Button intent="default" type="submit" className="mt-4 w-full">
+                                Send reset link
+                            </Button>
                             <p className="mt-10 text-center text-sm text-gray-500">
                                 Not a member yet?{' '}
                                 <a href="/register" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
