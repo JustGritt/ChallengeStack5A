@@ -52,7 +52,7 @@ class ServiceStateProcessor implements ProcessorInterface
             $user = $this->security->getUser();
             $companie = $user->getCompanie();
             $work = $user->getWork();
-        
+            
             if (null !== $user && $user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
