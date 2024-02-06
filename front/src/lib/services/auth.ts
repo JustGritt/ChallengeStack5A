@@ -1,8 +1,9 @@
 import api from "./api";
 import { ApiSuccessBase } from "@/types/ApiBase";
 import { LoginResponse } from "@/types/Auth";
-import { User, UserRegister } from "@/types/User";
+import { User, UserCookieType, UserRegister } from "@/types/User";
 import { setCredentials } from "./slices/authSlice";
+import { getUserCookie, setUserCookie } from "../helpers/UserHelper";
 
 export const authApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -22,24 +23,45 @@ export const authApi = api.injectEndpoints({
     }),
     forgetPassword: build.mutation<ApiSuccessBase<any>, Record<"email", string>>({
       query: (user) => ({
-        url: "/forget-password",
+        url: "/forgot_password",
         method: "POST",
         body: user,
       }),
     }),
-    getMyProfile: build.query<User, string | undefined>({
-      query: (token) => {
+    resetUserToken: build.mutation<ApiSuccessBase<any>, Record<"email", string>>({
+      query: (user) => ({
+        url: "/users/resend-email",
+        method: "POST",
+        body: user,
+      }),
+    }),
+    validateEmailToken: build.mutation<ApiSuccessBase<any>, Record<"token", string>>({
+      query: (token) => ({
+        url: `/users/token/${token}`,
+        method: "GET",
+      }),
+    }),
+    getMyProfile: build.query<User, void>({
+      query: () => {
         return {
           url: `/users/me`,
           method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         };
       },
-      async onQueryStarted(token, { queryFulfilled, dispatch }) {
+      async onQueryStarted(_, { queryFulfilled, dispatch, }) {
+        const session = await getUserCookie(UserCookieType.SESSION);
+        const parsedSession = JSON.parse(session?.value || "{}");
+        if (parsedSession.user) {
+          dispatch(setCredentials({ user: parsedSession.user }));
+          return
+        }
         const { data: user } = await queryFulfilled;
-        dispatch(setCredentials({ user, token }));
+        setUserCookie(UserCookieType.SESSION, (JSON.stringify({
+          ...parsedSession,
+          user: user
+        })));
+        // const userString = JSON.stringify(user);
+        dispatch(setCredentials({ user }));
       },
       providesTags: ["Me"],
     }),
@@ -51,6 +73,8 @@ export const {
   useRegisterMutation,
   useLoginMutation,
   useForgetPasswordMutation,
+  useResetUserTokenMutation,
+  useValidateEmailTokenMutation,
   useGetMyProfileQuery,
   useLazyGetMyProfileQuery
 } = authApi;

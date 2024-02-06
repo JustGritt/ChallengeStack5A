@@ -9,6 +9,10 @@ export type UserRegister = {
     terms: boolean
 }
 
+export enum UserCookieType {
+    SESSION = "session",
+}
+
 export type UserForgetPassword = {
     email: string
 }
@@ -26,6 +30,11 @@ export type User = {
     isValid: boolean,
     work: Store,
     companie: Company
+}
+
+export type Owner = {
+    id: number,
+    email: string,
 }
 
 export type UserLogin = {
