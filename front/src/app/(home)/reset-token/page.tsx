@@ -6,22 +6,22 @@ import Button from "@/components/Ui/Button";
 import { UserForgetPassword } from "@/types/User";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { useForgetPasswordMutation } from "@/lib/services/auth";
+import { useResetUserTokenMutation } from "@/lib/services/auth";
 
-export default function ForgetPassword() {
+export default function ResetToken() {
     const initialValues: UserForgetPassword = {
         email: "",
     };
 
     const router = useRouter();
-    const [ forgetPassword, { data, error, isLoading } ] = useForgetPasswordMutation();
+    const [ resetUserToken, { data, error, isLoading } ] = useResetUserTokenMutation();
 
     const validationSchema = Yup.object().shape({
         email: Yup.string().email("Invalid email address").required("Required"),
     });
 
     const onSubmit: FormikConfig<UserForgetPassword>["onSubmit"] = (values) => {
-        forgetPassword(values).then(() => {
+        resetUserToken(values).then(() => {
             router.push("/login");
             toast.custom((t) => (
                 <div className={`${"animate-enter"} max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}>
@@ -29,10 +29,10 @@ export default function ForgetPassword() {
                         <div className="flex items-start">
                             <div className="ml-3 flex-1">
                                 <p className="text-sm font-medium text-gray-900">
-                                    Password reset link sent
+                                    A new token has been sent
                                 </p>
                                 <p className="mt-1 text-sm text-gray-500">
-                                    We have sent a password reset link to your email address. Please check your email.
+                                    A new token has been sent to your email address if it exists. If you don&apos;t see the email, check other places it might be, like your junk, spam, social, or other folders.
                                 </p>
                             </div>
                         </div>
@@ -64,13 +64,13 @@ export default function ForgetPassword() {
             <div className="p-4 sm:p-6 lg:p-8 text-center m-8 bg-white dark:bg-slate-800 px-8 py-8 rounded-xl shadow">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <h1 className="text-8xl mb-8">
-                        😅
+                        👻
                     </h1>
                     <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                        You forgot your password?
+                        Your token has expired ?
                     </h2>
                     <p className="mt-4 text-gray-500">
-                        Enter your email address and we will send you a link to reset your password.
+                        Enter your email address and we will send you a brand new token to validate your account.
                     </p>
                 </div>
 

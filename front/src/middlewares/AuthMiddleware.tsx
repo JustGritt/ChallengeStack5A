@@ -45,6 +45,7 @@ const AuthMiddleware: FC<AuthMiddlewareProps> = ({ children }) => {
     children
   ) : hasError ? (
     <Navigate to="/login" replace />
+    // children
   ) : (
     <BarLoader
       color="#36d7b7"

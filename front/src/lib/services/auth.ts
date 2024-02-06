@@ -27,6 +27,19 @@ export const authApi = api.injectEndpoints({
         body: user,
       }),
     }),
+    resetUserToken: build.mutation<ApiSuccessBase<any>, Record<"email", string>>({
+      query: (user) => ({
+        url: "/users/resend-email",
+        method: "POST",
+        body: user,
+      }),
+    }),
+    validateEmailToken: build.mutation<ApiSuccessBase<any>, Record<"token", string>>({
+      query: (token) => ({
+        url: `/users/token/${token}`,
+        method: "GET",
+      }),
+    }),
     getMyProfile: build.query<User, string | undefined>({
       query: (token) => {
         return {
@@ -51,6 +64,8 @@ export const {
   useRegisterMutation,
   useLoginMutation,
   useForgetPasswordMutation,
+  useResetUserTokenMutation,
+  useValidateEmailTokenMutation,
   useGetMyProfileQuery,
   useLazyGetMyProfileQuery
 } = authApi;

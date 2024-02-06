@@ -7,7 +7,7 @@ export default function Employees() {
     const [employees, setEmployees] = useState<User[]>([]);
     useEffect(() => {
         // TODO: Use service to fetch employees
-        fetch('https://api.odicylens.com/employees')
+        fetch(`https://api.odicylens.com/stores/${params.storeId}`)
             .then(response => response.json())
             .then(data => setEmployees(data));
     }, []);
