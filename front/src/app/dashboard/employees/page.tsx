@@ -4,19 +4,12 @@ import { User } from "@/types/User";
 
 export default function Employees() {
 
-    const [employees, setEmployees] = useState<User[]>([]);
-    useEffect(() => {
-        // TODO: Use service to fetch employees
-        fetch(`https://api.odicylens.com/stores/${params.storeId}`)
-            .then(response => response.json())
-            .then(data => setEmployees(data));
-    }, []);
 
     return (
         <section className="lg:pl-72 block min-h-screen">
             <div className="p-4 sm:p-6 lg:p-8 h-full">
                 <ul className="bg-white dark:bg-gray-700 p-4 rounded-xl flex flex-col">
-                    {employees.map((employee) => (
+                    {/* {employees.map((employee) => (
                         <a href={`/dashboard/employees/${employee.id}`} key={employee.id}>
                             <li key={employee.email} className="flex justify-between gap-x-6 py-5">
                                 <div className="flex min-w-0 gap-x-4">
@@ -30,7 +23,7 @@ export default function Employees() {
                                 </div>
                             </li>
                         </a>
-                    ))}
+                    ))} */}
                 </ul>
             </div>
         </section>
