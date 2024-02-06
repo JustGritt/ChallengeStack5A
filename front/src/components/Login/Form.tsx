@@ -23,6 +23,7 @@ import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { setUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
+import Login from '../../app/(home)/login/page';
 
 function LoginForm() {
   const [login, { error, data, isError, isLoading }] = useLoginMutation();
@@ -118,12 +119,9 @@ function LoginForm() {
           />
         </div>
         <div className="flex flex-col justify-center items-center gap-2">
-          <Button
-            title={"Login"}
-            isLoading={isLoading}
-            type="submit"
-            classNames="mt-4 w-full"
-          />
+          <Button intent="default"  className="mt-4 w-full">
+            Login
+          </Button>
           <a href="#" className="text-sm text-main mt-2">
             Did you forget your password ?
           </a>
