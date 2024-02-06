@@ -1,23 +1,33 @@
 import api from "./api";
-import { ApiSuccessBase } from "@/types/ApiBase";
-import { LoginResponse } from "@/types/Auth";
-import { User, UserRegister } from "@/types/User";
-import { setCredentials } from "./slices/authSlice";
 import { HydraPaginateResp } from "@/types/HydraPaginateResp";
-import { Store } from "@/types/Store";
+import { QueryStore, Store } from "@/types/Store";
+import { createQueryParams } from "../utils";
 
 export const storesApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getAllStores: build.mutation<HydraPaginateResp<Store>, void>({
-      query: () => ({
-        url: "/stores",
-        method: "GET",
-      }),
+    getAllStores: build.query<HydraPaginateResp<Store>, void | Partial<QueryStore>>({
+      query: (data) => {
+        const params = createQueryParams(data ?? {});
+        return {
+          url: `/stores${data ? `?${params}` : ''}`,
+        };
+      },
+      providesTags: (result, _error, filters) =>
+        result
+          ? [
+            ...result['hydra:member'].map(({ id }) => ({
+              type: "Stores" as const,
+              id,
+            })),
+            { type: "Stores", id: "LIST", ...filters },
+          ]
+          : [],
     }),
   }),
   overrideExisting: true,
 });
 
 export const {
-  useGetAllStoresMutation,
+  useGetAllStoresQuery,
+  useLazyGetAllStoresQuery
 } = storesApi;
