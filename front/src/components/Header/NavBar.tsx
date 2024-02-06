@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { Fragment } from "react";
-import Button from "@/components/Button";
+import { Button } from "@/components/Ui/Button";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "@/lib/services/slices/authSlice";
 import DashboardProfileHeader from "../Dashboard/DashboardProfileHeader";
@@ -17,7 +17,7 @@ function NavBar() {
         className="justify-center items-center p-4 lg:px-8 h-18
             border-t-0 border-l-0 border-r-0 border
             dark:bg-gray-800
-            border-b-gray-600 
+            border-b-gray-600
             bg-white"
       >
         <div className="flex lg:flex-1 justify-between items-center">
@@ -95,7 +95,7 @@ function NavBar() {
                 >
                   Create an account
                 </Link>
-                <Button href="/login" title={"Login"} />
+                <a href="/login" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Login</a>
               </>
             ) : (
               <DashboardProfileHeader {...user} />
