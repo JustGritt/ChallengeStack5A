@@ -17,14 +17,8 @@ use Symfony\Component\Mime\Email;
 class ConfirmUserEmail extends AbstractController
 {
 
-    private JWTEncoderInterface $jwtEncoder;
-
-    public function __construct (JWTEncoderInterface $jwtEncoder, EntityManagerInterface $entityManager, MailerInterface $mailer, Environment $twig)
+    public function __construct (private JWTEncoderInterface $jwtEncoder, private EntityManagerInterface $entityManager, private MailerInterface $mailer, private Environment $twig)
     {
-        $this->jwtEncoder =  $jwtEncoder;
-        $this->entityManager = $entityManager;
-        $this->mailer = $mailer;
-        $this->twig = $twig;
     }
 
 
