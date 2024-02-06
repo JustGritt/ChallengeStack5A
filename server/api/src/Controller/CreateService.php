@@ -27,7 +27,6 @@ class CreateService extends AbstractController
 
     public function __invoke(Request $request): Service
     {
-        dump($this->getUser());
         $user = $this->getUser();
 
         //check if the user is admin of the company

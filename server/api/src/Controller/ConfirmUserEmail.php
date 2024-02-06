@@ -67,7 +67,7 @@ class ConfirmUserEmail extends AbstractController
                 34574592,
                 [
                     'user' => $user->getFirstname(),
-                    'action_url' => 'https://localhost:8000/confirm-email/' . $token,
+                    'action_url' => 'https://challenge-stack5-a.vercel.app/confirm-email/' . $token,
                     'login_url' => 'Go to the blog',
                 ]);
             

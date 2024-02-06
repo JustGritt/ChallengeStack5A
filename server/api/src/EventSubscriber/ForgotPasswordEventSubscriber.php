@@ -4,8 +4,6 @@ namespace App\EventSubscriber;
 use CoopTilleuls\ForgotPasswordBundle\Event\CreateTokenEvent;
 use CoopTilleuls\ForgotPasswordBundle\Event\UpdatePasswordEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Twig\Environment;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Postmark\PostmarkClient;
@@ -13,7 +11,7 @@ use Postmark\PostmarkClient;
 
 final class ForgotPasswordEventSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private UserPasswordHasherInterface $hasher, private MailerInterface $mailer, private Environment $twig)
+    public function __construct(private UserPasswordHasherInterface $hasher)
     {
     }
 
@@ -32,7 +30,7 @@ final class ForgotPasswordEventSubscriber implements EventSubscriberInterface
         $user = $passwordToken->getUser();
 
         $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
-        $action_url = 'https://localhost:8000/forgot-password/' . $passwordToken->getToken();
+        $action_url = 'https://challenge-stack5-a.vercel.app/forgot-password/' . $passwordToken->getToken();
         $client->sendEmailWithTemplate(
             'contact@charlesparames.com',
             $user->getEmail(),
