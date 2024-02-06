@@ -16,6 +16,7 @@ use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use App\State\ScheduleStateProcessor;
 
 #[ORM\Entity(repositoryClass: ScheduleRepository::class)]
 #[ApiResource(
@@ -25,6 +26,7 @@ use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
         new Delete(),
     ],
     normalizationContext: ['groups' => ['schedule-read']],
+    processor: ScheduleStateProcessor::class,
 )]
 #[ApiResource(
     uriTemplate: '/users/{id}/schedules',

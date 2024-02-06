@@ -12,8 +12,8 @@ import Map, {
 import type { CircleLayer } from "react-map-gl";
 import type { FeatureCollection } from "geojson";
 import { CITIES } from "@/lib/constants/fakeDatas";
-import { Company } from "@/redux/types/Companies";
 import Pin from "./Pin";
+import { Store } from "@/types/Store";
 
 type ViewportProps = {
   latitude: number;
@@ -22,11 +22,12 @@ type ViewportProps = {
 };
 
 type CustomMapProps = {
-  callBackMarker: (company: Company) => void;
+  callBackMarker: (store: Store) => void;
+  stores: Store[];
 };
 
-const CustomMap: FC<CustomMapProps> = ({ callBackMarker }) => {
-  const [cityInfo, setCityInfo] = useState<Company | undefined>();
+const CustomMap: FC<CustomMapProps> = ({ callBackMarker, stores }) => {
+  const [cityInfo, setCityInfo] = useState<Store | undefined>();
   const [viewPort, setViewPort] = useState<ViewportProps>({
     longitude: 2.352,
     latitude: 48.8567,
@@ -35,24 +36,22 @@ const CustomMap: FC<CustomMapProps> = ({ callBackMarker }) => {
 
   const pins = useMemo(
     () =>
-      CITIES.map((city, index) => (
+    stores.map((city, index) => (
         <Marker
           key={`marker-${index}`}
           longitude={city.longitude}
           latitude={city.latitude}
           anchor="bottom"
           onClick={(e) => {
-            // If we let the click event propagates to the map, it will immediately close the popup
-            // with `closeOnClick: true`
-            callBackMarker(city);
+            callBackMarker(city as any);
             e.originalEvent.stopPropagation();
-            setCityInfo(city);
+            setCityInfo(city as any);
           }}
         >
           <Pin color={cityInfo?.name === city.name ? "#e1edff" : undefined} />
         </Marker>
       )),
-    [cityInfo?.name, callBackMarker]
+    [cityInfo?.name, callBackMarker, stores]
   );
 
   return (

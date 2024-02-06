@@ -1,74 +1,100 @@
-import { ChevronLeftIcon, ChevronRightIcon, EllipsisHorizontalIcon } from '@heroicons/react/20/solid'
-import { CalendarDates } from '@/app/utils/Calendar';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
 
-const currentMonth = CalendarDates[0].months[new Date().getMonth()];
-const days = currentMonth.days;
-const currentDate = new Date().getDate();
+export default function UserCalendar() {
 
-export default function Example() {
+    // Mock the data to get the schedule of the employee
+    // {
+    //     "hydra:member": [{
+    //         "@id": "string",
+    //         "@type": "string",
+    //         "@context": "string",
+    //         "id": 0,
+    //         "startDate": "2024-02-04T08:51:35.347Z",
+    //         "endDate": "2024-02-04T08:51:35.347Z",
+    //         "onVacation": true,
+    //         "employee": {
+    //             "@context": "string",
+    //             "@id": "string",
+    //             "@type": "string",
+    //             "email": "user@example.com"
+    //         },
+    //         "store": "https://example.com/"
+    //     }],
+    // }
+
+    const data = [
+        {
+            title: 'Work',
+            start: '2024-02-01',
+            end: '2024-02-02'
+        },
+        {
+            title: 'Booking',
+            start: '2024-02-03',
+            end: '2024-02-04'
+        },
+        {
+            title: 'Day Off',
+            start: '2024-02-05',
+            end: '2024-02-06'
+        },
+        {
+            title: 'Vacation',
+            start: '2024-02-07',
+            end: '2024-02-08'
+        },
+        {
+            title: 'Work',
+            start: '2024-02-09',
+            end: '2024-02-14'
+        }
+    ]
+
+    const handleDateSelect = (arg: any) => {
+        const eventCategory = document.getElementById('selectedEvent') as HTMLSelectElement;
+        const title = eventCategory.value;
+        const calendarApi = arg.view.calendar;
+        calendarApi.unselect();
+
+        if (title) {
+            calendarApi.addEvent({
+                title,
+                start: arg.start,
+                end: arg.end,
+                allDay: arg.allDay
+            });
+        }
+
+        // Send post to the API to save the event
+    }
+
+    const handleRemoveEvent = (arg: any) => {
+        if (confirm('Are you sure you want to delete this event?')) {
+            arg.event.remove();
+        }
+    }
+
     return (
         <div className="lg:flex lg:h-full lg:flex-col">
-            <header className="flex items-center justify-between border-b border-gray-200 py-4 lg:flex-none">
-                <p className="text-2xl font-medium text-gray-900 dark:text-white">{currentMonth.name} {new Date().getFullYear()}</p>
-                <div className="flex items-center">
-                    <div className="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
-                        <button type="button"
-                            className="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l border-gray-300 pr-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pr-0 md:hover:bg-gray-50">
-                            <span className="sr-only">Previous month</span>
-                            <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
-                        </button>
+            <select id="selectedEvent" className="mb-8 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option defaultValue="work">Work</option>
+                <option defaultValue="vacation">Vacation</option>
+            </select>
 
-                        <button type="button" className="hidden border-y border-gray-300 px-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:relative md:block">
-                            Today
-                        </button>
-
-                        <span className="relative -mx-px h-5 w-px bg-gray-300 md:hidden" />
-
-                        <button type="button"
-                            className="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r border-gray-300 pl-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pl-0 md:hover:bg-gray-50">
-                            <span className="sr-only">Next month</span>
-                            <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
-                        </button>
-                    </div>
-
-                    <div className="hidden md:ml-0 md:flex md:items-center">
-                        <button type="button" className="ml-6 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            Book a day
-                        </button>
-                    </div>
-                </div>
-            </header>
-            <div className="shadow ring-1 ring-black ring-opacity-5 lg:flex lg:flex-auto lg:flex-col">
-                <div className="grid grid-cols-7 bg-gray-200 text-center font-semibold leading-6 text-gray-700 lg:flex-none border-none">
-                    <div className="border border-transparent text-white bg-indigo-600 py-4 rounded-tl">Mon<span className="hidden lg:inline">day</span></div>
-                    <div className="border border-transparent text-white bg-indigo-600 py-4">Tues<span className="hidden lg:inline">day</span></div>
-                    <div className="border border-transparent text-white bg-indigo-600 py-4">Wed<span className="hidden lg:inline">nesday</span></div>
-                    <div className="border border-transparent text-white bg-indigo-600 py-4">Thu<span className="hidden lg:inline">rsday</span></div>
-                    <div className="border border-transparent text-white bg-indigo-600 py-4">Fri<span className="hidden lg:inline">day</span></div>
-                    <div className="border border-transparent text-white bg-indigo-600 py-4">Sat<span className="hidden lg:inline">urday</span></div>
-                    <div className="border border-transparent text-white bg-indigo-600 py-4 rounded-tr">Sun<span className="hidden lg:inline">day</span></div>
-                </div>
-                <div className="flex bg-gray-200 text-xs leading-6 text-gray-700 lg:flex-auto">
-                    <div className="hidden w-full lg:grid lg:grid-cols-7 lg:grid-rows-5 lg:gap-px">
-                        {days.map((day) => (
-                            <div key={day.date} className={`block h-40 bg-white relative p-4 transition-colors hover:border ${day.date.split('/')[0] < String(currentDate) ? 'bg-gray-100' : ''}`}>
-                                <time dateTime={day.date} className={`text-lg flex h-8 w-8 items-center justify-center font-semibold ${day.date.split('/')[0] == String(currentDate) ? 'rounded-full bg-indigo-600 text-white' : ''}`}>
-                                    {day.date.split('/')[0]}
-                                </time>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="isolate grid w-full grid-cols-7 grid-rows-5 gap-px lg:hidden">
-                        {days.map((day) => (
-                            <div key={day.date} className={`block h-20 bg-white relative p-4 transition-colors hover:border ${day.date.split('/')[0] < String(currentDate) ? 'bg-gray-100' : ''}`}>
-                                <time dateTime={day.date} className={`text-lg flex h-8 w-8 items-center justify-center font-semibold ${day.date.split('/')[0] == String(currentDate) ? 'rounded-full bg-indigo-600 text-white' : ''}`}>
-                                    {day.date.split('/')[0]}
-                                </time>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
+            <FullCalendar
+                plugins={[ dayGridPlugin, interactionPlugin ]}
+                initialView="dayGridMonth"
+                nowIndicator={true}
+                editable={true}
+                selectable={true}
+                selectMirror={true}
+                selectOverlap={false}
+                select={handleDateSelect}
+                eventClick={handleRemoveEvent}
+                events={data}
+            />
         </div>
     )
 }

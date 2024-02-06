@@ -9,6 +9,10 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use App\Entity\User;
+use ApiPlatform\Metadata\DeleteOperationInterface;
+use ApiPlatform\Metadata\PatchOperationInterface;
+use ApiPlatform\Metadata\PostOperationInterface;
+
 
 
 class ServiceStateProcessor implements ProcessorInterface
@@ -40,10 +44,6 @@ class ServiceStateProcessor implements ProcessorInterface
                 return $this->removeProcessor->process($data, $operation, $uriVariables, $context);
             }
 
-            if (null !== $work && $work->getId() && $data->getStore()->getId() === $work->getId()) {
-                return $this->removeProcessor->process($data, $operation, $uriVariables, $context);
-            }
-
             throw new AccessDeniedException('Cannot delete this service.');
         }
 
@@ -52,16 +52,12 @@ class ServiceStateProcessor implements ProcessorInterface
             $user = $this->security->getUser();
             $companie = $user->getCompanie();
             $work = $user->getWork();
-        
+            
             if (null !== $user && $user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
         
             if (null !== $companie && $companie->getId() && $data->getStore()->getCompany()->getId() === $companie->getId() && $companie->isIsValid() === true) {
-                return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
-            }
-        
-            if (null !== $work && $work->getId() && $data->getStore()->getId() === $work->getId()) {
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
         
@@ -81,11 +77,7 @@ class ServiceStateProcessor implements ProcessorInterface
             if (null !== $companie && $companie->getId() && $data->getStore()->getCompany()->getId() === $companie->getId() && $companie->isIsValid() === true) {
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
-        
-            if (null !== $work && $work->getId() && $data->getStore()->getId() === $work->getId()) {
-                return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
-            }
-        
+            
             throw new AccessDeniedException('Cannot edit this service.');
         }
     }

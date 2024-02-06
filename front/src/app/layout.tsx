@@ -8,11 +8,12 @@ import { Inter } from "next/font/google";
 import Head from "next/head";
 import Link from "next/link";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import 'mapbox-gl/dist/mapbox-gl.css';
+import "mapbox-gl/dist/mapbox-gl.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import { ApiProvider } from "@reduxjs/toolkit/query/react";
-import { appApi } from "@/redux/api/authApi";
 import { Toaster } from "react-hot-toast";
+import { store } from "@/lib/services/store";
+import { Provider } from "react-redux";
 
 const inter = Inter({ subsets: ["latin"] });
 config.autoAddCss = false;
@@ -23,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ApiProvider api={appApi}>
+    <Provider store={store}>
       <html lang="en">
         <Head>
           <title>sdsds</title>
@@ -36,6 +37,6 @@ export default function RootLayout({
           </main>
         </body>
       </html>
-    </ApiProvider>
+    </Provider>
   );
 }

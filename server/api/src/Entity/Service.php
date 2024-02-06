@@ -18,11 +18,14 @@ use App\State\ServiceStateProcessor;
 use App\Security\Voter\ServiceVoter;
 use ApiPlatform\Metadata\Link; 
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
 #[ApiResource(
     operations: [
-        #new Get(normalizationContext: ['groups' => ['service-read']], security: 'is_granted("SERVICE_VIEW", object)'),
+        new GetCollection(normalizationContext: ['groups' => ['service-read']]),
         new Post(denormalizationContext: ['groups' => ['service-mutation']]),
         new Patch(denormalizationContext: ['groups' => ['service-mutation']]),
         new Delete(),
@@ -30,6 +33,8 @@ use ApiPlatform\Metadata\GetCollection;
     normalizationContext: ['groups' => ['service-read']],
     processor: ServiceStateProcessor::class,
 )]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'ipartial'])]
+#[ApiFilter(RangeFilter::class, properties: ['price'])]
 class Service
 {
     #[ORM\Id]
@@ -41,7 +46,7 @@ class Service
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 3, max: 255)]
-    #[Groups(['service-read', 'service-mutation', 'store-read-full'])]
+    #[Groups(['service-read', 'service-mutation', 'store-read-full', 'store-read', 'booking-read-full'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -57,10 +62,6 @@ class Service
     #[Groups(['service-read', 'service-mutation', 'store-read-full'])]
     private ?int $time = null;
 
-    #[ORM\Column]
-    #[Groups(['service-read', 'service-mutation', 'store-read-full'])]
-    private ?bool $valid = null;
-
     #[ORM\ManyToOne(inversedBy: 'services')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['service-read',  'service-mutation'])]
@@ -69,8 +70,16 @@ class Service
     #[ORM\Column]
     #[Assert\NotBlank()]
     #[Assert\PositiveOrZero()]
-    #[Groups(['service-read',  'service-mutation'])]
+    #[Groups(['service-read',  'service-mutation', 'store-read-full'])]
     private ?float $price = null;
+
+    #[ORM\OneToMany(mappedBy: 'service', targetEntity: Booking::class)]
+    private Collection $bookings;
+
+    public function __construct()
+    {
+        $this->bookings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -113,18 +122,6 @@ class Service
         return $this;
     }
 
-    public function isValid(): ?bool
-    {
-        return $this->valid;
-    }
-
-    public function setValid(bool $valid): static
-    {
-        $this->valid = $valid;
-
-        return $this;
-    }
-
     public function getStore(): ?Store
     {
         return $this->store;
@@ -145,6 +142,36 @@ class Service
     public function setPrice(float $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Booking>
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): static
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings->add($booking);
+            $booking->setService($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): static
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getService() === $this) {
+                $booking->setService(null);
+            }
+        }
 
         return $this;
     }

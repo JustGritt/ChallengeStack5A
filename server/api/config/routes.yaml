@@ -2,11 +2,12 @@ api_login_route:
     path: /login
     methods: ['POST']
 
-confirm_email:
-    path: /users/{id}/token/{token}
+api_confirm_email:
+    path: /users/token/{token}
     methods: ['GET']
-    defaults:
-        _controller: App\Controller\ConfirmUserEmail::confirmUser
-        _api_resource_class: App\Entity\User
-        _api_operation_name: confirm_email
+    controller: App\Controller\ConfirmUserEmail::confirmUser
 
+api_resend_email:
+    path: /users/resend-email
+    methods: ['POST']
+    controller: App\Controller\ConfirmUserEmail::sendNewEmailConfirmation
