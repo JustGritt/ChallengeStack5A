@@ -1,7 +1,7 @@
 "use client";
 import StoreCard from "@/components/Store/StoreCard";
 import { CITIES } from "@/lib/constants/fakeDatas";
-import { useLazyGetAllStoresQuery } from "@/lib/services/stores";
+
 import { ApiSuccessBase } from "@/types/ApiBase";
 import { Company } from "@/types/Company";
 import { useSearchParams } from "next/navigation";
@@ -18,6 +18,7 @@ import React, {
   useRef,
 } from "react";
 import { Button } from "@/components/Ui/Button";
+import { useLazyGetAllStoresQuery } from "@/lib/services/stores";
 
 export type RefDivCardSearch = {
   scrollIntoView?: (name: string) => void;
@@ -137,7 +138,6 @@ const SearchSection: ForwardRefRenderFunction<
                         }
                       });
                   }}
-                  variant="outline"
                 >
                   Charger tous...
                 </Button>
