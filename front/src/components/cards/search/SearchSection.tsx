@@ -1,11 +1,11 @@
 "use client";
 import StoreCard from "@/components/Store/StoreCard";
 import { CITIES } from "@/lib/constants/fakeDatas";
-import { useGetAllStoresMutation } from "@/lib/services/stores";
+
 import { ApiSuccessBase } from "@/types/ApiBase";
 import { Company } from "@/types/Company";
-import { HydraPaginateResp } from "@/types/HydraPaginateResp";
-import { Store } from "@/types/Store";
+import { useSearchParams } from "next/navigation";
+import { QueryStore, Store } from "@/types/Store";
 import React, {
   ForwardRefRenderFunction,
   LegacyRef,
@@ -17,6 +17,8 @@ import React, {
   useMemo,
   useRef,
 } from "react";
+import { Button } from "@/components/Ui/Button";
+import { useLazyGetAllStoresQuery } from "@/lib/services/stores";
 
 export type RefDivCardSearch = {
   scrollIntoView?: (name: string) => void;
@@ -32,11 +34,16 @@ const SearchSection: ForwardRefRenderFunction<
   SearchSectionProps
 > = ({ refSearch, callBack }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+
+  const domainSearch = searchParams?.get("domainSearch");
+  const location = searchParams?.get("location");
+
   const [currentStore, setCurrentStore] = React.useState<Store | undefined>(
     undefined
   );
   const [getAllStores, { isLoading, data: storesData, isError }] =
-    useGetAllStoresMutation();
+    useLazyGetAllStoresQuery();
 
   const inputRefs: React.RefObject<HTMLDivElement>[] = useMemo(() => {
     return storesData
@@ -45,7 +52,6 @@ const SearchSection: ForwardRefRenderFunction<
         )
       : [];
   }, [storesData?.["hydra:member"]?.length]);
-
 
   useImperativeHandle(refSearch, () => {
     return {
@@ -74,18 +80,24 @@ const SearchSection: ForwardRefRenderFunction<
   // check if last element is in view
   useEffect(() => {
     document?.body.classList.add("overflow-y-hidden");
-    getAllStores().then((res) => {
-      if (res) {
-        const allStores = (
-          res as unknown as ApiSuccessBase<HydraPaginateResp<Store>>
-        ).data["hydra:member"] as Store[];
-        callBack(allStores);
-      }
-    });
+    const params: Partial<QueryStore> = {};
+    if (domainSearch || location) {
+      params["services.name"] = domainSearch ?? undefined;
+      params.city = location ?? undefined;
+    }
+
+    getAllStores(params)
+      .unwrap()
+      .then((res) => {
+        if (res) {
+          const allStores = res["hydra:member"] as Store[];
+          callBack(allStores);
+        }
+      });
     return () => {
       document?.body.classList.add("overflow-y-auto");
     };
-  }, []);
+  }, [domainSearch, location]);
 
   return (
     <aside
@@ -102,16 +114,36 @@ const SearchSection: ForwardRefRenderFunction<
         <h1>Loading</h1>
       ) : (
         storesData !== undefined && (
-          <div className="flex flex-col pb-10">
-            {storesData["hydra:member"]?.map((store, i) => (
-              <StoreCard
-                active={currentStore?.name === store?.name}
-                store={store}
-                key={store.id}
-                refStore={inputRefs[i]}
-              />
-            ))}
-          </div>
+          <>
+            <div className="flex flex-col pb-10">
+              {storesData["hydra:member"]?.map((store, i) => (
+                <StoreCard
+                  active={currentStore?.name === store?.name}
+                  store={store}
+                  key={store.id}
+                  refStore={inputRefs[i]}
+                />
+              ))}
+            </div>
+            {storesData["hydra:member"].length <= 5 && (
+              <div className="w-full flex justify-center ">
+                <Button
+                  onClick={() => {
+                    getAllStores()
+                      .unwrap()
+                      .then((res) => {
+                        if (res) {
+                          const allStores = res["hydra:member"] as Store[];
+                          callBack(allStores);
+                        }
+                      });
+                  }}
+                >
+                  Charger tous...
+                </Button>
+              </div>
+            )}
+          </>
         )
       )}
     </aside>

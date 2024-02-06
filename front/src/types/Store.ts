@@ -14,3 +14,8 @@ export type Store = {
     longitude: number;
     services: Service[];
 }
+
+type StoreFlatten = Paths<Omit<Store, 'services'> & { services: Service }>
+
+
+export type QueryStore = Omit<Partial<Record<keyof Store, string>>, "services"> & Record<StoreFlatten, string | undefined>
