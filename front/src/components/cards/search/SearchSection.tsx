@@ -1,7 +1,11 @@
 "use client";
 import StoreCard from "@/components/Store/StoreCard";
 import { CITIES } from "@/lib/constants/fakeDatas";
+import { useGetAllStoresMutation } from "@/lib/services/stores";
+import { ApiSuccessBase } from "@/types/ApiBase";
 import { Company } from "@/types/Company";
+import { HydraPaginateResp } from "@/types/HydraPaginateResp";
+import { Store } from "@/types/Store";
 import React, {
   ForwardRefRenderFunction,
   LegacyRef,
@@ -20,24 +24,28 @@ export type RefDivCardSearch = {
 
 type SearchSectionProps = {
   refSearch?: Ref<RefDivCardSearch>;
+  callBack: (store: Store[]) => void;
 };
 
 const SearchSection: ForwardRefRenderFunction<
   RefDivCardSearch,
   SearchSectionProps
-> = ({ refSearch }) => {
-  const allStore = CITIES;
+> = ({ refSearch, callBack }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [currentStore, setCurrentStore] = React.useState<Company | undefined>(
+  const [currentStore, setCurrentStore] = React.useState<Store | undefined>(
     undefined
   );
-  const inputRefs: React.RefObject<HTMLDivElement>[] = useMemo(
-    () =>
-      Array(allStore.length)
-        .fill(null)
-        .map((i) => React.createRef()),
-    []
-  );
+  const [getAllStores, { isLoading, data: storesData, isError }] =
+    useGetAllStoresMutation();
+
+  const inputRefs: React.RefObject<HTMLDivElement>[] = useMemo(() => {
+    return storesData
+      ? Array.from({ length: storesData?.["hydra:member"].length ?? 0 }, () =>
+          createRef()
+        )
+      : [];
+  }, [storesData?.["hydra:member"]?.length]);
+
 
   useImperativeHandle(refSearch, () => {
     return {
@@ -46,12 +54,13 @@ const SearchSection: ForwardRefRenderFunction<
           return ref.current?.id === name;
         });
         //inputRefs[storeIndex].current?.scrollIntoView({ behavior: "smooth" });
-        if (containerRef.current && inputRefs[storeIndex].current) {
+        if (containerRef.current && inputRefs[storeIndex]?.current) {
           const container = containerRef.current;
           const targetDiv = inputRefs[storeIndex].current;
           const targetDivOffsetTop = targetDiv?.offsetTop;
           const containerOffsetTop = container.offsetTop;
-          setCurrentStore(allStore[storeIndex] as any);
+
+          setCurrentStore(storesData?.["hydra:member"][storeIndex]);
           container.scroll({
             top: (targetDivOffsetTop ?? 0) - containerOffsetTop,
             left: 0,
@@ -65,15 +74,22 @@ const SearchSection: ForwardRefRenderFunction<
   // check if last element is in view
   useEffect(() => {
     document?.body.classList.add("overflow-y-hidden");
-
+    getAllStores().then((res) => {
+      if (res) {
+        const allStores = (
+          res as unknown as ApiSuccessBase<HydraPaginateResp<Store>>
+        ).data["hydra:member"] as Store[];
+        callBack(allStores);
+      }
+    });
     return () => {
       document?.body.classList.add("overflow-y-auto");
     };
-  }, [inputRefs]);
+  }, []);
 
   return (
     <aside
-      className="flex-1 bg-white max-h-full overflow-y-scroll"
+      className="flex-1 bg-white dark:bg-slate-500 max-h-full overflow-y-scroll"
       ref={containerRef}
     >
       <div className="p-4 bg-slate-400">
@@ -82,16 +98,22 @@ const SearchSection: ForwardRefRenderFunction<
           Sélectionnez le magasin qui vous convient
         </p>
       </div>
-      <div className="flex flex-col pb-10 gap-2">
-        {allStore.map((store, i) => (
-          <StoreCard
-            active={currentStore?.name === store?.name}
-            store={store}
-            key={store.name}
-            refStore={inputRefs[i]}
-          />
-        ))}
-      </div>
+      {isLoading && !isError ? (
+        <h1>Loading</h1>
+      ) : (
+        storesData !== undefined && (
+          <div className="flex flex-col pb-10">
+            {storesData["hydra:member"]?.map((store, i) => (
+              <StoreCard
+                active={currentStore?.name === store?.name}
+                store={store}
+                key={store.id}
+                refStore={inputRefs[i]}
+              />
+            ))}
+          </div>
+        )
+      )}
     </aside>
   );
 };

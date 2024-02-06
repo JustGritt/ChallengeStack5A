@@ -9,11 +9,8 @@ import {
 } from "formik";
 import * as Yup from "yup";
 import Image from "next/image";
-import Button from "@/components/Ui/Button";
-import {  User, UserRegister } from "@/types/User";
-import { useEffect, useMemo, useState } from "react";
-import Modal from "@/components/Modal";
-import AlertSuccess from "@/components/Alert/AlertSuccess";
+import Button from "@/components/Button";
+import { UserRegister } from "@/types/User";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useRegisterMutation } from "@/lib/services/auth";
@@ -28,10 +25,7 @@ export default function Register() {
     terms: false,
   };
   const router = useRouter();
-  const [
-    register,
-    { isLoading: isRegisterLoading}
-  ] = useRegisterMutation();
+  const [register, { isLoading: isRegisterLoading }] = useRegisterMutation();
 
   const validationSchema = Yup.object().shape({
     firstname: Yup.string().required("Required"),
@@ -45,9 +39,7 @@ export default function Register() {
     terms: Yup.boolean().oneOf([true], "Must Accept Terms and Conditions"),
   });
 
-  const onSubmit: FormikConfig<UserRegister>["onSubmit"] = (
-    values
-  ) => {
+  const onSubmit: FormikConfig<UserRegister>["onSubmit"] = (values) => {
     register(values)
       .unwrap()
       .then((res) => {
@@ -104,7 +96,6 @@ export default function Register() {
     validationSchema: validationSchema,
     onSubmit: onSubmit,
   });
-
 
   return (
     <>
