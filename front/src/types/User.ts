@@ -32,6 +32,11 @@ export type User = {
     companie: Company
 }
 
+export type Owner = {
+    id: number,
+    email: string,
+}
+
 export type UserLogin = {
     email: string
     password: string

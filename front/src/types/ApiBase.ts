@@ -1,7 +1,7 @@
 export interface ApiSuccessBase<T> {
+    status: any
     data: T
 }
-
 
 export type ApiErrorResponse = {
     data: ApiErrorData,

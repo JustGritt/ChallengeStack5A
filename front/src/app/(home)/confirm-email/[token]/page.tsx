@@ -1,29 +1,13 @@
 "use client"
 
-import { resetCredentials } from "@/lib/services/slices/authSlice";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { useCookies } from "react-cookie";
-import { useDispatch } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ConfirmemailToken({ params }: { params: { token: string } }) {
 
-    const dispatch = useDispatch();
-    const [cookies, _, removeCookie] = useCookies(["yoken"]);
-    const router = useRouter();
-    const token = params.token;
     const [req, setReq] = useState(0);
     useEffect(() => {
-        dispatch(resetCredentials());
-        removeCookie("yoken", { path: "/" });
-        // TODO: Use service
-        fetch(`https://api.odicylens.com/users/token/${token}`, {
-            method: "GET",
-        }).then((res) => {
-            setReq(res.status);
-        });
-    }, [dispatch, removeCookie, token]);
+        fetch(`https://api.odicylens.com/users/token/${params.token}`, { method: "GET", }).then((res) => { setReq(res.status) });
+    }, [params.token]);
 
     const statusMessages = {
         200: {
@@ -36,25 +20,17 @@ export default function ConfirmemailToken({ params }: { params: { token: string 
             emoji: "🤔",
             title: "The token is invalid or has expired.",
             message: "Please request a new confirmation email by clicking the button below.",
-            buttonUrl: "/forget-password",
+            buttonUrl: "/reset-token",
         },
         403: {
             emoji: "🤔",
             title: "Your email has already been confirmed.",
             message: "You can now login to your account.",
             buttonUrl: "/login",
-        },
-        // TODO: Add Expired token status
+        }
     };
 
-    // Fallback
-    const defaultStatus = {
-        emoji: "🤷‍♂️",
-        title: "Unknown status code.",
-        message: "An unknown error has occurred."
-    };
-
-    const currentStatus = statusMessages[req as keyof typeof statusMessages] || defaultStatus;
+    const currentStatus = statusMessages[req as keyof typeof statusMessages];
 
     return (
         <section className="block min-h-screen">
@@ -69,8 +45,8 @@ export default function ConfirmemailToken({ params }: { params: { token: string 
                     <p className="mt-4 text-gray-500">
                         {currentStatus.message}
                     </p>
-                    <a href="/login" className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring">
-                        Return to Login page
+                    <a href={currentStatus.buttonUrl} className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring">
+                        {currentStatus.buttonUrl === "/reset-token" ? "Request new confirmation email" : "Login"}
                     </a>
                 </div>
             )}
