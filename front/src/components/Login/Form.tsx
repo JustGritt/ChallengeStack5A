@@ -2,28 +2,21 @@
 
 import {
   Form,
-  Formik,
   Field,
   FormikProvider,
   useFormik,
   ErrorMessage,
 } from "formik";
-import { signIn } from "next-auth/react";
 import * as Yup from "yup";
-import Image from "next/image";
 import { Button } from "@/components/Ui/Button";
 import {
-  useGetMyProfileQuery,
-  useLazyGetMyProfileQuery,
   useLoginMutation,
-  useRegisterMutation,
 } from "@/lib/services/auth";
-import React, { useEffect } from "react";
+import React from "react";
 import toast from "react-hot-toast";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { setUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
-import Login from '../../app/(home)/login/page';
 
 function LoginForm() {
   const [login, { error, data, isError, isLoading }] = useLoginMutation();
@@ -122,7 +115,7 @@ function LoginForm() {
           <Button intent="default"  className="mt-4 w-full">
             Login
           </Button>
-          <a href="#" className="text-sm text-main mt-2">
+          <a href="/forget-password" className="text-sm text-main mt-2">
             Did you forget your password ?
           </a>
           <p className="text-center">

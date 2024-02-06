@@ -23,7 +23,7 @@ export const authApi = api.injectEndpoints({
     }),
     forgetPassword: build.mutation<ApiSuccessBase<any>, Record<"email", string>>({
       query: (user) => ({
-        url: "/forgot_password",
+        url: "/forgot_password/",
         method: "POST",
         body: user,
       }),
