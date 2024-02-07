@@ -90,7 +90,7 @@ export default function Affiliate() {
     return (
         <>
             <NavBar />
-            <div className="m-auto h-screen w-full flex justify-center items-center relative p-8 bg-[#EEF2FF] min-h-[70vh] flex-col-reverse lg:flex-row ">
+            <div className="m-auto w-full flex justify-center items-center relative p-8 bg-[#EEF2FF] min-h-[70vh] flex-col-reverse lg:flex-row ">
                 <div className="flex-1 justify-end flex">
                     <div className="bg-white rounded p-10 max-w-[500px] flex-col flex justify-center items-center w-full">
                         <div className="flex flex-col gap-2 justify-center w-full items-center">
