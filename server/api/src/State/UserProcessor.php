@@ -63,25 +63,26 @@ final class UserProcessor implements ProcessorInterface
             if ($isAdmin) {
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
-            
+
+            if (null !== $context['previous_data']->isIsValid() && $data->isIsValid() !== $context['previous_data']->isIsValid()) {
+                throw new AccessDeniedException('You cannot edit the isvalid field of your profile.');
+            }
+
             if ($data->getId() === $user->getId()) {
-                if (null !== $data->isIsValid()) {
-                    throw new AccessDeniedException('You cannot edit your profile with the isvalid field.');
+                if (null === $context['previous_data']->getWork() && null !== $data->getWork()){
+                    throw new AccessDeniedException('You cannot edit the work field of your profile.');
                 }
-                if (null !== $data->getWork()) {
-                    throw new AccessDeniedException('You cannot edit your profile with the work field.');
+                if (null !== $context['previous_data']->getWork() && $data->getWork() !== $context['previous_data']->getWork()){
+                    throw new AccessDeniedException('You cannot edit the work field of your profile.');
                 }
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
 
             if ($companyOwner) {
-                if (null !== $data->isIsValid()) {
-                    throw new AccessDeniedException('You cannot edit this user with the isvalid field.');
-                }
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
         
-            throw new AccessDeniedException('Cannot update this user.');
+            throw new AccessDeniedException('Cannot edit this user, you are not the owner of the company or the user.');
         }
 
         return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
