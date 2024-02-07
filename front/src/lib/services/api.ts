@@ -9,14 +9,17 @@ import { UserCookieType } from '@/types/User';
 export const api = createApi({
   tagTypes: [
     "Me",
-    "Companies"
+    "Companies",
+    "Services",
+    "Stores"
   ],
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,
     prepareHeaders: async (headers, { getState, endpoint }) => {
       const session = await getUserCookie(UserCookieType.SESSION);
       const parsedSession = JSON.parse(session?.value || "{}");
-      if(parsedSession?.token) headers.set('Authorization', `Bearer ${parsedSession?.token}`);
+      if (parsedSession?.token) headers.set('Authorization', `Bearer ${parsedSession?.token}`);
+      headers.set("Content-Type", "application/json");
 
       return headers;
     },

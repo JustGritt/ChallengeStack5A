@@ -1,6 +1,8 @@
 export type Service = {
-    "@context": string;
-    "@id": string;
-    "@type": string;
-    name: string;
+    id: number,
+    name: string,
+    description: string,
+    time: 0,
+    store: string,
+    price: number
 };

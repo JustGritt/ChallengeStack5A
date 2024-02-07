@@ -17,6 +17,8 @@ use ApiPlatform\Metadata\GetCollection;
 use App\State\StoresStateProcessor;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use App\Controller\AdminDashboardStats;
+use ApiPlatform\Metadata\Link;
 
 #[ApiResource(
     operations: [
@@ -28,6 +30,14 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
     ],  
     normalizationContext: ['groups' => ['store-read']],
     processor: StoresStateProcessor::class,
+)]
+#[ApiResource(
+    operations: [
+         new Get(
+            uriTemplate: '/stores/{id}/dashboard', 
+            controller: AdminDashboardStats::class, 
+         ) 
+    ],
 )]
 #[ApiFilter(SearchFilter::class, properties: ['name' => 'ipartial', 'address' => 'ipartial', 'postalCode' => 'ipartial', 'country' => 'ipartial', 'city' => 'ipartial', 'services.name' => 'ipartial'])]
 #[ORM\Entity(repositoryClass: StoreRepository::class)]

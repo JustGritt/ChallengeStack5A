@@ -12,7 +12,9 @@ use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Postmark\PostmarkClient;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-
+use Twig\Environment;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 /**
  * @implements ProcessorInterface<User, User|void>
@@ -25,6 +27,8 @@ final class UserProcessor implements ProcessorInterface
         #[Autowire('@api_platform.doctrine.orm.state.remove_processor')]
         private ProcessorInterface $removeProcessor,
         private JWTEncoderInterface $jwtEncoder,
+        private MailerInterface $mailer,
+        private Environment $twig,
         private Security $security
 
     )
@@ -59,25 +63,26 @@ final class UserProcessor implements ProcessorInterface
             if ($isAdmin) {
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
-            
+
+            if (null !== $context['previous_data']->isIsValid() && $data->isIsValid() !== $context['previous_data']->isIsValid()) {
+                throw new AccessDeniedException('You cannot edit the isvalid field of your profile.');
+            }
+
             if ($data->getId() === $user->getId()) {
-                if (null !== $data->isIsValid()) {
-                    throw new AccessDeniedException('You cannot edit your profile with the isvalid field.');
+                if (null === $context['previous_data']->getWork() && null !== $data->getWork()){
+                    throw new AccessDeniedException('You cannot edit the work field of your profile.');
                 }
-                if (null !== $data->getWork()) {
-                    throw new AccessDeniedException('You cannot edit your profile with the work field.');
+                if (null !== $context['previous_data']->getWork() && $data->getWork() !== $context['previous_data']->getWork()){
+                    throw new AccessDeniedException('You cannot edit the work field of your profile.');
                 }
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
 
             if ($companyOwner) {
-                if (null !== $data->isIsValid()) {
-                    throw new AccessDeniedException('You cannot edit this user with the isvalid field.');
-                }
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
         
-            throw new AccessDeniedException('Cannot update this user.');
+            throw new AccessDeniedException('Cannot edit this user, you are not the owner of the company or the user.');
         }
 
         return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
@@ -87,6 +92,22 @@ final class UserProcessor implements ProcessorInterface
     {
         $jwt = $this->jwtEncoder->encode(['email' => $user->getEmail(), 'exp' => time() + 3600]);
     
+
+        $email = (new Email())
+            ->from('contact@charlesparames.com')
+            ->to($user->getEmail())
+            ->subject('Welcome to Odicylens!')
+            ->text($this->twig->render('email/welcome.txt.twig', [
+                'email' => $user->getFirstname(),
+                'action_url' => 'https://challenge-stack5-a.vercel.app/confirm-email/' . $jwt,
+            ]))
+            ->html($this->twig->render('email/welcome.html.twig', [
+                'email' => $user->getFirstname(),
+                'action_url' => 'https://challenge-stack5-a.vercel.app/confirm-email/' . $jwt,
+            ]));
+
+        $this->mailer->send($email);
+        /*
         $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
 
         $client->sendEmailWithTemplate(
@@ -95,9 +116,9 @@ final class UserProcessor implements ProcessorInterface
             34574592,
             [
                 'user' => $user->getFirstname(),
-                'action_url' => 'https://localhost:8000/confirm-email/' . $jwt,
+                'action_url' => ''https://challenge-stack5-a.vercel.app/forgot-password/' . $jwt,
                 'login_url' => 'Go to the blog',
             ]);
-        
+        */
     }
 }

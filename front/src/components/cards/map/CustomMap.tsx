@@ -36,7 +36,7 @@ const CustomMap: FC<CustomMapProps> = ({ callBackMarker, stores }) => {
 
   const pins = useMemo(
     () =>
-    stores.map((city, index) => (
+      stores.map((city, index) => (
         <Marker
           key={`marker-${index}`}
           longitude={city.longitude}
@@ -65,7 +65,6 @@ const CustomMap: FC<CustomMapProps> = ({ callBackMarker, stores }) => {
             latitude: e.viewState.latitude,
             zoom: e.viewState.zoom,
           });
-          console.log(e.viewState);
         }}
         cursor="grab"
         scrollZoom={false}

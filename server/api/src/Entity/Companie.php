@@ -22,7 +22,7 @@ use App\State\CompanieStateProvider;
 #[ApiResource(
     operations: [
         new GetCollection(normalizationContext: ['groups' => ['read-companie']], provider: CompanieStateProvider::class),
-        #new Get(normalizationContext: ['groups' => ['read-companie']], security: 'is_granted("COMPANIE_VIEW", object)'),
+        new Get(normalizationContext: ['groups' => ['read-companie']]),
         new Post(denormalizationContext: ['groups' => ['create-companie']]),
         new Patch(denormalizationContext: ['groups' => ['update-companie']]),
     ],
