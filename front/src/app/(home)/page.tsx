@@ -123,7 +123,11 @@ export default function Home() {
             <p className="text-gray-500">
               Discover the ease of online appointment with Odicylens.
             </p>
-            <Button intent="default" className="mt-8 h-16 px-8 grid place-items-center transition-colors rounded-full text-lg">
+            <Button intent="default" className="mt-8 h-16 px-8 grid place-items-center transition-colors rounded-full text-lg" onClick={
+              () => {
+                router.push("/affiliate")
+              }
+            }>
               Become a Odicylens affiliate
             </Button>
           </div>
