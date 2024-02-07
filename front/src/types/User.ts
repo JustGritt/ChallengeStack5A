@@ -52,3 +52,11 @@ export type Owner = {
     id: number,
     email: string,
 }
+
+export type Employee = {
+    id: number,
+    email: string,
+    firstname: string,
+    work: Store,
+    company: Company
+}
