@@ -1,12 +1,12 @@
 "use client";
 
-import { Form, Field, FormikProvider, useFormik, ErrorMessage, FormikConfig } from "formik";
 import * as Yup from "yup";
-import { Button } from "@/components/Ui/Button";
-import { UserForgetPassword } from "@/types/User";
 import toast from "react-hot-toast";
+import { Button } from "@/components/Ui/Button";
 import { useRouter } from "next/navigation";
+import { UserForgetPassword } from "@/types/User";
 import { useForgetPasswordMutation } from "@/lib/services/auth";
+import { Form, Field, FormikProvider, useFormik, ErrorMessage, FormikConfig } from "formik";
 
 export default function ForgetPassword() {
     const initialValues: UserForgetPassword = {
