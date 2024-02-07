@@ -61,7 +61,7 @@ class ServiceStateProcessor implements ProcessorInterface
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
         
-            throw new AccessDeniedException('Cannot create a new service.');
+            throw new AccessDeniedException('Only owner can create services.');
         }
         
         //if the method is patch and the user is admin of the company
@@ -78,7 +78,7 @@ class ServiceStateProcessor implements ProcessorInterface
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
             
-            throw new AccessDeniedException('Cannot edit this service.');
+            throw new AccessDeniedException('Only owner can edit this service.');
         }
     }
 }

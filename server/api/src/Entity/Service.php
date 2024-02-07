@@ -21,6 +21,8 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
+use App\Controller\CreateService;
+use App\Entity\Store;
 
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
 #[ApiResource(
@@ -33,6 +35,13 @@ use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
     normalizationContext: ['groups' => ['service-read']],
     processor: ServiceStateProcessor::class,
 )]
+/*
+#[ApiResource(
+    uriTemplate: '/stores/{id}/services',
+    operations: [ new Post(normalizationContext: ['groups' => ['service-mutation']]) ],
+    controller: CreateService::class,
+)]
+*/
 #[ApiFilter(SearchFilter::class, properties: ['name' => 'ipartial'])]
 #[ApiFilter(RangeFilter::class, properties: ['price'])]
 class Service

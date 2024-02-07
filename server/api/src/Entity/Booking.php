@@ -67,6 +67,10 @@ class Booking
     #[Groups(['booking-read-full', 'booking-mutation'])]
     private ?Store $store = null;
 
+    #[ORM\Column]
+    #[Groups(['booking-read-full', 'booking-mutation'])]
+    private ?bool $cancelled = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -140,6 +144,18 @@ class Booking
     public function setStore(?Store $store): static
     {
         $this->store = $store;
+
+        return $this;
+    }
+
+    public function isCancelled(): ?bool
+    {
+        return $this->cancelled;
+    }
+
+    public function setCancelled(bool $cancelled): static
+    {
+        $this->cancelled = $cancelled;
 
         return $this;
     }

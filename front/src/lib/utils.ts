@@ -49,3 +49,31 @@ function appendObjectToFormData(
     }
   }
 }
+
+export function createQueryParams<T extends object>(params: Partial<Record<keyof T, string>>): string {
+  const queryParams: string[] = [];
+
+  for (const key in params) {
+    if (params.hasOwnProperty(key) && params[key] !== undefined) {
+      queryParams.push(`${encodeURIComponent(key)}=${encodeURIComponent(params[key] as string)}`);
+    }
+  }
+
+  return queryParams.join('&');
+}
+
+export function uniqByKeepLast<T extends object>(arr: Array<T>, key: keyof T): T[] {
+  return arr.reduce((acc: T[], curr: T) => {
+    const foundIndex = acc.findIndex(item => item[key] === curr[key]);
+
+    if (foundIndex !== -1) {
+      // If an object with the same key already exists, replace it
+      acc[foundIndex] = curr;
+    } else {
+      // Otherwise, add the current object to the accumulator
+      acc.push(curr);
+    }
+
+    return acc;
+  }, []);
+}

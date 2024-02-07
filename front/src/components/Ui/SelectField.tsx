@@ -31,6 +31,10 @@ export const SelectField: React.FC<Props> = (props) => {
         DropdownIndicator: () => null,
         IndicatorSeparator: () => null,
       }}
+      placeholder="Choisir..."
+      noOptionsMessage={() => "Pas de donnée(s) trouvée(s)"}
+      loadingMessage={() => "Chargement..."}
+      closeMenuOnSelect={false}
       classNames={{
         control: (e) =>
           cn(
@@ -63,6 +67,13 @@ export const SelectField: React.FC<Props> = (props) => {
 export const AsyncSelectComponent: AsyncSelect = (props) => {
   return (
     <RSelectAsync
+      {...props}
+      unstyled={true}
+      hideSelectedOptions={true}
+      components={{
+        DropdownIndicator: () => null,
+        IndicatorSeparator: () => null,
+      }}
       classNames={{
         control: (e) =>
           cn(
@@ -80,18 +91,14 @@ export const AsyncSelectComponent: AsyncSelect = (props) => {
         option: () =>
           cn(
             "cursor-default",
-            "rounded-sm py-1.5 m-1 px-2 text-sm outline-none",
+            "rounded-sm py-2.5 px-6 text-md outline-none",
             "focus:bg-gray-200 hover:bg-gray-200 w-auto"
           ),
         noOptionsMessage: () => "p-5",
         multiValue: () => "bg-gray-200 px-2 p-1 rounded mr-2",
-        input: () => "text-sm overflow-x-hidden",
+        input: () => "text-[17px] overflow-x-hidden",
+        placeholder: () => "text-[16px]",
       }}
-      placeholder="Choisir..."
-      noOptionsMessage={() => "Pas de donnée(s) trouvée(s)"}
-      loadingMessage={() => "Chargement..."}
-      closeMenuOnSelect={false}
-      {...props}
     />
   );
 };

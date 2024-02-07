@@ -1,28 +1,6 @@
 "use client";
-import {
-  Form,
-  Formik,
-  Field,
-  FormikProvider,
-  useFormik,
-  ErrorMessage,
-} from "formik";
-import { signIn } from "next-auth/react";
-import * as Yup from "yup";
 import Image from "next/image";
-import { Button } from "@/components/Ui/Button";
-import {
-  useGetMyProfileQuery,
-  useLazyGetMyProfileQuery,
-  useLoginMutation,
-  useRegisterMutation,
-} from "@/lib/services/auth";
-import React, { useEffect } from "react";
-import { ApiErrorResponse, ApiSuccessBase } from "@/types/ApiBase";
-import { LoginResponse } from "@/types/Auth";
-import toast from "react-hot-toast";
-import { useRouter, useSearchParams } from "next/navigation";
-import { cookies } from "next/headers";
+import React from "react";
 import LoginForm from "@/components/Login/Form";
 
 export default function Login() {
