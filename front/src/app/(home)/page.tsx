@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+"use client";
 import * as Yup from "yup";
 import React from "react";
 import Faq from "../../components/partials/Faq";
@@ -6,8 +7,12 @@ import { Button } from "@/components/Ui/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import FormSearchHome from "@/components/Forms/FormSearchHome";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+
+  const router = useRouter();
+
   return (
     <>
       <main className="min-h-screen ">

@@ -77,9 +77,7 @@ export default function Affiliate() {
                 ));
             })
             .catch((affiliateError) => {
-                formik.setErrors({
-                    kbis: (affiliateError as ApiErrorResponse).data["detail"],
-                });
+                toast.error((affiliateError as ApiErrorResponse).data["detail"])
             });
     };
 
