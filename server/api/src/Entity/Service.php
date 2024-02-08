@@ -35,6 +35,13 @@ use App\Entity\Store;
     normalizationContext: ['groups' => ['service-read']],
     processor: ServiceStateProcessor::class,
 )]
+#[ApiResource(
+    uriTemplate: '/stores/{id}/services',
+    uriVariables: [
+        'id' => new Link(fromClass: Store::class, toProperty: 'store'),
+    ],
+    operations: [ new GetCollection(normalizationContext: ['groups' => ['booking-read-full']]) ]
+)]
 /*
 #[ApiResource(
     uriTemplate: '/stores/{id}/services',
