@@ -30,7 +30,6 @@ const AuthMiddleware: FC<AuthMiddlewareProps> = ({ children }) => {
     (async () => {
       try {
         await getMyProfileAsync().unwrap();
-        console.log(await getMyProfileAsync().unwrap()) // TODO: Delete this line
       } catch (e) {
         removeUserCookie(UserCookieType.SESSION);
         router.push("/login");

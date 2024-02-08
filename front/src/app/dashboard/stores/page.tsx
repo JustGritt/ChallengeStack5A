@@ -2,24 +2,35 @@
 
 import { Store } from "@/types/Store";
 import { Button } from "@/components/Ui/Button";
-import { useCookies } from "react-cookie";
+import { useSelector } from "react-redux";
 import { useState, useEffect } from 'react';
-import { useGetMyProfileQuery, useLazyGetMyProfileQuery } from "@/lib/services/auth";
+import { selectCurrentUser } from "@/lib/services/slices/authSlice";
 
 export default function Stores() {
     const [stores, setStores] = useState<Store[]>([]);
-    const [cookies] = useCookies(["token"]);
-    const [getMyProfile, { data, error, isLoading }] = useLazyGetMyProfileQuery();
+
+    const user = useSelector(selectCurrentUser);
 
     useEffect(() => {
-        if ((cookies as any).session) {
-
-            // const companyId = getMyProfile().unwrap().then((data) => { setStores(data.company.stores) });
-            fetch(`https://api.odicylens.com/companies/${1}`, { method: "GET" }) // TODO: Replace with companyId of the current user
+        if (user) {
+            fetch(`https://api.odicylens.com/companies/${1}`, { method: "GET" })
                 .then((res) => res.json())
                 .then((data) => { setStores(data.stores) });
         }
-    }, [cookies]);
+    }, [user]);
+
+
+    // useEffect(() => {
+    //     if ((cookies as any).session) {
+    //         fetch(`https://api.odicylens.com/companies/${1}`, { method: "GET" }) // TODO: Replace with companyId of the current user
+    //             .then((res) => res.json())
+    //             .then((data) => { setStores(data.stores) });
+    //     }
+    // }, [cookies]);
+
+    const handlePagination = (page: number) => {
+
+    }
 
     return (
         <section className="lg:pl-72 block min-h-screen">
@@ -31,17 +42,16 @@ export default function Stores() {
                             <div>
                                 <div className="flex justify-between items-center">
                                     <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8 inline">Your Stores</h2>
-                                    <Button intent="default" className="mb-8">Add a new store</Button>
+                                    <Button intent="default" className="mb-8 mr-4">Add a new store</Button>
                                 </div>
                                     <ul>
                                         {
-                                            stores.map((store) => (
-
-                                                <li key={store.id} className="flex justify-between gap-x-6 py-5">
+                                            stores.map((store, index) => (
+                                                <li key={store.id} className="flex justify-between gap-x-6 py-5 px-4 rounded hover:bg-gray-100 transition-colors">
                                                     <div className="flex min-w-0 gap-x-4">
                                                         <div className="min-w-0 flex-auto">
-                                                        <p className="text-sm font-semibold leading-6 text-gray-900">{store.name}</p>
-                                                        <p className="mt-1 truncate text-xs leading-5 text-gray-500">{store.address}, {store.postalCode} {store.city}, {store.country}</p>
+                                                            <p className="text-lg font-semibold leading-6 text-gray-900">{store.name}</p>
+                                                            <p className="mt-1 truncate text-xs leading-5 text-gray-500">{store.address}, {store.postalCode} {store.city}, {store.country}</p>
                                                         </div>
                                                     </div>
                                                     <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
