@@ -20,8 +20,6 @@ export type Store = {
     company: Company;
 }
 
-type StoreFlatten = Paths<Omit<Store, 'services' | 'users'| 'company'> & { services: Service }>
+type StoreFlatten = Paths<Omit<Store, 'services' | 'users' | 'company'> & { services: Service }>
 
-// type StoreFlatten = Paths<Omit<Store, 'services'> & { services: Service }>
-// type StoreFlatten = "id" | "name" | "address" | "postalCode" | "country" | "city" | "latitude" | "longitude" | "services" | "users"
-export type QueryStore = Omit<Partial<Record<keyof Store, string>>, "services"> & Record<StoreFlatten, string | undefined>
+export type QueryStore = Omit<Partial<Record<keyof Store, string>>, "services"> & Record<StoreFlatten & { services: Service }, string | undefined>
