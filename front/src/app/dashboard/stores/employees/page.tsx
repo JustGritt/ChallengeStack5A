@@ -13,7 +13,6 @@ export default function Employees({ params }: { params: { id: string } }) {
     useEffect(() => {
         fetch(`https://api.odicylens.com/stores/2`)
             .then(response => response.json())
-            .then(data => console.log(data));
             // .then(data => setEmployees(data));
     }, []);
 
@@ -25,9 +24,9 @@ export default function Employees({ params }: { params: { id: string } }) {
                         <a href={`/dashboard/employees/${employee.id}`} key={employee.id}>
                             <li className="flex justify-between gap-x-6 p-6">
                                 <div className="flex min-w-0 gap-x-4">
-                                    <div className="h-12 w-12 flex-none rounded-full bg-gray-200 grid place-items-center font-bold">{employee.name.charAt(0)}</div>
+                                    <div className="h-12 w-12 flex-none rounded-full bg-gray-200 grid place-items-center font-bold">{employee.firstname.charAt(0)}</div>
                                     <div className="min-w-0 flex-auto">
-                                        <p className="text-sm font-semibold leading-6 text-gray-900">{employee.name}</p>
+                                        <p className="text-sm font-semibold leading-6 text-gray-900">{employee.firstname}</p>
                                         <p className="mt-1 truncate text-xs leading-5 text-gray-500">leslie.alexander@example.com</p>
                                     </div>
                                 </div>

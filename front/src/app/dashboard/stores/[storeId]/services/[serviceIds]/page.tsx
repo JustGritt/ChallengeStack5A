@@ -3,10 +3,8 @@
 import { Store } from "@/types/Store";
 import { useState, useEffect } from 'react';
 
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "@/lib/services/slices/authSlice";
-
 export default function Stores({ params }: { params: { storeId: string } }) {
+
     const [store, setStore] = useState<Store | null>(null);
     useEffect(() => {
         fetch(`https://api.odicylens.com/stores/${params.storeId}`)
@@ -66,12 +64,12 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                     <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4 inline-block">
                                         Services
                                     </h2>
-                                    <a href={`/dashboard/stores/${params.storeId}/services`} className="text-blue-500 dark:text-blue-400 hover:underline">See all</a>
+                                    <a href={`/dashboard/stores/${params.storeId}/employees`} className="text-blue-500 dark:text-blue-400 hover:underline">See all</a>
 
                                     <div className="max-w-screen-xl mx-auto text-center">
                                         {
                                             store.services.length > 1 ? (store.services.map((service) => (
-                                                <a href={`/dashboard/stores/${params.storeId}/services/${service.id}`} key={service.id}>
+                                                <a href={`/dashboard/employees/${service.id}`} key={service.id}>
                                                     <li key={service.id} className="flex justify-between gap-x-6 py-5 hover:bg-gray-100 w-full rounded shadow">
                                                         <div className="min-w-0 flex flex-auto items-center justify-between px-6">
                                                             <p className="text-sm font-semibold leading-6 text-gray-900">{service.name}</p>
