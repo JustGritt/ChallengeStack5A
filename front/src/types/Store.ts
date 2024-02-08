@@ -1,4 +1,6 @@
+import { Company } from "./Company";
 import { Service } from "./Service";
+import { User } from "./User";
 
 export type Store = {
     "@context": string;
@@ -13,9 +15,11 @@ export type Store = {
     latitude: number;
     longitude: number;
     services: Service[];
+    users: User[];
+    company: Company
 }
 
-type StoreFlatten = Paths<Omit<Store, 'services'> & { services: Service }>
+type StoreFlatten = Paths<Omit<Store, 'services' | 'users'| 'company'> & { services: Service }>
 
 
 export type QueryStore = Omit<Partial<Record<keyof Store, string>>, "services"> & Record<StoreFlatten, string | undefined>

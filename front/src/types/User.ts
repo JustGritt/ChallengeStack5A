@@ -12,8 +12,8 @@ export type User = {
     roles: Array<UserROLES>,
     firstname: string,
     isValid: boolean,
-    work: Store,
-    companie: Company
+    work?: Store,
+    companie?: Company
 }
 
 export enum UserCookieType {

@@ -23,11 +23,20 @@ export const storesApi = api.injectEndpoints({
           ]
           : [],
     }),
+    getStore: build.query<Store, string>({
+      query: (id) => {
+        return {
+          url: `/stores/${id}`,
+        };
+      },
+      providesTags: (result, _error, id) => [{ type: "Stores", id }],
+    }),
   }),
   overrideExisting: true,
 });
 
 export const {
   useGetAllStoresQuery,
-  useLazyGetAllStoresQuery
+  useLazyGetAllStoresQuery,
+  useGetStoreQuery,
 } = storesApi;
