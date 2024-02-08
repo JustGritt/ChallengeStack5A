@@ -1,5 +1,5 @@
 "use client";
-import StoreCard from "@/components/Store/StoreCard";
+import StoreCard from "@/components/Pages/Store/StoreCard";
 import { CITIES } from "@/lib/constants/fakeDatas";
 
 import { ApiSuccessBase } from "@/types/ApiBase";

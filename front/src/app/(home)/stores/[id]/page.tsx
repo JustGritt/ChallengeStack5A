@@ -1,5 +1,5 @@
 "use client";
-import CustomMap from "@/components/cards/map/CustomMap";
+import Skeleton from "react-loading-skeleton";
 import {
   faLocationDot,
   faStar,
@@ -7,9 +7,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
+import { Button } from "@/components/Ui/Button";
+import StoreServiceCard from "@/components/Pages/Store/StoreServiceCard";
+import { useGetStoreQuery } from "@/lib/services/stores";
+import StoreServicesCard from "@/components/Pages/Store/StoreServiceCard";
+import React from "react";
+import CustomCalendar from "@/components/Calendar/CustomCalendar";
 
 const data = {
   storeName: "StoreCard",
@@ -60,15 +66,19 @@ const data = {
   ],
 };
 
-export default function StorePage() {
-  useEffect(() => {}, []);
+const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
+  params: { id },
+}) => {
+  const { isLoading, isError, data: store } = useGetStoreQuery(id);
+
+  const refSectionServices = React.useRef<null | HTMLDivElement>(null);
 
   return (
     <main className="w-full z-40 flex flex-col bg-white py-4 px-3 items-center">
-      <section className="lg:w-[75%] w-full flex lg:flex-row items-start flex-col lg:items-center justify-start gap-3 my-4">
+      <section className="max-w-6xl w-full px-6 md:px-10 lg:px-0 flex items-start lg:items-center justify-start gap-3 my-4">
         <div className=" w-full flex flex-col justify-start items-start">
           <h1 className="font-inter font-semibold text-2xl text-black">
-            {data.storeName}
+            {store?.name ?? <Skeleton width={200} />}
           </h1>
           <div className="flex gap-2 justify-center items-center">
             <FontAwesomeIcon className="text-gray-500" icon={faLocationDot} />
@@ -76,72 +86,43 @@ export default function StorePage() {
               className="text-gray-500 underline hover:no-underline"
               href={`${data.address}`}
             >
-              {data.address}
+              {store?.address ?? <Skeleton width={200} />}
             </Link>
           </div>
         </div>
-        <button className="p-2 bg-black text-white rounded-md w-fit">
+        <Button
+          onClick={() => {
+            const section = refSectionServices.current;
+            section?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }}
+        >
+          {" "}
           Prendre&nbsp;RDV
-        </button>
+        </Button>
       </section>
-      <section className="lg:w-[75%] w-full flex"></section>
-      <section className="lg:w-[75%] w-full">
-        <h2>Réserver en ligne pour un RDV chez StoreName</h2>
+      <section className="max-w-6xl w-full flex px-6 md:px-10 lg:px-0 "></section>
+      <section className=" max-w-6xl w-full px-6 md:px-10 lg:px-0">
+        <h2>
+          Réserver en ligne pour un RDV chez{" "}
+          {store?.name ?? <Skeleton width={150} />}
+        </h2>
         <span className="text-gray-500">24h/24 - details de reservation</span>
-        <div className="flex w-full justify-between gap-8">
-          <div className="w-full">
+        <div className="flex w-full justify-between gap-8 flex-col xl:flex-row">
+          <div className=" lg:w-[60%] w-full ">
             <h1 className="text-black font-bold text-2xl my-2">
               Choix de prestation
             </h1>
-
-            <div className="w-full my-4">
-              <h2 className="text-black font-bold text-xl my-2">Formules</h2>
-              <div className="rounded-lg border border-1 border-gray-300 shadow-lg">
-                <div className="flex justify-between py-3 px-4 items-center">
-                  <span className="text-black">Prestation 1</span>
-                  <span className="text-gray-500">3 heures • 300€</span>
-                  <div>
-                    <button className="p-2 bg-black text-white rounded-md w-fit">
-                      Choisir
-                    </button>
-                  </div>
-                </div>
-                <hr />
-                <div className="flex justify-between py-3 px-4 items-center">
-                  <span className="text-black">Prestation 1</span>
-                  <span className="text-gray-500">3 heures • 300€</span>
-                  <div>
-                    <button className="p-2 bg-black text-white rounded-md w-fit">
-                      Choisir
-                    </button>
-                  </div>
-                </div>
-                <hr />
-                <div className="flex justify-between py-3 px-4 items-center">
-                  <span className="text-black">Prestation 1</span>
-                  <span className="text-gray-500">3 heures • 300€</span>
-                  <div>
-                    <button className="p-2 bg-black text-white rounded-md w-fit">
-                      Choisir
-                    </button>
-                  </div>
-                </div>
+            <div className="w-full my-4" ref={refSectionServices}>
+              <h2 className="text-black font-bold text-xl my-2">Services</h2>
+              {store?.services ? (
+                <StoreServicesCard services={store?.services} />
+              ) : (
+                <Skeleton count={6} className="w-full" />
+              )}
+              <div className="mt-6">
+                <CustomCalendar />
               </div>
-            </div>
-            <div className="w-full my-4">
-              <h2 className="text-black font-bold text-xl my-2">
-                Collaborateurs
-              </h2>
-              <div className="rounded-lg p-6 shadow-lg flex flex-wrap gap-4">
-                <div className="w-fit rounded-lg flex flex-col items-center border border-1 border-gray-200 p-6">
-                  <span className="bg-black px-10 py-8 rounded-full">A</span>
-                  <span className="text-black">Anthoni</span>
-                </div>
-                <div className="w-fit rounded-lg flex flex-col items-center border border-1 border-gray-200 p-6">
-                  <span className="bg-black px-10 py-8 rounded-full">R</span>
-                  <span className="text-black">Reed</span>
-                </div>
-              </div>
+              {/* <StoreServiceCard /> */}
             </div>
             <div className="w-full my-4">
               <div className="my-4">
@@ -155,16 +136,16 @@ export default function StorePage() {
                   />
                   <Link
                     className="text-gray-500 underline hover:no-underline"
-                    href={`http://maps.google.com/?q=78 Address, address 75001, Paris`}
+                    href={`http://maps.google.com/?q=${store?.address}`}
                   >
-                    78 Address, address 75001, Paris
+                    {store?.address ?? <Skeleton width={200} />}
                   </Link>
                 </div>
               </div>
               {/* <CustomMap /> */}
             </div>
             <div className="w-full my-4">
-              <h2 className="text-black font-bold text-xl my-2">à propos</h2>
+              <h2 className="text-black font-bold text-xl my-2">À propos</h2>
               <div className="rounded-lg border border-1 border-gray-300 py-8 px-6 shadow-lg">
                 <p className="text-gray-500">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
@@ -180,41 +161,25 @@ export default function StorePage() {
             </div>
           </div>
           <div className="w-full max-w-[400px]">
-            <h1 className="text-black font-bold text-2xl mb-4">
-              Horaires d&apos;ouverture
+            <h1 className="text-black font-bold text-2xl my-2">
+              Collaborateurs
             </h1>
-            <div className="rounded-lg border border-1 border-gray-300 px-6 shadow-lg">
-              <div className="flex justify-between p-4">
-                <div>
-                  <span className="text-black">Lundi</span>
-                </div>
-                <div>
-                  <span className="text-gray-500">09:00 - 19:00</span>
-                </div>
+
+            <div className="rounded-lg p-6 shadow-lg flex flex-wrap gap-4">
+              <div className="w-fit rounded-lg flex flex-col items-center border border-1 border-gray-200 p-6">
+                <span className="bg-black px-10 py-8 rounded-full">A</span>
+                <span className="text-black">Anthoni</span>
               </div>
-              <hr />
-              <div className="flex justify-between p-4">
-                <div>
-                  <span className="text-black">Lundi</span>
-                </div>
-                <div>
-                  <span className="text-gray-500">09:00 - 19:00</span>
-                </div>
+              <div className="w-fit rounded-lg flex flex-col items-center border border-1 border-gray-200 p-6">
+                <span className="bg-black px-10 py-8 rounded-full">R</span>
+                <span className="text-black">Reed</span>
               </div>
-              <hr />
-              <div className="flex justify-between p-4">
-                <div>
-                  <span className="text-black">Lundi</span>
-                </div>
-                <div>
-                  <span className="text-gray-500">09:00 - 19:00</span>
-                </div>
-              </div>
-              <hr />
             </div>
           </div>
         </div>
       </section>
     </main>
   );
-}
+};
+
+export default StorePage;

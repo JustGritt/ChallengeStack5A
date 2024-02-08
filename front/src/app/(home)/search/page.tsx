@@ -2,7 +2,7 @@
 import CustomMap from "@/components/cards/map/CustomMap";
 import SearchSection, {
   RefDivCardSearch,
-} from "@/components/cards/search/SearchSection";
+} from "@/components/cards/Search/SearchSection";
 import { selectCompany } from "@/lib/helpers/SearchStoreHelper";
 import { Store } from "@/types/Store";
 import React, { createRef } from "react";
