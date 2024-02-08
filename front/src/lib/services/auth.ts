@@ -46,6 +46,13 @@ export const authApi = api.injectEndpoints({
         body: user,
       }),
     }),
+    becomeAffiliate: build.mutation<{ kbis: string, name: string }, Record<"kbis" | "name", string>>({
+      query: ({ kbis, name }) => ({
+        url: "/companies",
+        method: "POST",
+        body: { kbis, name }
+      }),
+    }),
     validateEmailToken: build.mutation<ApiSuccessBase<any>, Record<"token", string>>({
       query: (token) => ({
         url: `/users/token/${token}`,
@@ -86,6 +93,7 @@ export const {
   useUpdateUserMutation,
   useForgetPasswordMutation,
   useResetUserTokenMutation,
+  useBecomeAffiliateMutation,
   useValidateEmailTokenMutation,
   useGetMyProfileQuery,
   useLazyGetMyProfileQuery
