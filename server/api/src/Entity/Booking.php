@@ -14,36 +14,41 @@ use ApiPlatform\Metadata\GetCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\Store;
 use ApiPlatform\Metadata\Link;
+use App\State\BookingStateProcessor;
+use App\State\BookingStateProvider;
 
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
 #[ApiResource(
     operations: [
         new Get(normalizationContext: ['groups' => ['booking-read-full']]),
         new Post(denormalizationContext: ['groups' => ['booking-mutation']]),
-        new Patch(denormalizationContext: ['groups' => ['booking-mutation']]),
+        new Patch(denormalizationContext: ['groups' => ['booking-mutation-put']], security: "object.customer == user"),
     ],
     normalizationContext: ['groups' => ['booking-read-full']],
+    processor: BookingStateProcessor::class,
 )]
 #[ApiResource(
     uriTemplate: '/stores/{id}/bookings',
     uriVariables: [
         'id' => new Link(fromClass: Store::class, toProperty: 'store'),
     ],
-    operations: [ new GetCollection(normalizationContext: ['groups' => ['booking-read-full']]) ]
+    operations: [ new GetCollection(normalizationContext: ['groups' => ['booking-read-full']]) ],
 )]
 #[ApiResource(
     uriTemplate: '/users/{id}/bookings',
     uriVariables: [
         'id' => new Link(fromClass: Store::class, toProperty: 'customer'),
     ],
-    operations: [ new GetCollection(normalizationContext: ['groups' => ['booking-read-full']], security: "is_granted('ROLE_USER')") ]
+    operations: [ new GetCollection(normalizationContext: ['groups' => ['booking-read-full']] ) ],
+    provider: BookingStateProvider::class,
 )]
 #[ApiResource(
     uriTemplate: '/employee/{id}/bookings',
     uriVariables: [
         'id' => new Link(fromClass: Store::class, toProperty: 'employee'),
     ],
-    operations: [ new GetCollection(normalizationContext: ['groups' => ['booking-read-full']]) ]
+    operations: [ new GetCollection(normalizationContext: ['groups' => ['booking-read-full']]) ],
+    provider: BookingStateProvider::class,
 )]
 class Booking
 {
@@ -55,7 +60,7 @@ class Booking
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['booking-mutation', 'booking-read-full'])]
+    #[Groups(['booking-read-full'])]
     private ?User $customer = null;
 
     #[ORM\ManyToOne]
@@ -65,7 +70,7 @@ class Booking
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['booking-read-full', 'booking-mutation'])]
+    #[Groups(['booking-read-full', 'booking-mutation', 'admin-read-booking'])]
     private ?Service $service = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -73,16 +78,16 @@ class Booking
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(['booking-read-full', 'booking-mutation'])]
+    #[Groups(['booking-read-full'])]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['booking-read-full', 'booking-mutation'])]
+    #[Groups(['booking-read-full'])]
     private ?Store $store = null;
 
     #[ORM\Column]
-    #[Groups(['booking-read-full', 'booking-mutation'])]
+    #[Groups(['booking-mutation-put'])]
     private ?bool $cancelled = false;
 
     public function getId(): ?int
@@ -173,5 +178,4 @@ class Booking
 
         return $this;
     }
-
 }
