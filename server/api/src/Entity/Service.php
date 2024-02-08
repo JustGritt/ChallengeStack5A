@@ -40,7 +40,7 @@ use App\Entity\Store;
     uriVariables: [
         'id' => new Link(fromClass: Store::class, toProperty: 'store'),
     ],
-    operations: [ new GetCollection(normalizationContext: ['groups' => ['booking-read-full']]) ]
+    operations: [ new GetCollection(normalizationContext: ['groups' => ['service-read']]) ]
 )]
 /*
 #[ApiResource(
