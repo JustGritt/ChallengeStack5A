@@ -3,6 +3,7 @@ import { Store } from "@/types/Store";
 import { faLocationDot, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { LegacyRef, RefObject, useImperativeHandle } from "react";
 
 export type StoreCardProps = {
@@ -13,9 +14,10 @@ export type StoreCardProps = {
 
 function StoreCard({
   refStore,
-  store: { name, address, country, city },
+  store: { name, address, country, city, id },
   active,
 }: StoreCardProps) {
+  const router = useRouter();
   return (
     <>
       <div
@@ -24,6 +26,9 @@ function StoreCard({
           active ? "shadow-xl z-40" : ""
         } bg-white px-3 min-h-[200px] cursor-pointer  hover:shadow-lg hover:z-30  transition ease-in-out delay-150 flex items-center flex-col`}
         id={name}
+        onClick={() => {
+          router.push(`/stores/${id}`);
+        }}
       >
         <div className="flex justify-evenly items-center m-auto w-full lg:flex-row flex-col lg:p-0  shadow-gray-200">
           {/* <div className="flex justify-center items-center flex-[.5]">
