@@ -41,12 +41,12 @@ security:
         - { path: ^/stores$, roles: PUBLIC_ACCESS, methods: GET }
         - { path: ^/services$, roles: PUBLIC_ACCESS, methods: GET }
         - { path: ^/bookings$, roles: PUBLIC_ACCESS, methods: GET }
-        - { path: ^/companies/\d+, roles: PUBLIC_ACCESS, methods: GET }
-        - { path: ^/stores/\d+, roles: PUBLIC_ACCESS, methods: GET }
+        - { path: ^/companies/\d+$, roles: PUBLIC_ACCESS, methods: GET }
+        - { path: ^/stores/\d+$, roles: PUBLIC_ACCESS, methods: GET }
         - { path: ^/stores/\d+/schedules, roles: PUBLIC_ACCESS, methods: GET }
         - { path: ^/users/\d+/schedules, roles: PUBLIC_ACCESS, methods: GET }
         - { path: ^/stores/\d+/services, roles: PUBLIC_ACCESS, methods: GET }
-        - { path: '^/users/token/.+', roles: PUBLIC_ACCESS }
+        - { path: '^/users/token/.+$', roles: PUBLIC_ACCESS }
         - { path: ^/$, roles: PUBLIC_ACCESS }
         - { path: '^/forgot_password', roles: PUBLIC_ACCESS }
         - { path: ^/users, roles: PUBLIC_ACCESS, methods: POST }

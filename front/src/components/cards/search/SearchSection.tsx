@@ -1,5 +1,5 @@
 "use client";
-import StoreCard from "@/components/Store/StoreCard";
+import StoreCard from "@/components/Pages/Store/StoreCard";
 import { CITIES } from "@/lib/constants/fakeDatas";
 
 import { ApiSuccessBase } from "@/types/ApiBase";
@@ -79,7 +79,7 @@ const SearchSection: ForwardRefRenderFunction<
 
   // check if last element is in view
   useEffect(() => {
-    document?.body.classList.add("overflow-y-hidden");
+    //document?.body.classList.add("overflow-y-hidden");
     const params: Partial<QueryStore> = {};
     if (domainSearch || location) {
       params["services.name"] = domainSearch ?? undefined;
@@ -94,9 +94,9 @@ const SearchSection: ForwardRefRenderFunction<
           callBack(allStores);
         }
       });
-    return () => {
-      document?.body.classList.add("overflow-y-auto");
-    };
+    // return () => {
+    //   document?.body.classList.add("overflow-y-auto");
+    // };
   }, [domainSearch, location]);
 
   return (
