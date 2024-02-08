@@ -31,6 +31,20 @@ use ApiPlatform\Metadata\Link;
     ],
     operations: [ new GetCollection(normalizationContext: ['groups' => ['booking-read-full']]) ]
 )]
+#[ApiResource(
+    uriTemplate: '/users/{id}/bookings',
+    uriVariables: [
+        'id' => new Link(fromClass: Store::class, toProperty: 'customer'),
+    ],
+    operations: [ new GetCollection(normalizationContext: ['groups' => ['booking-read-full']], security: "is_granted('ROLE_USER')") ]
+)]
+#[ApiResource(
+    uriTemplate: '/employee/{id}/bookings',
+    uriVariables: [
+        'id' => new Link(fromClass: Store::class, toProperty: 'employee'),
+    ],
+    operations: [ new GetCollection(normalizationContext: ['groups' => ['booking-read-full']]) ]
+)]
 class Booking
 {
     #[ORM\Id]
