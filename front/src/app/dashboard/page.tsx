@@ -1,6 +1,6 @@
 "use client";
 import DashboardCalendar from "@/components/Calendar/DashboardCalendar";
-import AuthMiddleware from "@/middlewares/AuthMiddleware";
+
 export default function Dashboard() {
   return (
     <section className="lg:pl-72 block min-h-screen">

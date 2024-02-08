@@ -42,7 +42,7 @@ security:
         - { path: ^/services$, roles: PUBLIC_ACCESS, methods: GET }
         - { path: ^/bookings$, roles: PUBLIC_ACCESS, methods: GET }
         - { path: ^/companies/\d+$, roles: PUBLIC_ACCESS, methods: GET }
-        - { path: ^/stores/\d+$, roles: PUBLIC_ACCESS, methods: GET }
+        - { path: ^/stores/\d+, roles: PUBLIC_ACCESS, methods: GET }
         - { path: ^/stores/\d+/schedules, roles: PUBLIC_ACCESS, methods: GET }
         - { path: ^/users/\d+/schedules, roles: PUBLIC_ACCESS, methods: GET }
         - { path: ^/stores/\d+/services, roles: PUBLIC_ACCESS, methods: GET }

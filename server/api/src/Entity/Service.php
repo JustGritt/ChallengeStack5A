@@ -23,11 +23,18 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use App\Controller\CreateService;
 use App\Entity\Store;
+use ApiPlatform\Action\NotFoundAction;
+
 
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
 #[ApiResource(
     operations: [
         new GetCollection(normalizationContext: ['groups' => ['service-read']]),
+        new Get(
+            controller: NotFoundAction::class, 
+            read: false, 
+            output: false
+        ),
         new Post(denormalizationContext: ['groups' => ['service-mutation']]),
         new Patch(denormalizationContext: ['groups' => ['service-mutation']]),
         new Delete(),
@@ -35,6 +42,15 @@ use App\Entity\Store;
     normalizationContext: ['groups' => ['service-read']],
     processor: ServiceStateProcessor::class,
 )]
+#[ApiResource(
+    uriTemplate: '/stores/{storeId}/services/{id}',
+    uriVariables: [
+        'storeId' => new Link(fromClass: Store::class, toProperty: 'store'),
+        'id' => new Link(fromClass: Service::class),
+    ],
+    operations: [ new Get(normalizationContext: ['groups' => ['service-read']]) ],
+)]
+
 /*
 #[ApiResource(
     uriTemplate: '/stores/{id}/services',
@@ -48,7 +64,7 @@ class Service
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]    
+    #[ORM\Column]
     #[Groups(['service-read', 'store-read-full'])]
     private ?int $id = null;
 
@@ -61,14 +77,14 @@ class Service
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 3, max: 255)]
-    #[Groups(['service-read', 'service-mutation', 'store-read-full'])]
+    #[Groups(['service-read', 'service-mutation', 'store-read-full', 'admin-read-booking'])]
     private ?string $description = null;
 
     #[ORM\Column]
     #[Assert\NotBlank()]
     #[Assert\PositiveOrZero()]
     #[Assert\LessThanOrEqual(720)] //12 hours
-    #[Groups(['service-read', 'service-mutation', 'store-read-full'])]
+    #[Groups(['service-read', 'service-mutation', 'store-read-full', 'admin-read-booking'])]
     private ?int $time = null;
 
     #[ORM\ManyToOne(inversedBy: 'services')]
@@ -79,7 +95,7 @@ class Service
     #[ORM\Column]
     #[Assert\NotBlank()]
     #[Assert\PositiveOrZero()]
-    #[Groups(['service-read',  'service-mutation', 'store-read-full'])]
+    #[Groups(['service-read',  'service-mutation', 'store-read-full', 'admin-read-booking'])]
     private ?float $price = null;
 
     #[ORM\OneToMany(mappedBy: 'service', targetEntity: Booking::class)]

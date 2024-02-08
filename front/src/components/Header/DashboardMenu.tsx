@@ -1,36 +1,47 @@
 "use client";
-import { Fragment, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, CalendarIcon, ChartPieIcon, ShoppingCartIcon, Cog6ToothIcon, HomeIcon, UsersIcon, XMarkIcon, ClockIcon, UserIcon } from '@heroicons/react/24/outline'
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+
+import Link from 'next/link';
 import Image from 'next/image'
+import DashboardProfileHeader from '../Dashboard/DashboardProfileHeader';
+import { classNames } from '@/lib/helpers/utils';
 import { usePathname } from 'next/navigation'
 import { useSelector } from 'react-redux';
+import { getUserCookie } from "@/lib/helpers/UserHelper";
+import { UserCookieType } from "@/types/User";
 import { selectCurrentUser } from '@/lib/services/slices/authSlice';
-import { classNames } from '@/lib/helpers/utils';
-import DashboardProfileHeader from '../Dashboard/DashboardProfileHeader';
-import Link from 'next/link';
-import { getUserCookie } from '@/lib/helpers/UserHelper';
-import { UserCookieType } from '@/types/User';
+import { Dialog, Transition } from '@headlessui/react'
+import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { Fragment, useEffect, useState } from 'react'
+import { Bars3Icon, BellIcon, CalendarIcon, ShoppingCartIcon, Cog6ToothIcon, HomeIcon, UsersIcon, XMarkIcon, ClockIcon, UserIcon, SparklesIcon } from '@heroicons/react/24/outline'
 
 export default function DashboardMenu() {
 
-    const [sidebarOpen, setSidebarOpen] = useState(false)
-    const user = useSelector(selectCurrentUser);
     const pathname = usePathname()
+    const user = useSelector(selectCurrentUser);
+    const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [notifications, setNotifications] = useState<any[]>([])
+
+    useEffect(() => {
+        (async () => {
+            const session = await getUserCookie(UserCookieType.SESSION);
+            const parsedSession = JSON.parse(session?.value || "{}");
+            if (user?.roles.includes('ROLE_ADMIN') || user?.roles.includes('ROLE_SUPER_ADMIN')) {
+                await fetch('https://api.odicylens.com/companies?page=0', { method: 'GET', headers: { 'Authorization': `Bearer ${parsedSession?.token}` } })
+                    .then(response => response.json())
+                    .then(data => data['hydra:member'].map((company: any) => {
+                        company.isValid ? setNotifications([...notifications, company]) : null
+                    }))
+            }
+        })();
+    }, [user])
 
     const navigation = [
-        { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: pathname === '/dashboard', role: ['admin', 'owner'] },
-        { name: 'Stores', href: '/dashboard/stores', icon: ShoppingCartIcon, current: pathname === '/dashboard/stores' },
-        { name: 'Employees', href: '/dashboard/stores/employees', icon: UsersIcon, current: pathname === '/dashboard/store/employees' },
-        { name: 'Reservations', href: '/dashboard/appointments', icon: CalendarIcon, current: pathname === '/dashboard/appointments' },
-        { name: 'History', href: '/dashboard/history', icon: ClockIcon, current: pathname === '/dashboard/history' },
-        { name: 'Statistics', href: '/dashboard/statistics', icon: ChartPieIcon, current: pathname === '/dashboard/statistics' },
-    ]
-
-    const userNavigation = [
-        { name: 'Your profile', href: '/dashboard/profile' },
-        { name: 'Sign out', href: '/dashboard/logout' },
+        { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: pathname === '/dashboard', role: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'] },
+        { name: 'Company', href: '/dashboard/company', icon: SparklesIcon, current: pathname === '/dashboard/company', role: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN','ROLE_USER'] },
+        { name: 'Stores', href: '/dashboard/stores', icon: ShoppingCartIcon, current: pathname === '/dashboard/stores', role: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'] },
+        { name: 'Employees', href: '/dashboard/stores/employees', icon: UsersIcon, current: pathname === '/dashboard/store/employees', role: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'] },
+        { name: 'Reservations', href: '/dashboard/appointments', icon: CalendarIcon, current: pathname === '/dashboard/appointments', role: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN', 'ROLE_USER'] },
+        { name: 'History', href: '/dashboard/history', icon: ClockIcon, current: pathname === '/dashboard/history', role: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN','ROLE_USER'] },
     ]
 
     return (
@@ -71,44 +82,26 @@ export default function DashboardMenu() {
                                         <ul role="list" className="flex flex-1 flex-col gap-y-7">
                                             <li>
                                                 <ul role="list" className="-mx-2 space-y-1">
-                                                    {navigation.map((item) => (
-                                                    <li key={item.name}>
-                                                        <Link href={item.href} className={classNames( item.current
-                                                            ? 'bg-gray-50 dark:bg-gray-700 text-indigo-600 dark:text-indigo-300'
-                                                            : 'text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-200 hover:bg-gray-50 dark:hover:bg-gray-600'
-                                                            , 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                                                            )}>
-                                                            <item.icon className={classNames( item.current
-                                                                ? 'text-indigo-600'
-                                                                : 'text-gray-400 group-hover:text-indigo-600'
-                                                                , 'h-6 w-6 shrink-0' )} aria-hidden="true" />
-                                                            {item.name}
-                                                        </Link>
-                                                    </li>
-                                                    ))}
-
-                                                    <li>
-                                                        <button type="button" className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
-                                                            <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 21">
-                                                                <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z"/>
-                                                            </svg>
-                                                            <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">E-commerce</span>
-                                                            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                                                            </svg>
-                                                        </button>
-                                                        <ul id="dropdown-example" className="hidden py-2 space-y-2">
-                                                            <li>
-                                                                <a href="#" className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Products</a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#" className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Billing</a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#" className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Invoice</a>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
+                                                    {
+                                                        navigation.map((item) => {
+                                                            if (user?.roles.some(role => item.role.includes(role))) {
+                                                                return (
+                                                                    <li key={item.name}>
+                                                                        <Link href={item.href}>
+                                                                            <span className={classNames( item.current
+                                                                                ? 'bg-gray-50 text-indigo-600'
+                                                                                : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50'
+                                                                                , 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold' )}>
+                                                                                <item.icon className={classNames( item.current ? 'text-indigo-600'
+                                                                                    : 'text-gray-400 group-hover:text-indigo-600' , 'h-6 w-6 shrink-0' )} aria-hidden="true" />
+                                                                                {item.name}
+                                                                            </span>
+                                                                        </Link>
+                                                                    </li>
+                                                                )
+                                                            }
+                                                        })
+                                                    }
                                                 </ul>
                                             </li>
 
@@ -143,20 +136,26 @@ export default function DashboardMenu() {
                         <ul role="list" className="flex flex-1 flex-col gap-y-7">
                             <li>
                                 <ul role="list" className="-mx-2 space-y-1">
-                                    {navigation.map((item) => (
-                                    <li key={item.name}>
-
-                                        <a href={item.href} className={classNames( item.current
-                                            ? 'bg-gray-50 text-indigo-600'
-                                            : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50'
-                                            , 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold' )}>
-                                            <item.icon className={classNames( item.current ? 'text-indigo-600'
-                                                : 'text-gray-400 group-hover:text-indigo-600' , 'h-6 w-6 shrink-0' )}
-                                                aria-hidden="true" />
-                                            {item.name}
-                                        </a>
-                                    </li>
-                                    ))}
+                                    {
+                                        navigation.map((item) => {
+                                            if (user?.roles.some(role => item.role.includes(role))) {
+                                                return (
+                                                    <li key={item.name}>
+                                                        <Link href={item.href}>
+                                                            <span className={classNames( item.current
+                                                                ? 'bg-gray-50 text-indigo-600'
+                                                                : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50'
+                                                                , 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold' )}>
+                                                                <item.icon className={classNames( item.current ? 'text-indigo-600'
+                                                                    : 'text-gray-400 group-hover:text-indigo-600' , 'h-6 w-6 shrink-0' )} aria-hidden="true" />
+                                                                {item.name}
+                                                            </span>
+                                                        </Link>
+                                                    </li>
+                                                )
+                                            }
+                                        })
+                                    }
                                 </ul>
                             </li>
                             <li className="mt-auto">
@@ -198,12 +197,17 @@ export default function DashboardMenu() {
                                 placeholder="Search..." type="search" name="search" />
                         </form>
                         <div className="flex items-center gap-x-4 lg:gap-x-6">
-                            <button type="button" className="relative -m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+                            <a href="/dashboard/notifications" className="relative -m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
                                 <span className="sr-only">View notifications</span>
                                 <BellIcon className="h-6 w-6" aria-hidden="true" />
-                                {/* TODO: Update with the number of items to validate */}
-                                <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-1 -end-1 dark:border-gray-900">3</div>
-                            </button>
+                                {
+                                        notifications.length > 0 ? (
+                                            <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-1 -end-1 dark:border-gray-900">
+                                                {notifications.length}
+                                            </div>
+                                        ) : null
+                                }
+                            </a>
 
                             {/* Separator */}
                             <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" aria-hidden="true" />
