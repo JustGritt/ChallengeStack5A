@@ -6,24 +6,38 @@ import DashboardProfileHeader from '../Dashboard/DashboardProfileHeader';
 import { classNames } from '@/lib/helpers/utils';
 import { usePathname } from 'next/navigation'
 import { useSelector } from 'react-redux';
+import { getUserCookie } from "@/lib/helpers/UserHelper";
+import { UserCookieType } from "@/types/User";
 import { selectCurrentUser } from '@/lib/services/slices/authSlice';
-import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import { Bars3Icon, BellIcon, CalendarIcon, ChartPieIcon, ShoppingCartIcon, Cog6ToothIcon, HomeIcon, UsersIcon, XMarkIcon, ClockIcon, UserIcon } from '@heroicons/react/24/outline'
+import { Fragment, useEffect, useState } from 'react'
+import { Bars3Icon, BellIcon, CalendarIcon, ShoppingCartIcon, Cog6ToothIcon, HomeIcon, UsersIcon, XMarkIcon, ClockIcon, UserIcon, SparklesIcon } from '@heroicons/react/24/outline'
 
 export default function DashboardMenu() {
 
-    const [sidebarOpen, setSidebarOpen] = useState(false)
-
-    const user = useSelector(selectCurrentUser);
-    console.log(user?.roles)
-
-
     const pathname = usePathname()
+    const user = useSelector(selectCurrentUser);
+    const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [notifications, setNotifications] = useState<any[]>([])
+
+    useEffect(() => {
+        (async () => {
+            const session = await getUserCookie(UserCookieType.SESSION);
+            const parsedSession = JSON.parse(session?.value || "{}");
+            if (user?.roles.includes('ROLE_ADMIN') || user?.roles.includes('ROLE_SUPER_ADMIN')) {
+                await fetch('https://api.odicylens.com/companies?page=0', { method: 'GET', headers: { 'Authorization': `Bearer ${parsedSession?.token}` } })
+                    .then(response => response.json())
+                    .then(data => data['hydra:member'].map((company: any) => {
+                        company.isValid ? setNotifications([...notifications, company]) : null
+                    }))
+            }
+        })();
+    }, [user])
 
     const navigation = [
         { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: pathname === '/dashboard', role: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'] },
+        { name: 'Company', href: '/dashboard/company', icon: SparklesIcon, current: pathname === '/dashboard/company', role: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN','ROLE_USER'] },
         { name: 'Stores', href: '/dashboard/stores', icon: ShoppingCartIcon, current: pathname === '/dashboard/stores', role: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'] },
         { name: 'Employees', href: '/dashboard/stores/employees', icon: UsersIcon, current: pathname === '/dashboard/store/employees', role: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'] },
         { name: 'Reservations', href: '/dashboard/appointments', icon: CalendarIcon, current: pathname === '/dashboard/appointments', role: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN', 'ROLE_USER'] },
@@ -183,12 +197,17 @@ export default function DashboardMenu() {
                                 placeholder="Search..." type="search" name="search" />
                         </form>
                         <div className="flex items-center gap-x-4 lg:gap-x-6">
-                            <button type="button" className="relative -m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+                            <a href="/dashboard/notifications" className="relative -m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
                                 <span className="sr-only">View notifications</span>
                                 <BellIcon className="h-6 w-6" aria-hidden="true" />
-                                {/* TODO: Update with the number of items to validate */}
-                                <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-1 -end-1 dark:border-gray-900">3</div>
-                            </button>
+                                {
+                                        notifications.length > 0 ? (
+                                            <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-1 -end-1 dark:border-gray-900">
+                                                {notifications.length}
+                                            </div>
+                                        ) : null
+                                }
+                            </a>
 
                             {/* Separator */}
                             <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" aria-hidden="true" />

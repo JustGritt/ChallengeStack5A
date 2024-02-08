@@ -13,7 +13,6 @@ export default function Employees({ params }: { params: { id: string } }) {
     useEffect(() => {
         fetch(`https://api.odicylens.com/stores/2`)
             .then(response => response.json())
-            .then(data => console.log(data));
             // .then(data => setEmployees(data));
     }, []);
 

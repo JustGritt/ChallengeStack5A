@@ -10,7 +10,6 @@ export default function Stores() {
     const [stores, setStores] = useState<Store[]>([]);
 
     const user = useSelector(selectCurrentUser);
-    console.log(user)
 
     useEffect(() => {
         if (user) {
