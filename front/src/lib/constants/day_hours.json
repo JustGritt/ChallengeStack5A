@@ -1,0 +1,290 @@
+[
+    {
+      "military_format": "0000",
+      "twenty_four_hour_format": "00:00",
+      "standard_format": "00:00",
+      "time_of_day":"md"
+    },
+    {
+      "military_format": "0030",
+      "twenty_four_hour_format": "00:30",
+      "standard_format": "00:30",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0100",
+      "twenty_four_hour_format": "01:00",
+      "standard_format": "01:00",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0130",
+      "twenty_four_hour_format": "01:30",
+      "standard_format": "01:30",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0200",
+      "twenty_four_hour_format": "02:00",
+      "standard_format": "02:00",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0230",
+      "twenty_four_hour_format": "02:30",
+      "standard_format": "02:30",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0300",
+      "twenty_four_hour_format": "03:00",
+      "standard_format": "03:00",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0330",
+      "twenty_four_hour_format": "03:30",
+      "standard_format": "03:30",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0400",
+      "twenty_four_hour_format": "04:00",
+      "standard_format": "04:00",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0430",
+      "twenty_four_hour_format": "04:30",
+      "standard_format": "04:30",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0500",
+      "twenty_four_hour_format": "05:00",
+      "standard_format": "05:00",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0530",
+      "twenty_four_hour_format": "05:30",
+      "standard_format": "05:30",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0600",
+      "twenty_four_hour_format": "06:00",
+      "standard_format": "06:00",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0630",
+      "twenty_four_hour_format": "06:30",
+      "standard_format": "06:30",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0700",
+      "twenty_four_hour_format": "07:00",
+      "standard_format": "07:00",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0730",
+      "twenty_four_hour_format": "07:30",
+      "standard_format": "07:30",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0800",
+      "twenty_four_hour_format": "08:00",
+      "standard_format": "08:00",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0830",
+      "twenty_four_hour_format": "08:30",
+      "standard_format": "08:30",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0900",
+      "twenty_four_hour_format": "09:00",
+      "standard_format": "09:00",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "0930",
+      "twenty_four_hour_format": "09:30",
+      "standard_format": "09:30",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "1000",
+      "twenty_four_hour_format": "10:00",
+      "standard_format": "10:00",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "1030",
+      "twenty_four_hour_format": "10:30",
+      "standard_format": "10:30",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "1100",
+      "twenty_four_hour_format": "11:00",
+      "standard_format": "11:00",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "1130",
+      "twenty_four_hour_format": "11:30",
+      "standard_format": "11:30",
+      "time_of_day":"am"
+    },
+    {
+      "military_format": "1200",
+      "twenty_four_hour_format": "12:00",
+      "standard_format": "12:00",
+      "time_of_day":"md"
+    },
+    {
+      "military_format": "1230",
+      "twenty_four_hour_format": "12:30",
+      "standard_format": "12:30",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "1300",
+      "twenty_four_hour_format": "13:00",
+      "standard_format": "1:00",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "1330",
+      "twenty_four_hour_format": "13:30",
+      "standard_format": "1:30",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "1400",
+      "twenty_four_hour_format": "14:00",
+      "standard_format": "2:00",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "1430",
+      "twenty_four_hour_format": "14:30",
+      "standard_format": "2:30",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "1500",
+      "twenty_four_hour_format": "15:00",
+      "standard_format": "3:00",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "1530",
+      "twenty_four_hour_format": "15:30",
+      "standard_format": "3:30",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "1600",
+      "twenty_four_hour_format": "16:00",
+      "standard_format": "4:00",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "1630",
+      "twenty_four_hour_format": "16:30",
+      "standard_format": "4:30",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "1700",
+      "twenty_four_hour_format": "17:00",
+      "standard_format": "5:00",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "1730",
+      "twenty_four_hour_format": "17:30",
+      "standard_format": "5:30",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "1800",
+      "twenty_four_hour_format": "18:00",
+      "standard_format": "6:00",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "1830",
+      "twenty_four_hour_format": "18:30",
+      "standard_format": "6:30",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "1900",
+      "twenty_four_hour_format": "19:00",
+      "standard_format": "7:00",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "1930",
+      "twenty_four_hour_format": "19:30",
+      "standard_format": "7:30",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "2000",
+      "twenty_four_hour_format": "20:00",
+      "standard_format": "8:00",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "2030",
+      "twenty_four_hour_format": "20:30",
+      "standard_format": "8:30",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "2100",
+      "twenty_four_hour_format": "21:00",
+      "standard_format": "9:00",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "2130",
+      "twenty_four_hour_format": "21:30",
+      "standard_format": "9:30",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "2200",
+      "twenty_four_hour_format": "22:00",
+      "standard_format": "10:00",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "2230",
+      "twenty_four_hour_format": "22:30",
+      "standard_format": "10:30",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "2300",
+      "twenty_four_hour_format": "23:00",
+      "standard_format": "11:00",
+      "time_of_day":"pm"
+    },
+    {
+      "military_format": "2330",
+      "twenty_four_hour_format": "23:30",
+      "standard_format": "11:30",
+      "time_of_day":"pm"
+    }
+  ]

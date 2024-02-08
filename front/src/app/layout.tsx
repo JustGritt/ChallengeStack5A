@@ -8,9 +8,11 @@ import { Inter } from "next/font/google";
 import Head from "next/head";
 import Link from "next/link";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import 'react-loading-skeleton/dist/skeleton.css'
 import "mapbox-gl/dist/mapbox-gl.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
-import { ApiProvider } from "@reduxjs/toolkit/query/react";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { Toaster } from "react-hot-toast";
 import { store } from "@/lib/services/store";
 import { Provider } from "react-redux";
