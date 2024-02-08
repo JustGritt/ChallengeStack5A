@@ -79,13 +79,11 @@ const SearchSection: ForwardRefRenderFunction<
 
   // check if last element is in view
   useEffect(() => {
-    //document?.body.classList.add("overflow-y-hidden");
     const params: Partial<QueryStore> = {};
     if (domainSearch || location) {
       params["services.name"] = domainSearch ?? undefined;
       params.city = location ?? undefined;
     }
-
     getAllStores(params)
       .unwrap()
       .then((res) => {
@@ -94,9 +92,6 @@ const SearchSection: ForwardRefRenderFunction<
           callBack(allStores);
         }
       });
-    // return () => {
-    //   document?.body.classList.add("overflow-y-auto");
-    // };
   }, [domainSearch, location]);
 
   return (
