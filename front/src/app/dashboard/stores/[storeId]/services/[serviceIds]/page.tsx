@@ -1,8 +1,17 @@
 "use client";
 
+import { Store } from "@/types/Store";
 import { useState, useEffect } from 'react';
 
 export default function Stores({ params }: { params: { storeId: string } }) {
+
+    const [store, setStore] = useState<Store | null>(null);
+    useEffect(() => {
+        fetch(`https://api.odicylens.com/stores/${params.storeId}`)
+            .then(response => response.json())
+            .then(data => setStore(data));
+    }, [params.storeId]);
+
     return (
         <section className="lg:pl-72 block min-h-screen">
             <div className="p-4 sm:p-6 lg:p-8 h-full">
