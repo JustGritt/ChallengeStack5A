@@ -45,6 +45,7 @@ class Companie
     private ?string $name = null;
 
     #[Groups(['read-user-mutation', 'read-companie' , 'create-companie'])]
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $kbis = null;
 
@@ -63,6 +64,8 @@ class Companie
 
     #[Groups(['create-companie'])]
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Choice(callback: 'getStructureChoice')]
     private ?string $rcs = null;
 
     #[Groups(['create-companie', 'update-companie'])]
@@ -71,10 +74,12 @@ class Companie
 
     #[Groups(['update-companie', 'create-companie'])]
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $adresse = null;
 
     #[Groups(['update-companie', 'create-companie'])]
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $structure = null;
 
     #[Groups(['update-companie', 'create-companie'])]
@@ -82,19 +87,17 @@ class Companie
     private ?\DateTimeInterface $company_duration = null;
 
     #[Groups(['update-companie', 'create-companie'])]
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $end_duration = null;
-
-    #[Groups(['update-companie', 'create-companie'])]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $registrationDate = null;
 
     #[Groups(['update-companie', 'create-companie'])]
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $firstname = null;
 
     #[Groups(['update-companie', 'create-companie'])]
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $lastname = null;
 
     #[Groups(['update-companie', 'create-companie'])]
@@ -103,15 +106,20 @@ class Companie
 
     #[Groups(['update-companie', 'create-companie'])]
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $birthdayPlace = null;
 
     #[Groups(['update-companie', 'create-companie'])]
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $ownerAdresse = null;
 
     #[Groups(['read-user-mutation', 'update-companie', 'read-companie'])]
     #[ORM\Column]
     private ?bool $refused = false;
+
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $endDuration = null;
 
     public function __construct()
     {
@@ -261,18 +269,6 @@ class Companie
         return $this;
     }
 
-    public function getEndDuration(): ?\DateTimeInterface
-    {
-        return $this->end_duration;
-    }
-
-    public function setEndDuration(?\DateTimeInterface $end_duration): static
-    {
-        $this->end_duration = $end_duration;
-
-        return $this;
-    }
-
     public function getRegistrationDate(): ?\DateTimeInterface
     {
         return $this->registrationDate;
@@ -353,6 +349,23 @@ class Companie
     public function setRefused(bool $refused): static
     {
         $this->refused = $refused;
+
+        return $this;
+    }
+
+    public static function getStructureChoice(): array
+    {
+        return ['SA', 'SAS', 'SARL', 'EURL', 'SASU', 'GIE', 'SCI', 'SCA', 'SCOP', 'SNC', 'SDF', 'SEL', 'SELARL', 'SEP', 'SNC', 'SARLU', 'OTHER'];
+    }
+
+    public function getEndDuration(): ?\DateTimeInterface
+    {
+        return $this->endDuration;
+    }
+
+    public function setEndDuration(?\DateTimeInterface $endDuration): static
+    {
+        $this->endDuration = $endDuration;
 
         return $this;
     }
