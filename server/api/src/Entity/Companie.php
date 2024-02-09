@@ -62,55 +62,55 @@ class Companie
     private ?User $owner = null;
 
     #[Groups(['create-companie'])]
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $rcs = null;
 
     #[Groups(['create-companie', 'update-companie'])]
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column]
     private ?int $capital = null;
 
     #[Groups(['update-companie', 'create-companie'])]
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $adresse = null;
 
     #[Groups(['update-companie', 'create-companie'])]
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $structure = null;
 
     #[Groups(['update-companie', 'create-companie'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $company_duration = null;
 
     #[Groups(['update-companie', 'create-companie'])]
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $end_duration = null;
 
     #[Groups(['update-companie', 'create-companie'])]
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $registrationDate = null;
 
     #[Groups(['update-companie', 'create-companie'])]
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $firstname = null;
 
     #[Groups(['update-companie', 'create-companie'])]
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $lastname = null;
 
     #[Groups(['update-companie', 'create-companie'])]
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $birthday = null;
 
     #[Groups(['update-companie', 'create-companie'])]
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $birthdayPlace = null;
 
     #[Groups(['update-companie', 'create-companie'])]
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $ownerAdresse = null;
 
     #[Groups(['read-user-mutation', 'update-companie', 'read-companie'])]
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column]
     private ?bool $refused = false;
 
     public function __construct()
