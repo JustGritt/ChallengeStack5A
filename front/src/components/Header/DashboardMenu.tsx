@@ -56,7 +56,7 @@ export default function DashboardMenu() {
         { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: pathname === '/dashboard', role: ['isAdmin', 'isOwner', 'isWorker', 'isClient'] },
         { name: 'Company', href: '/dashboard/company', icon: ShoppingCartIcon, current: pathname === '/dashboard/company', role: ['isAdmin', 'isOwner'] },
         { name: 'Store', href: '/dashboard/stores', icon: ShoppingCartIcon, current: pathname === '/dashboard/stores', role: ['isAdmin', 'isOwner'] },
-        { name: 'Employees', href: '/dashboard/stores/employees', icon: UsersIcon, current: pathname === '/dashboard/store/employees', role: ['isAdmin', 'isOwner'] },
+        { name: 'Employees', href: '/dashboard/employees', icon: UsersIcon, current: pathname === '/dashboard/employees', role: ['isAdmin', 'isOwner'] },
         { name: 'Reservations', href: '/dashboard/appointments', icon: CalendarIcon, current: pathname === '/dashboard/appointments', role: ['isAdmin', 'isOwner', 'isWorker', 'isClient'] },
         { name: 'History', href: '/dashboard/history', icon: ClockIcon, current: pathname === '/dashboard/history', role: ['isAdmin', 'isOwner', 'isWorker', 'isClient'] },
     ]

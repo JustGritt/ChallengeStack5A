@@ -32,7 +32,7 @@ export default function Stores() {
                             <div>
                                 <div className="flex justify-between items-center">
                                     <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8 inline">Your Stores</h2>
-                                    <a href="/dashboard/company/edit" className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2 mr-4">
+                                    <a href="/dashboard/stores/new" className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2 mr-4">
                                         <BuildingStorefrontIcon className="h-5 w-5 inline-block -mt-1 mr-2" />
                                         New store
                                     </a>
@@ -40,17 +40,22 @@ export default function Stores() {
                                     <ul>
                                         {
                                             stores.map((store, index) => (
-                                                <li key={store.id} className="flex justify-between gap-x-6 py-5 px-4 rounded hover:bg-gray-100 transition-colors">
+                                                <li key={store.id} className="flex justify-between gap-x-6 py-5 px-4 rounded hover:bg-gray-100 transition-colors flex-col sm:flex-row">
                                                     <div className="flex min-w-0 gap-x-4">
                                                         <div className="min-w-0 flex-auto">
                                                             <p className="text-lg font-semibold leading-6 text-gray-900">{store.name}</p>
                                                             <p className="mt-1 truncate text-xs leading-5 text-gray-500">{store.address}, {store.postalCode} {store.city}, {store.country}</p>
                                                         </div>
                                                     </div>
-                                                    <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-                                                    <a href={"/dashboard/stores/" + store.id} className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-200 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700 mt-2">
+                                                    <div className="shrink-0 flex items-end gap-4">
+                                                        <a href={"/dashboard/stores/" + store.id} className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-200 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700 mt-2">
                                                             Link to Store
                                                         </a>
+
+                                                        {/* TODO: Add remove function */}
+                                                        <button type="button" className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
+                                                            Delete
+                                                        </button>
                                                     </div>
                                                 </li>
                                             ))

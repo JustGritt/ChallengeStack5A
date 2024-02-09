@@ -2,9 +2,9 @@
 
 import { Store } from "@/types/Store";
 import { useState, useEffect } from 'react';
-import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid'
 
 export default function Stores({ params }: { params: { storeId: string } }) {
+
     const [store, setStore] = useState<Store | null>(null);
     useEffect(() => {
         fetch(`https://api.odicylens.com/stores/${params.storeId}`)
@@ -46,27 +46,31 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                             Employees
                                         </h2>
                                         <div className="flex items-center justify-between gap-4">
-                                            <a href={`/dashboard/stores/${params.storeId}/services`} className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">
+                                            <a href={`/dashboard/stores/${params.storeId}/employees/add`} className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">
                                                 New Employee
                                             </a>
-                                            <a href={`/dashboard/stores/${params.storeId}/employees`} className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">See all</a>
                                         </div>
                                     </div>
 
-                                    <div className="max-w-screen-xl mx-auto text-center lg:py-8">
-                                        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                    <div className="max-w-screen-xl mx-auto lg:pt-8">
+                                        <ul className="bg-white dark:bg-gray-700 rounded-xl flex flex-col gap-4">
                                             {
-                                                store.users.length > 1 ? (store.users.map((user, index) => (
-                                                    <li key={index} className="flex justify-between gap-x-6 py-5 hover:bg-gray-100 w-full rounded shadow">
-                                                        <div className="min-w-0 flex flex-auto items-center justify-between px-6">
-                                                            <p className="text-sm font-semibold leading-6 text-gray-900">{user.firstname}</p>
-                                                            <p className="text-sm font-semibold leading-6 text-gray-900">{user.email}</p>
-                                                        </div>
-                                                    </li>
-                                                ))) : (
-                                                    <div>
-                                                        <p className="text-center">No employees found</p>
-                                                    </div>
+                                                store.users.length === 0 ? (
+                                                    <p>No employees yet</p>
+                                                ) : (
+                                                    store.users.map((user) => (
+                                                        <a href={`/dashboard/employees/${user.id}`} key={user.id}>
+                                                            <li className="flex justify-between gap-6 w-full rounded px-4 hover:bg-gray-100 shadow">
+                                                                <div className="flex min-w-0 gap-4 py-4">
+                                                                    <div className="h-12 w-12 flex-none rounded-full bg-gray-200 grid place-items-center font-bold">{user.firstname.charAt(0)}</div>
+                                                                    <div className="min-w-0 flex-auto">
+                                                                        <p className="text-sm font-semibold leading-6 text-gray-900">{user.firstname}</p>
+                                                                        <p className="mt-1 truncate text-xs leading-5 text-gray-500">{user.email}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </a>
+                                                    ))
                                                 )
                                             }
                                         </ul>
@@ -83,11 +87,10 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                             <a href={`/dashboard/stores/${params.storeId}/services`} className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">
                                                 New Service
                                             </a>
-                                            <a href={`/dashboard/stores/${params.storeId}/employees`} className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">See all</a>
                                         </div>
                                     </div>
 
-                                    <div className="max-w-screen-xl mx-auto lg:py-8">
+                                    <div className="max-w-screen-xl mx-auto lg:pt-8">
                                         <ul className="flex flex-col gap-4">
                                             {
                                                 store.services.length > 1 ? (store.services.map((service) => (
