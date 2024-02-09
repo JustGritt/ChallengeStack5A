@@ -68,12 +68,15 @@ class CompanieStateProcessor implements ProcessorInterface
             //check if the user is admin of the company
             if (null !== $user && null !== $user->getCompanie() && $user->getCompanie()->getId() === $data->getId()) {
                 if (null !== $context['previous_data']->isIsValid() && $data->isIsValid() !== $context['previous_data']->isIsValid()) {
-                    throw new AccessDeniedException('Cannot update this company.');
+                    throw new AccessDeniedException('Cannot update is valid. Only admin can do that.');
+                }
+                if (null !== $context['previous_data']->isRefused() && $data->isRefused() !== $context['previous_data']->isRefused()) {
+                    throw new AccessDeniedException('Cannot update is refused. Only admin can do that.');
                 }
 
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
-            throw new AccessDeniedException('Cannot update this company.');
+            throw new AccessDeniedException('Cannot update this company. Your are not the company admin.');
         }
     
         $result = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
