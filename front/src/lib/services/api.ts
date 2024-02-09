@@ -11,7 +11,8 @@ export const api = createApi({
     "Me",
     "Companies",
     "Services",
-    "Stores"
+    "Stores",
+    "Bookings"
   ],
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,

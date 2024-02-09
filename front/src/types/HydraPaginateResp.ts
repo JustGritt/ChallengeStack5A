@@ -28,3 +28,9 @@ export type HydraPaginateResp<T> = {
     "hydra:view": HydraView;
     "hydra:search": HydraSearch;
 };
+
+export type HydraResp<T> = {
+    "@context": "string",
+    "@id": "string",
+    "@type": "string",
+} & T

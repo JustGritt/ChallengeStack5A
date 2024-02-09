@@ -15,56 +15,7 @@ import StoreServiceCard from "@/components/Pages/Store/StoreServiceCard";
 import { useGetStoreQuery } from "@/lib/services/stores";
 import StoreServicesCard from "@/components/Pages/Store/StoreServiceCard";
 import React from "react";
-import CustomCalendar from "@/components/Calendar/CustomCalendar";
-
-const data = {
-  storeName: "StoreCard",
-  address: "78 Address, address 75001, Paris",
-  rating: "4.3",
-  reviews: "50",
-  price: "€€€",
-  imgs: [
-    "/logo.svg",
-    "/logo.svg",
-    "/logo.svg",
-    "/logo.svg",
-    "/logo.svg",
-    "/logo.svg",
-    "/logo.svg",
-  ],
-  services: [
-    {
-      name: "Prestation 1",
-      duration: "3 heures",
-      price: "300€",
-    },
-    {
-      name: "Prestation 2",
-      duration: "3 heures",
-      price: "300€",
-    },
-    {
-      name: "Prestation 3",
-      duration: "3 heures",
-      price: "300€",
-    },
-    {
-      name: "Prestation 4",
-      duration: "3 heures",
-      price: "300€",
-    },
-  ],
-  collaborators: [
-    {
-      name: "Anthoni",
-      img: "/logo.svg",
-    },
-    {
-      name: "Reed",
-      img: "/logo.svg",
-    },
-  ],
-};
+import { notFound } from "next/navigation";
 
 const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
   params: { id },
@@ -72,6 +23,10 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
   const { isLoading, isError, data: store } = useGetStoreQuery(id);
 
   const refSectionServices = React.useRef<null | HTMLDivElement>(null);
+
+  if (isError) {
+    return notFound();
+  }
 
   return (
     <main className="w-full z-40 flex flex-col bg-white py-4 px-3 items-center">
@@ -82,12 +37,16 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
           </h1>
           <div className="flex gap-2 justify-center items-center">
             <FontAwesomeIcon className="text-gray-500" icon={faLocationDot} />
-            <Link
-              className="text-gray-500 underline hover:no-underline"
-              href={`${data.address}`}
-            >
-              {store?.address ?? <Skeleton width={200} />}
-            </Link>
+            {!store?.address ? (
+              <Skeleton width={200} />
+            ) : (
+              <Link
+                className="text-gray-500 underline hover:no-underline"
+                href={`${store?.address}`}
+              >
+                {store?.address}
+              </Link>
+            )}
           </div>
         </div>
         <Button
@@ -101,8 +60,11 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
         </Button>
       </section>
       <section className="max-w-6xl w-full flex px-6 md:px-10 lg:px-0 "></section>
-      <section className=" max-w-6xl w-full px-6 md:px-10 lg:px-0">
-        <h2>
+      <section
+        className=" max-w-6xl w-full px-6 md:px-10 lg:px-0"
+        ref={refSectionServices}
+      >
+        <h2 className="text-black font-bold text-2xl my-2">
           Réserver en ligne pour un RDV chez{" "}
           {store?.name ?? <Skeleton width={150} />}
         </h2>
@@ -112,17 +74,17 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
             <h1 className="text-black font-bold text-2xl my-2">
               Choix de prestation
             </h1>
-            <div className="w-full my-4" ref={refSectionServices}>
+            <div className="w-full my-4">
               <h2 className="text-black font-bold text-xl my-2">Services</h2>
               {store?.services ? (
-                <StoreServicesCard services={store?.services} />
+                <StoreServicesCard
+                  services={store?.services.map((s) => {
+                    return { ...s, store: store.id.toString() };
+                  })}
+                />
               ) : (
                 <Skeleton count={6} className="w-full" />
               )}
-              <div className="mt-6">
-                <CustomCalendar />
-              </div>
-              {/* <StoreServiceCard /> */}
             </div>
             <div className="w-full my-4">
               <div className="my-4">
@@ -142,9 +104,10 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
                   </Link>
                 </div>
               </div>
+
               {/* <CustomMap /> */}
             </div>
-            <div className="w-full my-4">
+            {/* <div className="w-full my-4">
               <h2 className="text-black font-bold text-xl my-2">À propos</h2>
               <div className="rounded-lg border border-1 border-gray-300 py-8 px-6 shadow-lg">
                 <p className="text-gray-500">
@@ -158,7 +121,7 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
                   mollit anim id est laborum.
                 </p>
               </div>
-            </div>
+            </div> */}
           </div>
           <div className="w-full max-w-[400px]">
             <h1 className="text-black font-bold text-2xl my-2">

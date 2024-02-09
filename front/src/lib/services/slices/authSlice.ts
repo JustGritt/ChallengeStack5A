@@ -2,7 +2,7 @@
 
 import { RootState } from "@/lib/services/store";
 import { User } from "@/types/User";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 type AuthState = {
@@ -50,11 +50,16 @@ export const { setCredentials, resetCredentials } = slice.actions;
 
 export default slice.reducer;
 
-export const selectCurrentUser = (state: RootState) => state.auth.user;
+export const selectStateUser = (state: RootState) => state.auth;
 
-export const selectCurrentUserConfig = (state: RootState) => ({
-  isAdmin: state.auth.isAdmin,
-  isWorker: state.auth.isWorker,
-  isOwner: state.auth.isOwner,
-  isClient: state.auth.isClient,
-});
+export const selectCurrentUserConfig = (state: RootState) => (state.auth);
+
+export const selectCurrentUserAuthValues = createSelector([selectCurrentUserConfig], state => ({
+  isAdmin: state.isAdmin,
+  isWorker: state.isWorker,
+  isOwner: state.isOwner,
+  isClient: state.isClient,
+}))
+
+export const selectCurrentUser = createSelector([selectStateUser], state => (state.user))
+
