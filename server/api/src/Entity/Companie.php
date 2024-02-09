@@ -118,6 +118,7 @@ class Companie
     #[ORM\Column]
     private ?bool $refused = false;
 
+    #[Groups(['read-user-mutation', 'update-companie', 'read-companie'])]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $endDuration = null;
 
