@@ -12,6 +12,10 @@ use Postmark\PostmarkClient;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Twig\Environment;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+
 
 class CompanieStateProcessor implements ProcessorInterface
 {
@@ -21,6 +25,8 @@ class CompanieStateProcessor implements ProcessorInterface
         #[Autowire('@api_platform.doctrine.orm.state.remove_processor')]
         private ProcessorInterface $removeProcessor,
         private EntityManagerInterface $entityManager,
+        private MailerInterface $mailer,
+        private Environment $twig,
         private Security $security
 
     )
@@ -35,12 +41,10 @@ class CompanieStateProcessor implements ProcessorInterface
         }
     
         $user = $this->security->getUser();
-
        
         //check if the method is post
         if ($operation->getUriTemplate() === "/companies{._format}"  && $operation->getMethod() === 'POST') {
             
-
             //check if the user is working for a company
             if (null !== $user->getWork()) {
                 throw new AccessDeniedException('User already work for a company. Cannot create.');
@@ -50,8 +54,8 @@ class CompanieStateProcessor implements ProcessorInterface
                 throw new AccessDeniedException('User already has a company. Cannot create a new one.');
             }
 
-            dump($user);
             $data->setOwner($user);
+            $this->sendAdminMail($data);
             return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
         }
         
@@ -73,8 +77,6 @@ class CompanieStateProcessor implements ProcessorInterface
         }
     
         $result = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
-        $this->sendAdminMail($data);
-
         return $result;
     }
 
@@ -82,6 +84,23 @@ class CompanieStateProcessor implements ProcessorInterface
     public function sendAdminMail(Companie $companie): void
     {
         $users = $this->getAdminUsers();
+
+        foreach ($users as $user) {
+            $email = (new Email())
+                ->from('contact@charlesparames.com')
+                ->to($user->getEmail())
+                ->subject('New company created')
+                ->text($this->twig->render('admin/new.txt.twig', [
+                    'companie_name' => $companie->getName(),
+                ]))
+                ->html($this->twig->render('admin/new.html.twig', [
+                    'companie_name' => $companie->getName(),
+                ]));
+            $this->mailer->send($email);
+        }
+
+
+        /*
         $client = new PostmarkClient($_ENV['MAILER_TOKEN']);
         foreach ($users as $user) {
             $client->sendEmailWithTemplate(
@@ -94,6 +113,7 @@ class CompanieStateProcessor implements ProcessorInterface
                 ]
             );
         }
+        */
 
     }
 

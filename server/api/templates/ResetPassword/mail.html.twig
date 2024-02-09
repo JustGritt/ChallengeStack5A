@@ -1,260 +1,91 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <title>Réinitialisation de votre mot de passe</title>
-        <style type="text/css" rel="stylesheet" media="all">
-            /* Base ------------------------------ */
-            *:not(br):not(tr):not(html) {
-                font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
-                -webkit-box-sizing: border-box;
-                box-sizing: border-box;
-            }
-
-            body {
-                width: 100% !important;
-                height: 100%;
-                margin: 0;
-                line-height: 1.4;
-                background-color: #F2F4F6;
-                color: #74787E;
-                -webkit-text-size-adjust: none;
-            }
-
-            a {
-                color: #3869D4;
-            }
-
-            /* Layout ------------------------------ */
-            .email-wrapper {
-                width: 100%;
-                margin: 0;
-                padding: 0;
-                background-color: #F2F4F6;
-            }
-
-            .email-content {
-                width: 100%;
-                margin: 0;
-                padding: 0;
-            }
-
-            /* Masthead ----------------------- */
-            .email-masthead {
-                padding: 25px 0;
-                text-align: center;
-            }
-
-            .email-masthead_logo {
-                max-width: 400px;
-                border: 0;
-            }
-
-            .email-masthead_name {
-                font-size: 16px;
-                font-weight: bold;
-                color: #bbbfc3;
-                text-decoration: none;
-                text-shadow: 0 1px 0 white;
-            }
-
-            /* Body ------------------------------ */
-            .email-body {
-                width: 100%;
-                margin: 0;
-                padding: 0;
-                border-top: 1px solid #EDEFF2;
-                border-bottom: 1px solid #EDEFF2;
-                background-color: #FFF;
-            }
-
-            .email-body_inner {
-                width: 570px;
-                margin: 0 auto;
-                padding: 0;
-            }
-
-            .email-footer {
-                width: 570px;
-                margin: 0 auto;
-                padding: 0;
-                text-align: center;
-            }
-
-            .email-footer p {
-                color: #AEAEAE;
-            }
-
-            .body-action {
-                width: 100%;
-                margin: 30px auto;
-                padding: 0;
-                text-align: center;
-            }
-
-            .body-sub {
-                margin-top: 25px;
-                padding-top: 25px;
-                border-top: 1px solid #EDEFF2;
-            }
-
-            .content-cell {
-                padding: 35px;
-            }
-
-            .align-right {
-                text-align: right;
-            }
-
-            /* Type ------------------------------ */
-            h1 {
-                margin-top: 0;
-                color: #2F3133;
-                font-size: 19px;
-                font-weight: bold;
-                text-align: left;
-            }
-
-            h2 {
-                margin-top: 0;
-                color: #2F3133;
-                font-size: 16px;
-                font-weight: bold;
-                text-align: left;
-            }
-
-            h3 {
-                margin-top: 0;
-                color: #2F3133;
-                font-size: 14px;
-                font-weight: bold;
-                text-align: left;
-            }
-
-            p {
-                margin-top: 0;
-                color: #74787E;
-                font-size: 16px;
-                line-height: 1.5em;
-                text-align: left;
-            }
-
-            p.sub {
-                font-size: 12px;
-            }
-
-            p.center {
-                text-align: center;
-            }
-
-            /* Buttons ------------------------------ */
-            .button {
-                display: inline-block;
-                width: 200px;
-                background-color: #3869D4;
-                border-radius: 3px;
-                color: #ffffff;
-                font-size: 15px;
-                line-height: 45px;
-                text-align: center;
-                text-decoration: none;
-                -webkit-text-size-adjust: none;
-                mso-hide: all;
-            }
-
-            .button--green {
-                background-color: #22BC66;
-            }
-
-            .button--red {
-                background-color: #dc4d2f;
-            }
-
-            .button--blue {
-                background-color: #3869D4;
-            }
-
-            /*Media Queries ------------------------------ */
-            @media only screen and (max-width: 600px) {
-                .email-body_inner,
-                .email-footer {
-                    width: 100% !important;
-                }
-            }
-
-            @media only screen and (max-width: 500px) {
-                .button {
-                    width: 100% !important;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0">
-            <tr>
-                <td align="center">
-                    <table class="email-content" width="100%" cellpadding="0" cellspacing="0">
-                        <!-- Email Body -->
-                        <tr>
-                            <td class="email-body" width="100%">
-                                <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0">
-                                    <!-- Body content -->
-                                    <tr>
-                                        <td class="content-cell">
-                                            <h1>Bonjour,</h1>
-                                            <p>Afin de réinitialiser votre mot de passe, veuillez suivre le lien suivant :</p>
-                                            <!-- Action -->
-                                            <table class="body-action" align="center" width="100%" cellpadding="0"
-                                                   cellspacing="0">
-                                                <tr>
-                                                    <td align="center">
-                                                        <div>
-                                                            <!--[if mso]>
-                                                            <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml"
-                                                                         xmlns:w="urn:schemas-microsoft-com:office:word"
-                                                                         href="http://www.example.com/api/forgot-password/{{ token }}"
-                                                                         style="height:45px;v-text-anchor:middle;width:200px;"
-                                                                         arcsize="7%" stroke="f" fill="t">
-                                                                <v:fill type="tile" color="#dc4d2f"/>
-                                                                <w:anchorlock/>
-                                                                <center style="color:#ffffff;font-family:sans-serif;font-size:15px;">
-                                                                    Réinitialiser mon mot de passe
-                                                                </center>
-                                                            </v:roundrect><![endif]-->
-                                                            <a href="http://www.example.com/api/forgot-password/{{ token }}" class="button button--red">
-                                                                Réinitialiser mon mot de passe
-                                                            </a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                            <p>Ce lien reste actif durant 1 semaine.</p>
-                                            <p>Si vous n'avez pas effectuer cette demande, merci d'ignorer cet e-mail.</p>
-                                            <!-- Sub copy -->
-                                            <table class="body-sub">
-                                                <tr>
-                                                    <td>
-                                                        <p class="sub">Si vous avez des difficultés pour cliquer sur le
-                                                            bouton de réinitialisation de votre mot de passe, copiez
-                                                            collez le lien suivant dans votre navigateur :</p>
-                                                        <p class="sub">
-                                                            <a href="http://www.example.com/api/forgot-password/{{ token }}">
-                                                                http://www.example.com/api/forgot-password/{{ token }}
-                                                            </a>
-                                                        </p>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
+<html><head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="x-apple-disable-message-reformatting">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <title></title>
+    <!--
+    The style block is collapsed on page load to save you some scrolling.
+    Postmark automatically inlines all CSS properties for maximum email client
+    compatibility. You can just update styles here, and Postmark does the rest.
+  -->
+    <style type="text/css" rel="stylesheet" media="all">@import url("https://fonts.googleapis.com/css?family=Nunito+Sans:400,700&display=swap");
+@media only screen and (max-width: 500px) { .button { width: 100% !important; text-align: center !important } }
+@media only screen and (max-width: 600px) { .email-body_inner, .email-footer { width: 100% !important } }
+@media (prefers-color-scheme: dark) { body, .email-body, .email-body_inner, .email-content, .email-wrapper, .email-masthead, .email-footer { background-color: #333333 !important; color: #FFFFFF !important } p, ul, ol, blockquote, h1, h2, h3, span, .purchase_item { color: #FFFFFF !important } .attributes_content, .discount { background-color: #222222 !important } .email-masthead_name { text-shadow: none !important } }
+:root { color-scheme: light dark !important; supported-color-schemes: light dark !important }</style>
+    <!--[if mso]>
+    <style type="text/css">
+      .f-fallback  {
+        font-family: Arial, sans-serif;
+      }
+    </style>
+  <![endif]-->
+  </head>
+  <body style="height: 100%; margin: 0; -webkit-text-size-adjust: none; font-family: &quot;Nunito Sans&quot;, Helvetica, Arial, sans-serif; background-color: #F2F4F6; color: #51545E; width: 100% !important;">
+    <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation" style="width: 100%; margin: 0; padding: 0; -premailer-width: 100%; -premailer-cellpadding: 0; -premailer-cellspacing: 0; background-color: #F2F4F6;">
+      <tbody><tr>
+        <td align="center" style="font-family: &quot;Nunito Sans&quot;, Helvetica, Arial, sans-serif; font-size: 16px;">
+          <table class="email-content" width="100%" cellpadding="0" cellspacing="0" role="presentation" style="width: 100%; margin: 0; padding: 0; -premailer-width: 100%; -premailer-cellpadding: 0; -premailer-cellspacing: 0;">
+            <tbody><tr>
+              <td class="email-masthead" style="font-family: &quot;Nunito Sans&quot;, Helvetica, Arial, sans-serif; font-size: 16px; padding: 25px 0; text-align: center;">
+                <a href="https://challenge-stack5-a.vercel.app" class="f-fallback email-masthead_name" style="color: #A8AAAF; font-size: 16px; font-weight: bold; text-decoration: none; text-shadow: 0 1px #FFFFFF;">
+                Odicylens
+              </a>
+              </td>
             </tr>
-        </table>
-    </body>
-</html>
+            <!-- Email Body -->
+            <tr>
+              <td class="email-body" width="570" cellpadding="0" cellspacing="0" style="font-family: &quot;Nunito Sans&quot;, Helvetica, Arial, sans-serif; font-size: 16px; width: 100%; margin: 0; padding: 0; -premailer-width: 100%; -premailer-cellpadding: 0; -premailer-cellspacing: 0;">
+                <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation" style="width: 570px; margin: 0 auto; padding: 0; -premailer-width: 570px; -premailer-cellpadding: 0; -premailer-cellspacing: 0; background-color: #FFFFFF;">
+                  <!-- Body content -->
+                  <tbody><tr>
+                    <td class="content-cell" style="font-family: &quot;Nunito Sans&quot;, Helvetica, Arial, sans-serif; font-size: 16px; padding: 45px;">
+                      <div class="f-fallback">
+                        <h1 style="margin-top: 0; color: #333333; font-size: 22px; font-weight: bold; text-align: left;">Hi {{email}},</h1>
+<p style="margin: 0.4em 0 1.1875em; font-size: 16px; line-height: 1.625; color: #51545E;">You recently requested to reset your password for your Odicylens account. Use the button below to reset it. <strong>This password reset is only valid for the next 24 hours.</strong></p>
+<!-- Action -->
+<table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" style="width: 100%; margin: 30px auto; padding: 0; -premailer-width: 100%; -premailer-cellpadding: 0; -premailer-cellspacing: 0; text-align: center;">
+  <tbody><tr>
+    <td align="center" style="font-family: &quot;Nunito Sans&quot;, Helvetica, Arial, sans-serif; font-size: 16px;">
+      <!-- Border based button https://litmus.com/blog/a-guide-to-bulletproof-buttons-in-email-design -->
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tbody><tr>
+          <td align="center" style="font-family: &quot;Nunito Sans&quot;, Helvetica, Arial, sans-serif; font-size: 16px;">
+            <table border="0" cellspacing="0" cellpadding="0">
+              <tbody><tr>
+                <td style="font-family: &quot;Nunito Sans&quot;, Helvetica, Arial, sans-serif; font-size: 16px;">
+                  <a href="{{action_url}}" class="button button--green" target="_blank" style="color: #FFFFFF; background-color: #22BC66; border-top: 10px solid #22BC66; border-right: 18px solid #22BC66; border-bottom: 10px solid #22BC66; border-left: 18px solid #22BC66; display: inline-block; text-decoration: none; border-radius: 3px; box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16); -webkit-text-size-adjust: none; box-sizing: border-box;">Reset your password</a>
+                </td>
+              </tr>
+            </tbody></table>
+          </td>
+        </tr>
+      </tbody></table>
+    </td>
+  </tr>
+</tbody></table>
+<p style="margin: 0.4em 0 1.1875em; font-size: 16px; line-height: 1.625; color: #51545E;">Thanks,
+  <br>The Odicylens Team</p>
+<!-- Sub copy -->
+<table class="body-sub" style="margin-top: 25px; padding-top: 25px; border-top: 1px solid #EAEAEC;">
+  <tbody><tr>
+    <td style="font-family: &quot;Nunito Sans&quot;, Helvetica, Arial, sans-serif; font-size: 16px;">
+      <p class="sub" style="margin: 0.4em 0 1.1875em; font-size: 13px; line-height: 1.625; color: #51545E;">If you’re having trouble with the button above, copy and paste the URL below into your web browser.</p>
+      <p class="sub" style="margin: 0.4em 0 1.1875em; font-size: 13px; line-height: 1.625; color: #51545E;">{{action_url}}</p>
+    </td>
+  </tr>
+</tbody></table>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody></table>
+              </td>
+            </tr>
+          </tbody></table>
+        </td>
+      </tr>
+    </tbody></table>
+  
+</body></html>

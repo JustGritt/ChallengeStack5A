@@ -10,6 +10,11 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use App\Entity\Stores;
 use App\Entity\User;
+use ApiPlatform\Metadata\DeleteOperationInterface;
+use ApiPlatform\Metadata\PatchOperationInterface;
+use ApiPlatform\Metadata\PostOperationInterface;
+use App\Repository\UserRepository;
+
 
 class StoresStateProcessor implements ProcessorInterface
 {
@@ -18,7 +23,9 @@ class StoresStateProcessor implements ProcessorInterface
         private ProcessorInterface $persistProcessor,
         #[Autowire('@api_platform.doctrine.orm.state.remove_processor')]
         private ProcessorInterface $removeProcessor,
-        private Security $security
+        private Security $security,
+        private EntityManagerInterface $entityManager,
+        private UserRepository $userRepository
     )
     {
     }
@@ -26,17 +33,24 @@ class StoresStateProcessor implements ProcessorInterface
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = [])
     {
-        if ($operation instanceof DeleteOperationInterface) {
-            return $this->removeProcessor->process($data, $operation, $uriVariables, $context);
-        }
-
         $user = $this->security->getUser();
 
         if ($user instanceof User && $user->getCompanie() === null) {
-            throw new AccessDeniedException('Cannot create a new store for this user.');
+            throw new AccessDeniedException('Sorry, you are not allowed to access this resource.');
         }
 
+        if ($operation instanceof DeleteOperationInterface) {
+            if (null !== $user && $user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
+                return $this->removeProcessor->process($data, $operation, $uriVariables, $context);
+            }
+            if (null !== $user->getCompanie() && $user->getCompanie()->getId() === $data->getCompany()->getId()) {
+                return $this->removeProcessor->process($data, $operation, $uriVariables, $context);
+            }
+           
+            throw new AccessDeniedException('Cannot delete this store.');
+        }
 
+    
         //check if the method is patch 
         if ($operation->getUriTemplate() === '/stores/{id}{._format}' && $operation->getMethod() === 'PATCH') {
             //check if the user is admin of the company

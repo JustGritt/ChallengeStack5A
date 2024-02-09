@@ -1,4 +1,4 @@
-import { userNavigation } from "@/lib/helpers/UserHelper";
+import { userNavigation } from "@/lib/constants/navigation";
 import { classNames } from "@/lib/helpers/utils";
 import { User } from "@/types/User";
 import { Menu, Transition } from "@headlessui/react";

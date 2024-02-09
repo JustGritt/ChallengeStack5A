@@ -6,6 +6,7 @@ on:
       - main  # Change this to the branch you want to trigger the workflow on
     paths-ignore:
       - 'infra/environments/prod/odicylens-api/.argocd-source-odicylens-api.yaml'
+      - 'front/**'
    
 
 jobs:

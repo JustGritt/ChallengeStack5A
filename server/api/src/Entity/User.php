@@ -16,7 +16,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\State\UserProcessor;
-use App\Controller\ConfirmUserEmail;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 
@@ -26,32 +25,7 @@ use ApiPlatform\Metadata\Link;
         new Get(normalizationContext: ['groups' => ['read-user']]),
         new Post(denormalizationContext: ['groups' => ['create-user']]),
         new Patch(denormalizationContext: ['groups' => ['update-user']]),
-        new Get(name: 'confirm', routeName: 'confirm_email' , openapiContext: [
-                'summary' => 'Confirm user email',
-                'description' => 'Confirm user email',
-                'parameters' => [
-                    [
-                        'name' => 'token',
-                        'in' => 'path',
-                        'required' => true,
-                        'type' => 'string',
-                        'description' => 'The confirmation token',
-                    ],
-                ],
-                'responses' => [
-                    '200' => [
-                        'description' => 'User email successfully confirmed',
-                    ],
-                    '404' => [
-                        'description' => 'User not found',
-                    ],
-                    '400' => [
-                        'description' => 'Invalid token',
-                    ],
-                ],
-            ]),
-            
-        ],
+    ],
     normalizationContext: ['groups' => ['read-user', 'read-user-mutation']],
     processor: UserProcessor::class,
 )]
@@ -68,7 +42,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[Assert\Email()]
-    #[Groups(['read-user-as-admin', 'create-user', 'read-user-mutation',  'store-read-full', 'read-companie', 'add-user-to-store', 'schedule-read'])]
+    #[Groups(['read-user-as-admin', 'create-user', 'read-user-mutation',  'store-read-full', 'read-companie', 'add-user-to-store', 'schedule-read', 'booking-read-full'])]
     #[Assert\NotBlank()]
     #[Assert\Email()]
     #[ORM\Column(length: 180, unique: true)]
@@ -110,9 +84,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'employee', targetEntity: Schedule::class, orphanRemoval: true)]
     private Collection $schedules;
 
+    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Booking::class)]
+    private Collection $bookings;
+
     public function __construct()
     {
         $this->schedules = new ArrayCollection();
+        $this->bookings = new ArrayCollection();
     }
 
     
@@ -280,5 +258,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, Booking>
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): static
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings->add($booking);
+            $booking->setCustomer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): static
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getCustomer() === $this) {
+                $booking->setCustomer(null);
+            }
+        }
+
+        return $this;
+    }
 
 }

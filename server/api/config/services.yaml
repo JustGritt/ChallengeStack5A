@@ -20,10 +20,20 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\OpenApi\OpenApiFactory:
+        decorates: 'api_platform.openapi.factory'
+        arguments: ['@App\OpenApi\OpenApiFactory.inner']
+        autoconfigure: false
+
+
     App\Controller\ConfirmUserEmail:
         arguments:
             $jwtEncoder: '@lexik_jwt_authentication.encoder'
-
-
+           
+    App\Serializer\BookingContextBuilder:
+        decorates: 'api_platform.serializer.context_builder'
+        arguments: [ '@App\Serializer\BookingContextBuilder.inner' ]
+        autoconfigure: false
+    
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
