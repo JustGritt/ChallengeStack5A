@@ -1,4 +1,5 @@
 export const userNavigation = [
-    { name: 'Your profile', href: '/dashboard/profile' },
+    { name: 'Dashboard', href: '/dashboard' },
+    { name: 'Edit Profile', href: '/dashboard/profile' },
     { name: 'Sign out', href: '/logout' },
 ]

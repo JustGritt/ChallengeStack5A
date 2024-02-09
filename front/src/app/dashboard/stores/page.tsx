@@ -1,32 +1,22 @@
 "use client";
 
 import { Store } from "@/types/Store";
-import { Button } from "@/components/Ui/Button";
+import { BuildingStorefrontIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
 import { useSelector } from "react-redux";
 import { useState, useEffect } from 'react';
 import { selectCurrentUser } from "@/lib/services/slices/authSlice";
 
 export default function Stores() {
     const [stores, setStores] = useState<Store[]>([]);
-
     const user = useSelector(selectCurrentUser);
 
     useEffect(() => {
         if (user) {
-            fetch(`https://api.odicylens.com/companies/${1}`, { method: "GET" })
+            fetch(`https://api.odicylens.com/companies/${user?.companie?.id}`, { method: "GET" })
                 .then((res) => res.json())
                 .then((data) => { setStores(data.stores) });
         }
     }, [user]);
-
-
-    // useEffect(() => {
-    //     if ((cookies as any).session) {
-    //         fetch(`https://api.odicylens.com/companies/${1}`, { method: "GET" }) // TODO: Replace with companyId of the current user
-    //             .then((res) => res.json())
-    //             .then((data) => { setStores(data.stores) });
-    //     }
-    // }, [cookies]);
 
     const handlePagination = (page: number) => {
 
@@ -42,7 +32,10 @@ export default function Stores() {
                             <div>
                                 <div className="flex justify-between items-center">
                                     <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8 inline">Your Stores</h2>
-                                    <Button intent="default" className="mb-8 mr-4">Add a new store</Button>
+                                    <a href="/dashboard/company/edit" className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2 mr-4">
+                                        <BuildingStorefrontIcon className="h-5 w-5 inline-block -mt-1 mr-2" />
+                                        New store
+                                    </a>
                                 </div>
                                     <ul>
                                         {

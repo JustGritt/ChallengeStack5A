@@ -26,7 +26,7 @@ export default function DashboardStats() {
                             <p className="text-2xl font-semibold text-gray-900">{item.stat}</p>
                             <p className="ml-2 flex items-baseline text-sm font-semibold text-gray-500">
                                 <ArrowUpIcon className="h-5 w-5 flex-shrink-0 self-center text-green-500" aria-hidden="true" />
-                                <ArrowDownIcon className="h-5 w-5 flex-shrink-0 self-center text-red-500" aria-hidden="true" />
+                                {/* <ArrowDownIcon className="h-5 w-5 flex-shrink-0 self-center text-red-500" aria-hidden="true" /> */}
 
                                 <span className="sr-only"> {item.changeType === 'increase' ? 'Increased' : 'Decreased'} by </span>
                                 {item.change}
