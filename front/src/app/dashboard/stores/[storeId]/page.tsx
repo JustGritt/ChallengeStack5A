@@ -3,8 +3,7 @@
 import { Store } from "@/types/Store";
 import { useState, useEffect } from 'react';
 
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "@/lib/services/slices/authSlice";
+
 
 export default function Stores({ params }: { params: { storeId: string } }) {
     const [store, setStore] = useState<Store | null>(null);

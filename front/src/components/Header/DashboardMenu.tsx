@@ -17,37 +17,49 @@ import { Bars3Icon, BellIcon, CalendarIcon, ShoppingCartIcon, Cog6ToothIcon, Hom
 export default function DashboardMenu() {
 
     const pathname = usePathname()
-
     const user = useSelector(selectCurrentUser);
-    const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [notifications, setNotifications] = useState<any[]>([])
+    const userConfig = useSelector(selectCurrentUserConfig);
 
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [notifications, setNotifications] = useState<any[]>([]);
+    const [userRoles, setUserRoles] = useState<any[]>([]);
+
+    // Get session
+    const [parsedSession, setParsedSession] = useState<any>({});
     useEffect(() => {
         (async () => {
             const session = await getUserCookie(UserCookieType.SESSION);
             const parsedSession = JSON.parse(session?.value || "{}");
-            if (user?.roles.includes('ROLE_ADMIN') || user?.roles.includes('ROLE_SUPER_ADMIN')) {
-                await fetch('https://api.odicylens.com/companies?page=0', {
+            setParsedSession(parsedSession);
+            setUserRoles(Object.keys(userConfig).filter(key => (userConfig as any)[key] === true))
+        })();
+    }, [userConfig])
+
+    // Get company to validate
+    useEffect(() => {
+        const fetchCompanies = async () => {
+            if (userRoles.includes('isAdmin')) {
+                const response = await fetch('https://api.odicylens.com/companies?page=0', {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${parsedSession?.token}` }
-                })
-                .then(response => response.json())
-                .then(data => data['hydra:member'].map((company: any) => {
-                    if (!company.isValid) setNotifications(notifications => ([...notifications, company]))
-                }))
+                });
+                const data = await response.json();
+                const invalidCompanies = data['hydra:member'].filter((company: any) => !company.isValid);
+                setNotifications(notifications => ([...notifications, ...invalidCompanies]));
             }
-        })();
-    }, [user])
+        };
+
+        fetchCompanies();
+    }, [parsedSession?.token, userRoles]);
 
     const navigation = [
-        { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: pathname === '/dashboard', role: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN','ROLE_USER'] },
-        { name: 'Company', href: '/dashboard/company', icon: SparklesIcon, current: pathname === '/dashboard/company', role: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN','ROLE_USER'] },
-        { name: 'Stores', href: '/dashboard/stores', icon: ShoppingCartIcon, current: pathname === '/dashboard/stores', role: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'] },
-        { name: 'Employees', href: '/dashboard/stores/employees', icon: UsersIcon, current: pathname === '/dashboard/store/employees', role: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'] },
-        { name: 'Reservations', href: '/dashboard/appointments', icon: CalendarIcon, current: pathname === '/dashboard/appointments', role: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN', 'ROLE_USER'] },
-        { name: 'History', href: '/dashboard/history', icon: ClockIcon, current: pathname === '/dashboard/history', role: ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN','ROLE_USER'] },
+        { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: pathname === '/dashboard', role: ['isAdmin', 'isOwner', 'isWorker', 'isClient'] },
+        { name: 'Company', href: '/dashboard/company', icon: ShoppingCartIcon, current: pathname === '/dashboard/company', role: ['isAdmin', 'isOwner'] },
+        { name: 'Store', href: '/dashboard/stores', icon: ShoppingCartIcon, current: pathname === '/dashboard/stores', role: ['isAdmin', 'isOwner'] },
+        { name: 'Employees', href: '/dashboard/stores/employees', icon: UsersIcon, current: pathname === '/dashboard/store/employees', role: ['isAdmin', 'isOwner'] },
+        { name: 'Reservations', href: '/dashboard/appointments', icon: CalendarIcon, current: pathname === '/dashboard/appointments', role: ['isAdmin', 'isOwner', 'isWorker', 'isClient'] },
+        { name: 'History', href: '/dashboard/history', icon: ClockIcon, current: pathname === '/dashboard/history', role: ['isAdmin', 'isOwner', 'isWorker', 'isClient'] },
     ]
-
 
     return (
         <div>
@@ -89,7 +101,7 @@ export default function DashboardMenu() {
                                                 <ul role="list" className="-mx-2 space-y-1">
                                                     {
                                                         navigation.map((item) => {
-                                                            if (user?.roles.some(role => item.role.includes(role))) {
+                                                            if (userRoles.some(role => item.role.includes(role))) {
                                                                 return (
                                                                     <li key={item.name}>
                                                                         <Link href={item.href}>
@@ -143,7 +155,7 @@ export default function DashboardMenu() {
                                 <ul role="list" className="-mx-2 space-y-1">
                                     {
                                         navigation.map((item) => {
-                                            if (user?.roles.some(role => item.role.includes(role))) {
+                                            if (userRoles.some(role => item.role.includes(role))) {
                                                 return (
                                                     <li key={item.name}>
                                                         <Link href={item.href}>
