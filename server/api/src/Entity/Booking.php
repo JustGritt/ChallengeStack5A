@@ -40,7 +40,7 @@ use App\State\BookingStateProvider;
         'id' => new Link(fromClass: Store::class, toProperty: 'customer'),
     ],
     operations: [ new GetCollection(normalizationContext: ['groups' => ['booking-read-full']] ) ],
-    provider: BookingStateProvider::class,
+    #provider: BookingStateProvider::class,
 )]
 #[ApiResource(
     uriTemplate: '/employee/{id}/bookings',
@@ -48,7 +48,7 @@ use App\State\BookingStateProvider;
         'id' => new Link(fromClass: Store::class, toProperty: 'employee'),
     ],
     operations: [ new GetCollection(normalizationContext: ['groups' => ['booking-read-full']]) ],
-    provider: BookingStateProvider::class,
+    #provider: BookingStateProvider::class,
 )]
 class Booking
 {
