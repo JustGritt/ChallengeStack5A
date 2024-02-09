@@ -59,7 +59,7 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                                     <p>No employees yet</p>
                                                 ) : (
                                                     store.users.map((user) => (
-                                                        <a href={`/dashboard/employees/${user.id}`} key={user.id}>
+                                                        <a href={`/dashboard/stores/${store?.id}/employees/${user.id}`} key={user.id}>
                                                             <li className="flex justify-between gap-6 w-full rounded px-4 hover:bg-gray-100 shadow">
                                                                 <div className="flex min-w-0 gap-4 py-4">
                                                                     <div className="h-12 w-12 flex-none rounded-full bg-gray-200 grid place-items-center font-bold">{user.firstname.charAt(0)}</div>
