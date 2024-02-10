@@ -33,6 +33,7 @@
     "@types/mapbox-gl": "^2.7.19",
     "axios": "^1.5.1",
     "class-variance-authority": "^0.7.0",
+    "humanize-duration": "^3.31.0",
     "clsx": "^2.1.0",
     "cmdk": "^0.2.1",
     "formik": "^2.4.5",
