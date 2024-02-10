@@ -1,13 +1,18 @@
 "use client";
 
 import { useSelector } from 'react-redux';
-import { selectCurrentUser } from '@/lib/services/slices/authSlice';
+import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
 import { CalendarIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
 import DashboardStat from '@/components/Dashboard/DashboardStat';
+import { useState } from 'react';
+
 export default function Company() {
 
     const user = useSelector(selectCurrentUser);
     console.log(user)
+
+    const userConfig = useSelector(selectCurrentUserConfig);
+    const [userRoles, setUserRoles] = useState<any[]>([]);
 
     return (
         <section className="lg:pl-72 block min-h-screen">

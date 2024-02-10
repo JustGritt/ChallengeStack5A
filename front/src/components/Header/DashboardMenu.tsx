@@ -11,7 +11,7 @@ import { UserCookieType } from "@/types/User";
 import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
 import { Dialog, Transition } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { Bars3Icon, BellIcon, CalendarIcon, ShoppingCartIcon, Cog6ToothIcon, HomeIcon, UsersIcon, XMarkIcon, ClockIcon, UserIcon, SparklesIcon } from '@heroicons/react/24/outline'
 
 export default function DashboardMenu() {
@@ -36,21 +36,21 @@ export default function DashboardMenu() {
     }, [userConfig])
 
     // Get company to validate
-    useEffect(() => {
-        const fetchCompanies = async () => {
-            if (userRoles.includes('isAdmin')) {
-                const response = await fetch('https://api.odicylens.com/companies?page=0', {
-                    method: 'GET',
-                    headers: { 'Authorization': `Bearer ${parsedSession?.token}` }
-                });
-                const data = await response.json();
-                const invalidCompanies = data['hydra:member'].filter((company: any) => !company.isValid);
-                setNotifications(notifications => ([...notifications, ...invalidCompanies]));
-            }
-        };
+    const fetchCompanies = useCallback(async () => {
+        if (userRoles.includes('isAdmin')) {
+            const response = await fetch('https://api.odicylens.com/companies?page=0', {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${parsedSession?.token}` }
+            }).then(response => response.json());
+            const data = await response;
+            const invalidCompanies = data['hydra:member'].filter((company: any) => !company.isValid);
+            return setNotifications(invalidCompanies);
+        }
+    }, [userRoles, parsedSession]);
 
+    useEffect(() => {
         fetchCompanies();
-    }, [parsedSession?.token, userRoles]);
+    }, [fetchCompanies]);
 
     const navigation = [
         { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: pathname === '/dashboard', role: ['isAdmin', 'isOwner', 'isWorker', 'isClient'] },
