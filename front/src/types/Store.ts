@@ -1,6 +1,5 @@
 import { Company } from "./Company";
 import { Service } from "./Service";
-import { Employee } from "./User";
 import { User } from "./User";
 
 export type Store = {
@@ -19,6 +18,8 @@ export type Store = {
     users: User[];
     company: Company;
 }
+
+export type NewStore = Omit<Store, 'id' | '@id' | '@context' | '@type' | 'services' | 'users' | 'company'>
 
 type StoreFlatten = Paths<Omit<Store, 'services' | 'users'| 'company'> & { services: Service }>
 
