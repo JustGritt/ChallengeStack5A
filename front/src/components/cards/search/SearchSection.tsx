@@ -1,9 +1,5 @@
 "use client";
 import StoreCard from "@/components/Pages/Store/StoreCard";
-import { CITIES } from "@/lib/constants/fakeDatas";
-
-import { ApiSuccessBase } from "@/types/ApiBase";
-import { Company } from "@/types/Company";
 import { useSearchParams } from "next/navigation";
 import { QueryStore, Store } from "@/types/Store";
 import React, {
