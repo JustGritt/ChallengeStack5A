@@ -1,7 +1,7 @@
 import api from "./api";
 import { ApiSuccessBase } from "@/types/ApiBase";
 import { LoginResponse } from "@/types/Auth";
-import { User, UserCookieType, UserRegister, UserUpdate } from "@/types/User";
+import { User, UserCookieType, UserRegister, UserUpdateProfile, UserUpdatePassword } from "@/types/User";
 import { setCredentials } from "./slices/authSlice";
 import { getUserCookie, setUserCookie } from "../helpers/UserHelper";
 
@@ -21,16 +21,19 @@ export const authApi = api.injectEndpoints({
         body: user,
       }),
     }),
-    updateUser: build.mutation<User, UserUpdate>({
+    updateUserPassword: build.mutation<User, UserUpdatePassword>({
+      query: (user) => ({
+        url: "/users/password",
+        method: "PATCH",
+        body: user,
+      }),
+    }),
+    updateUserProfile: build.mutation<User, UserUpdateProfile>({
       query: (user) => ({
         url: "/users/me",
         method: "PATCH",
         body: user,
       }),
-      async onQueryStarted(_, { queryFulfilled, dispatch, }) {
-        const { data: user } = await queryFulfilled;
-        dispatch(setCredentials({ user }));
-      },
     }),
     forgetPassword: build.mutation<ApiSuccessBase<any>, Record<"email", string>>({
       query: (user) => ({
@@ -90,7 +93,8 @@ export const authApi = api.injectEndpoints({
 export const {
   useRegisterMutation,
   useLoginMutation,
-  useUpdateUserMutation,
+  useUpdateUserPasswordMutation,
+  useUpdateUserProfileMutation,
   useForgetPasswordMutation,
   useResetUserTokenMutation,
   useBecomeAffiliateMutation,
