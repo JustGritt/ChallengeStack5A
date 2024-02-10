@@ -2,6 +2,7 @@
 
 import * as Yup from "yup";
 import toast from "react-hot-toast";
+import Breadcrumb from "@/components/Header/Breadcrumb";
 import type { NewStore } from "@/types/Store";
 import { Button } from "@/components/Ui/Button";
 import { useRouter } from "next/navigation";
@@ -50,7 +51,8 @@ export default function NewStore() {
     return (
         <section className="lg:pl-72 block min-h-screen">
             <div className="p-4 sm:p-6 lg:p-8 h-full">
-                <div className="mx-auto bg-white dark:bg-slate-800 px-8 py-8 rounded-xl shadow border">
+                <Breadcrumb />
+                <div className="mt-4 mx-auto bg-white dark:bg-slate-800 px-8 py-8 rounded-xl shadow border">
                     <div className="flex flex-col gap-2 justify-center w-full items-center">
                         <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8 inline">
                             Add a new store

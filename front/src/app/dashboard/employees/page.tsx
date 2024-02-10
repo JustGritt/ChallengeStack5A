@@ -30,9 +30,6 @@ export default function Employees() {
         }
     }, [stores]);
 
-    console.log(stores)
-    console.log(employees)
-
     return (
         <section className="lg:pl-72 block min-h-screen">
             <div className="p-4 sm:p-6 lg:p-8 h-full">
@@ -65,7 +62,6 @@ export default function Employees() {
                                 </ul>
                             </div>
                         )
-
                     }
                 </div>
             </div>
