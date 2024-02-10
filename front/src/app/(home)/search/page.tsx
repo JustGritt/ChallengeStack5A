@@ -1,6 +1,6 @@
 "use client";
-import SearchSection from "../../../components/cards/Search/SearchSection";
-import CustomMap from "../../../components/cards/map/CustomMap";
+import SearchSection from "@/components/cards/Search/SearchSection";
+import CustomMap from "@/components/cards/map/CustomMap";
 
 import { selectCompany } from "@/lib/helpers/SearchStoreHelper";
 import { RefDivCardSearch } from "@/types/ScrollDiv";
