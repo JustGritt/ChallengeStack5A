@@ -49,10 +49,13 @@ export type UserLogin = {
     password: string
 }
 
-export type UserUpdate = {
+export type UserUpdateProfile = {
     firstname: string
-    email: string
+}
 
+export type UserUpdatePassword = {
+    confirmPassword: string
+    plainPassword: string,
 }
 
 export type UserForgetPassword = {
