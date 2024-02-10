@@ -1,7 +1,6 @@
 import { Company } from "./Company";
 import { HydraResp } from "./HydraPaginateResp";
 import { Service } from "./Service";
-import { Employee } from "./User";
 import { User } from "./User";
 
 export type Store = HydraResp<{
@@ -17,6 +16,8 @@ export type Store = HydraResp<{
     users: User[];
     company: Company;
 }>
+
+export type NewStore = Omit<Store, 'id' | '@id' | '@context' | '@type' | 'services' | 'users' | 'company'>
 
 type StoreFlatten = Paths<Omit<Store, 'services' | 'users'| 'company'> & { services: Service }>
 

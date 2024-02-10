@@ -30,7 +30,7 @@ class CompanieStateProvider implements ProviderInterface
             }
 
             //if not only display the companies where isvalid is true
-            return $this->entityManager->getRepository(Companie::class)->findBy(['isValid' => true]);
+            return $this->entityManager->getRepository(Companie::class)->findBy(['isValid' => true, 'refused' => false]);
 
         }
 

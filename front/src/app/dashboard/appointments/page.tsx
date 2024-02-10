@@ -1,9 +1,25 @@
 "use client";
 import { useState, useEffect } from 'react';
 import BookingCalendar from '@/components/Calendar/BookingCalendar';
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "@/lib/services/slices/authSlice";
 
-export default function Page({ params }: { params: { id: string } }) {
+export default function Page() {
 
+    const user = useSelector(selectCurrentUser);
+    console.log(user)
+
+    useEffect(() => {
+        // Quick exit to login page if user is not logged in
+        if (user)
+
+        // Fetch the schedule for the user
+        (async () => {
+            const response = await fetch(`https://api.odicylens.com/schedule/${user?.id}`);
+            const data = await response.json();
+            console.log(data);
+        })();
+    });
 
     return (
         <section className="lg:pl-72 block min-h-screen">

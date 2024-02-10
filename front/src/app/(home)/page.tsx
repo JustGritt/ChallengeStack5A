@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+"use client";
 import * as Yup from "yup";
 import React from "react";
 import Faq from "../../components/partials/Faq";
@@ -6,8 +7,12 @@ import { Button } from "@/components/Ui/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import FormSearchHome from "@/components/Forms/FormSearchHome";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+
+  const router = useRouter();
+
   return (
     <>
       <main className="min-h-screen ">
@@ -36,10 +41,11 @@ export default function Home() {
             <p className="text-gray-500">
               Discover the ease of online appointment with Odicylens.
             </p>
-            <Button
-              intent="default"
-              className="mt-8 h-16 px-8 grid place-items-center transition-colors rounded-full text-lg"
-            >
+            <Button intent="default" className="mt-8 h-16 px-8 grid place-items-center transition-colors rounded-full text-lg" onClick={
+              () => {
+                router.push("/affiliate")
+              }
+            }>
               Become a Odicylens affiliate
             </Button>
           </div>

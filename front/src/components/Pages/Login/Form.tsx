@@ -112,7 +112,7 @@ function LoginForm() {
           />
         </div>
         <div className="flex flex-col justify-center items-center gap-2">
-          <Button intent="default"  className="mt-4 w-full">
+          <Button intent="default" type="submit" className="mt-4 w-full">
             Login
           </Button>
           <a href="/forget-password" className="text-sm text-main mt-2">

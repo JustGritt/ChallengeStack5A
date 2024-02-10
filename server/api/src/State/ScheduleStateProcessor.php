@@ -53,7 +53,7 @@ class ScheduleStateProcessor implements ProcessorInterface
             throw new AccessDeniedException('Cannot delete this schedule.');
         }
 
-        if ($operation instanceof PatchOperationInterface) {
+        if ($operation->getUriTemplate() === '/schedules/{id}{._format}' && $operation->getMethod() === 'PATCH') {
             $user = $this->security->getUser();
             $companie = $user->getCompanie();
             $work = $user->getWork();
@@ -63,23 +63,20 @@ class ScheduleStateProcessor implements ProcessorInterface
             }
 
             if (null !== $companie && $companie->getId() && $data->getStore()->getCompany()->getId() === $companie->getId() && $companie->isIsValid() === true) {
-                if ($data->getEmployee()->getWork()->getCompany()->getId() === $data->getStore()->getCompany()->getId()) {
+                if (null !== $data->getEmployee()->getWork() && $data->getEmployee()->getWork()->getCompany()->getId() === $data->getStore()->getCompany()->getId()) {
                     return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
                 }
-                throw new AccessDeniedException('You cannot update this schedule.');
+                throw new AccessDeniedException('You cannot update this schedule. This employee does not belong to this company.');
             }
 
             if (null !== $work && $work->getId() && $data->getStore()->getId() === $work->getId()) {
-                if ($data->getEmployee() === $user) {
-                    return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
-                }
-                throw new AccessDeniedException('This schedule does not belong to you.');
+                return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
 
-            throw new AccessDeniedException('Cannot update this schedule.');
+            throw new AccessDeniedException('Cannot update this schedule. This store does not belong to you or this employee does not belong to this company.');
         }
 
-        if ($operation instanceof PostOperationInterface) {
+        if ($operation->getUriTemplate() === '/schedules{._format}'  && $operation->getMethod() === 'POST') {
             $user = $this->security->getUser();
             $companie = $user->getCompanie();
             $work = $user->getWork();
@@ -88,21 +85,19 @@ class ScheduleStateProcessor implements ProcessorInterface
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
 
-            if (null !== $companie && $companie->getId() && $data->getStore()->getCompany()->getId() === $companie->getId() && $companie->isIsValid() === true) {
-                if ($data->getEmployee()->getWork()->getCompany()->getId() === $data->getStore()->getCompany()->getId()) {
+            if (null !== $companie && $data->getStore()->getCompany()->getId() === $companie->getId() && $companie->isIsValid() === true) {
+                if (null !== $data->getEmployee()->getWork() && $data->getEmployee()->getWork()->getCompany()->getId() === $data->getStore()->getCompany()->getId()) {
                     return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
                 }
-                throw new AccessDeniedException('You cannot create a new schedule.');
+                throw new AccessDeniedException('You cannot create a new schedule. THis employee does not belong to this company.');
             }
 
-            if (null !== $work && $work->getId() && $data->getStore()->getId() === $work->getId()) {
-                if ($data->getEmployee() === $user) {
-                    return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
-                }
-                throw new AccessDeniedException('Cannot add this schedule.');
+            if (null !== $work && $data->getStore()->getId() === $work->getId()) {
+                $data->setEmployee($user);
+                return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
 
-            throw new AccessDeniedException('Cannot create a new schedule.');
+            throw new AccessDeniedException('Cannot create a new schedule. This store does not belong to you or this employee does not belong to this company.');
         }
 
         $result = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
