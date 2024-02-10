@@ -5,11 +5,17 @@ import { BuildingStorefrontIcon, ShoppingBagIcon } from '@heroicons/react/24/out
 import { useSelector } from "react-redux";
 import { useState, useEffect } from 'react';
 import { selectCurrentUser } from "@/lib/services/slices/authSlice";
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 
 export default function Stores() {
+
+    const [currentPage, setCurrentPage] = useState(1);
     const [stores, setStores] = useState<Store[]>([]);
+    const [displayedStores, setDisplayedStores] = useState<Store[]>([]);
+    const [pages, setPages] = useState<number[]>([]);
     const user = useSelector(selectCurrentUser);
 
+    // Fetch all the stores of the company
     useEffect(() => {
         if (user) {
             fetch(`https://api.odicylens.com/companies/${user?.companie?.id}`, { method: "GET" })
@@ -18,29 +24,52 @@ export default function Stores() {
         }
     }, [user]);
 
-    const handlePagination = (page: number) => {
+    // Add pagination for the stores (5 stores per page)
+    useEffect(() => {
+        if (stores) {
+            const pages = Math.ceil(stores.length / 5);
+            setPages(new Array(pages).fill(0).map((_, index) => index + 1));
+            setDisplayedStores(stores.slice(0, 5));
+        }
+    }, [stores]);
 
+    // Handle the next page
+    const handleNextPage = () => {
+        if (currentPage < pages.length) {
+            setCurrentPage(currentPage + 1);
+            setDisplayedStores(stores.slice(currentPage * 5, (currentPage + 1) * 5));
+        }
     }
+
+    // Handle the previous page
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+            setDisplayedStores(stores.slice((currentPage - 2) * 5, (currentPage - 1) * 5));
+        }
+    }
+
+
 
     return (
         <section className="lg:pl-72 block min-h-screen">
             <div className="p-4 sm:p-6 lg:p-8 h-full">
-
-                <div className="mx-auto bg-white dark:bg-slate-800 px-8 py-8 rounded-xl shadow border">
+                <div className="mx-auto bg-white dark:bg-slate-800 px-8 pt-8 pb-4 rounded-xl shadow border">
                     {
                         stores ? (
                             <div>
                                 <div className="flex justify-between items-center">
                                     <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8 inline">Your Stores</h2>
-                                    <a href="/dashboard/stores/new" className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2 mr-4">
+                                    <a href="/dashboard/stores/new" className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 dark:bg-indigo-600 dark:hover:bg-indigo-700 focus:outline-none dark:focus:ring-indigo-800 h-10 px-4 py-2 mr-4">
                                         <BuildingStorefrontIcon className="h-5 w-5 inline-block -mt-1 mr-2" />
                                         New store
                                     </a>
                                 </div>
                                     <ul>
                                         {
-                                            stores.map((store, index) => (
-                                                <li key={store.id} className="flex justify-between gap-x-6 py-5 px-4 rounded hover:bg-gray-100 transition-colors flex-col sm:flex-row">
+                                            // display only the stores of the current page
+                                            displayedStores.map((store, index) => (
+                                                <li key={store.id} className="flex justify-between gap-x-6 py-5 px-4 rounded hover:bg-gray-100 transition-colors flex-col sm:flex-row hover:text-indigo-600">
                                                     <div className="flex min-w-0 gap-x-4">
                                                         <div className="min-w-0 flex-auto">
                                                             <p className="text-lg font-semibold leading-6 text-gray-900">{store.name}</p>
@@ -48,19 +77,73 @@ export default function Stores() {
                                                         </div>
                                                     </div>
                                                     <div className="shrink-0 flex items-end gap-4">
-                                                        <a href={"/dashboard/stores/" + store.id} className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-200 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700 mt-2">
-                                                            Link to Store
+                                                        <a href={"/dashboard/stores/" + store.id} className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-indigo-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-200 focus:text-indigo-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700 mt-2">
+                                                            <ShoppingBagIcon className="h-4 w-4 inline-block mr-2" />
+                                                            View store
                                                         </a>
-
-                                                        {/* TODO: Add remove function */}
-                                                        <button type="button" className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
+                                                        <button type="button" className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900 mt-2">
                                                             Delete
                                                         </button>
                                                     </div>
                                                 </li>
                                             ))
+
+
                                         }
                                     </ul>
+
+                                    {
+                                        pages.length > 1 ? (
+                                            <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 pt-8 pb-4">
+                                                <div className="flex flex-1 justify-between sm:hidden">
+                                                    <button type="button" onClick={handlePreviousPage} className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                                        Previous
+                                                    </button>
+                                                    <button type="button" onClick={handleNextPage} className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                                        Next
+                                                    </button>
+                                                </div>
+                                                <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+                                                    <div>
+                                                        <p className="text-sm text-gray-700">
+                                                            Showing <span className="font-medium"> {currentPage * 5 - 4} </span> to <span className="font-medium">{currentPage * 5 > stores.length ? stores.length : currentPage * 5} </span> of{' '} <span className="font-medium">{stores.length}</span> results
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+                                                            <button type="button" onClick={handlePreviousPage} className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                                                                <span className="sr-only">Previous</span>
+                                                                <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
+                                                            </button>
+
+                                                            {
+                                                                pages.map((page) => (
+                                                                    // The current page should be highlighted
+                                                                    currentPage === page ? (
+                                                                        <a href="#" aria-current="page" key={page}
+                                                                            className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                                                            { page }
+                                                                        </a>
+                                                                    ) : (
+                                                                        <a href="#" key={page}
+                                                                            className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                                                                            { page }
+                                                                        </a>
+                                                                    )
+                                                                ))
+                                                            }
+
+                                                            {/* Handle next page */}
+                                                            <button type="button" onClick={handleNextPage} className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                                                                <span className="sr-only">Next</span>
+                                                                <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+                                                            </button>
+                                                        </nav>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ) : null
+                                    }
                             </div>
                         ) : (
                             <div className="grid place-items-center">
