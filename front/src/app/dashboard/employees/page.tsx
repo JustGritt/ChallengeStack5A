@@ -46,17 +46,15 @@ export default function Employees() {
                                 <ul className="mt-8 grid grid-cols-2 gap-4">
                                     {
                                         employees.map((employee) => (
-                                            <a href={`/dashboard/employees/${employee.id}`} key={employee.id}>
-                                                <li className="flex justify-between gap-6 w-full rounded px-4 hover:bg-gray-100 shadow">
-                                                    <div className="flex min-w-0 gap-4 py-4">
-                                                        <div className="h-12 w-12 flex-none rounded-full bg-gray-200 grid place-items-center font-bold">{employee.firstname.charAt(0)}</div>
-                                                        <div className="min-w-0 flex-auto">
-                                                            <p className="text-sm font-semibold leading-6 text-gray-900">{employee.firstname}</p>
-                                                            <p className="mt-1 truncate text-xs leading-5 text-gray-500">{employee.email}</p>
-                                                        </div>
+                                            <li key={employee.id} className="flex justify-between gap-6 w-full rounded px-4 hover:bg-gray-100 shadow">
+                                                <div className="flex min-w-0 gap-4 py-4">
+                                                    <div className="h-12 w-12 flex-none rounded-full bg-gray-200 grid place-items-center font-bold">{employee.firstname.charAt(0)}</div>
+                                                    <div className="min-w-0 flex-auto">
+                                                        <p className="text-sm font-semibold leading-6 text-gray-900">{employee.firstname}</p>
+                                                        <p className="mt-1 truncate text-xs leading-5 text-gray-500">{employee.email}</p>
                                                     </div>
-                                                </li>
-                                            </a>
+                                                </div>
+                                            </li>
                                         ))
                                     }
                                 </ul>

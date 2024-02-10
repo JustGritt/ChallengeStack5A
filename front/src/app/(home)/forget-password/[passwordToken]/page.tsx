@@ -1,6 +1,7 @@
 "use client"
 
 import * as Yup from "yup";
+import Link from "next/link";
 import toast from "react-hot-toast";
 import { Button } from "@/components/Ui/Button";
 import { useRouter } from "next/navigation";
@@ -146,9 +147,9 @@ export default function ConfirmemailToken({ params }: { params: { token: string 
                                 </FormikProvider>
                             </div>
                         ) : (
-                            <a href={currentStatus.buttonUrl} className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring">
+                            <Link href={currentStatus.buttonUrl} className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring">
                                 {currentStatus.buttonUrl ? "Request a new email" : "Reset your password"}
-                            </a>
+                            </Link>
                         )
                     }
                 </div>

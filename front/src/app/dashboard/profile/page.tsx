@@ -20,7 +20,7 @@ export default function EditProfile() {
     const [passwordFields] = useUpdateUserPasswordMutation();
     const initialPasswordValues: UserUpdatePassword = { plainPassword: "", confirmPassword: "" };
     const validationPasswordSchema = Yup.object().shape({
-        plainPassword: Yup.string().required("Required"),
+        plainPassword: Yup.string().required("Required").min(6, "Password must be at least 6 characters"),
         confirmPassword: Yup.string().required("Required").oneOf([Yup.ref("plainPassword"), ""], "Passwords must match"),
     });
 
@@ -106,13 +106,23 @@ export default function EditProfile() {
                     </h2>
                     <FormikProvider value={formikPassword}>
                         <Form id="passwordFields" className="flex flex-col px-4 gap-1">
-                            <div className="flex justify-between w-full items-center">
-                                <label htmlFor="password" className="text-black text-sm font-semibold">
-                                    Password <span className="text-red-600">*</span>
-                                </label>
-                                <ErrorMessage name="firstname" component="span" className="text-red-600 leading-3 text-sm" />
+                            <div className="sm:grid sm:grid-cols-2 gap-4 w-full">
+                                <div>
+                                    <label htmlFor="password" className="text-black text-sm font-semibold">
+                                        Password <span className="text-red-600">*</span>
+                                    </label>
+                                    <ErrorMessage name="password" component="span" className="text-red-600 leading-3 text-sm" />
+                                    <Field type="text" placeholder="Must have more than 6 characters" name="password" className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm w-full" />
+                                </div>
+
+                                <div className="mt-4 sm:mt-0">
+                                    <label htmlFor="passwordConfirm" className="text-black text-sm font-semibold">
+                                        Confirm Password <span className="text-red-600">*</span>
+                                    </label>
+                                    <ErrorMessage name="passwordConfirm" component="span" className="text-red-600 leading-3 text-sm" />
+                                    <Field type="text" name="passwordConfirm" placeholder="Must match the password" className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm w-full" />
+                                </div>
                             </div>
-                            <Field type="text" placeholder="First Name" name="firstname" className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm " />
 
                             <div className="flex flex-col justify-center items-center gap-2">
                                 <Button intent="default" type="submit" className="mt-4 w-full">

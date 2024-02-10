@@ -1,12 +1,13 @@
 "use client";
 
-import { Form, Field, FormikProvider, useFormik, ErrorMessage, FormikConfig } from "formik";
 import * as Yup from "yup";
-import { Button } from "@/components/Ui/Button";
-import { UserForgetPassword } from "@/types/User";
+import Link from "next/link";
 import toast from "react-hot-toast";
+import { Button } from "@/components/Ui/Button";
 import { useRouter } from "next/navigation";
+import { UserForgetPassword } from "@/types/User";
 import { useResetUserTokenMutation } from "@/lib/services/auth";
+import { Form, Field, FormikProvider, useFormik, ErrorMessage, FormikConfig } from "formik";
 
 export default function ResetToken() {
     const initialValues: UserForgetPassword = {
@@ -90,9 +91,9 @@ export default function ResetToken() {
                             </Button>
                             <p className="mt-10 text-center text-sm text-gray-500">
                                 Not a member yet?{' '}
-                                <a href="/register" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                                <Link href="/register" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
                                     Create an account
-                                </a>
+                                </Link>
                             </p>
                         </div>
                     </Form>

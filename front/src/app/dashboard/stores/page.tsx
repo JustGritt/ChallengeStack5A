@@ -9,11 +9,8 @@ import { BuildingStorefrontIcon, ShoppingBagIcon } from '@heroicons/react/24/out
 
 export default function Stores() {
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [stores, setStores] = useState<Store[]>([]);
-    const [displayedStores, setDisplayedStores] = useState<Store[]>([]);
-    const [pages, setPages] = useState<number[]>([]);
     const user = useSelector(selectCurrentUser);
+    const [stores, setStores] = useState<Store[]>([]);
 
     useEffect(() => {
         if (user) {
@@ -30,6 +27,10 @@ export default function Stores() {
             setDisplayedStores(stores.slice(0, 5));
         }
     }, [stores]);
+
+    const [displayedStores, setDisplayedStores] = useState<Store[]>([]);
+    const [pages, setPages] = useState<number[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const handleNextPage = () => {
         if (currentPage < pages.length) {
@@ -61,7 +62,7 @@ export default function Stores() {
                                 </div>
                                     <ul>
                                         {
-                                            displayedStores.map((store, index) => (
+                                            displayedStores.map((store) => (
                                                 <li key={store.id} className="flex justify-between gap-x-6 py-5 px-4 rounded hover:bg-gray-100 transition-colors flex-col sm:flex-row hover:text-indigo-600">
                                                     <div className="flex min-w-0 gap-x-4">
                                                         <div className="min-w-0 flex-auto">
@@ -108,20 +109,19 @@ export default function Stores() {
                                                             </button>
 
                                                             {
-                                                                pages.map((page) => (
-                                                                    currentPage === page ? (
-                                                                        <a href="#" aria-current="page" key={page}
-                                                                            className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                                                pages.map((page) => {
+                                                                    const isCurrentPage = currentPage === page;
+                                                                    const commonClasses = "relative inline-flex items-center px-4 py-2 text-sm font-semibold";
+                                                                    const currentPageClasses = "z-10 bg-indigo-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600";
+                                                                    const otherPageClasses = "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0";
+                                                                    return (
+                                                                        <p key={page} className={`${commonClasses} ${isCurrentPage ? currentPageClasses : otherPageClasses}`}>
                                                                             { page }
-                                                                        </a>
-                                                                    ) : (
-                                                                        <a href="#" key={page}
-                                                                            className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
-                                                                            { page }
-                                                                        </a>
-                                                                    )
-                                                                ))
+                                                                        </p>
+                                                                    );
+                                                                })
                                                             }
+
                                                             <button type="button" onClick={handleNextPage} className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
                                                                 <span className="sr-only">Next</span>
                                                                 <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />

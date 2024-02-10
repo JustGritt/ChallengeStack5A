@@ -7,19 +7,15 @@ import { selectCurrentUser } from "@/lib/services/slices/authSlice";
 export default function Page() {
 
     const user = useSelector(selectCurrentUser);
-    console.log(user)
 
     useEffect(() => {
-        // Quick exit to login page if user is not logged in
-        if (user)
+        if (user) {
+            fetch(`https://api.odicylens.com/users/${user?.id}/schedules`, { method: "GET" })
+                .then((res) => res.json())
+                .then((data) => { console.log(data) });
+        }
+    }, [user]);
 
-        // Fetch the schedule for the user
-        (async () => {
-            const response = await fetch(`https://api.odicylens.com/schedule/${user?.id}`);
-            const data = await response.json();
-            console.log(data);
-        })();
-    });
 
     return (
         <section className="lg:pl-72 block min-h-screen">

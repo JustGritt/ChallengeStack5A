@@ -1,10 +1,11 @@
 "use client";
 
-import { useSelector } from 'react-redux';
-import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
-import { CalendarIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
+import Link from "next/link";
 import DashboardStat from '@/components/Dashboard/DashboardStat';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { CalendarIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
+import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
 
 export default function Company() {
 
@@ -26,7 +27,7 @@ export default function Company() {
                                         {user?.companie.name}
                                     </h3>
 
-                                    <a href="/dashboard/company/edit" className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">Edit</a>
+                                    <Link href="/dashboard/company/edit" className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">Edit</Link>
                                 </div>
                                 <DashboardStat />
                             </section>
