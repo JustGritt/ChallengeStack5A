@@ -19,10 +19,9 @@ import React, {
 } from "react";
 import { Button } from "@/components/Ui/Button";
 import { useLazyGetAllStoresQuery } from "@/lib/services/stores";
+import { RefDivCardSearch } from "@/types/ScrollDiv";
 
-export type RefDivCardSearch = {
-  scrollIntoView?: (name: string) => void;
-};
+
 
 type SearchSectionProps = {
   refSearch?: Ref<RefDivCardSearch>;

@@ -18,7 +18,6 @@ import { capitalize } from "@/lib/helpers/utils";
 
 type RegisterLoginSectionProps = {};
 
-
 const RegisterLoginSection: FC<RegisterLoginSectionProps> = ({}) => {
   const [fullUrl, setFullUrl] = React.useState<string>("");
 
@@ -54,13 +53,13 @@ const RegisterLoginSection: FC<RegisterLoginSectionProps> = ({}) => {
             <Link href={`/register/?redirectUrl=${fullUrl}`}>
               <Button>
                 <FontAwesomeIcon className="mr-3" icon={faLock} />
-                S'enregistrer
+                Register
               </Button>
             </Link>
             <Link href={`/login/?redirectUrl=${fullUrl}`}>
               <Button variant="outline">
                 <FontAwesomeIcon className="mr-3" icon={faUserAlt} />
-                Se connecter
+                Login
               </Button>
             </Link>
           </div>
