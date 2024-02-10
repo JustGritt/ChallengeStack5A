@@ -1,25 +1,19 @@
 "use client";
 
-import {
-  Form,
-  Field,
-  FormikProvider,
-  useFormik,
-  ErrorMessage,
-} from "formik";
+import { Form, Field, FormikProvider, useFormik, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button } from "@/components/Ui/Button";
-import {
-  useLoginMutation,
-} from "@/lib/services/auth";
+import { useLoginMutation } from "@/lib/services/auth";
 import React from "react";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { setUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
+import { useLazyGetMyProfileQuery } from "@/lib/services/user";
 
 function LoginForm() {
   const [login, { error, data, isError, isLoading }] = useLoginMutation();
+  const [getMyProfileAsync] = useLazyGetMyProfileQuery();
   const initialValues = {
     email: "",
     password: "",
@@ -32,6 +26,9 @@ function LoginForm() {
     remember: Yup.boolean().optional(),
   });
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams?.get("redirectUrl");
+
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
@@ -43,11 +40,16 @@ function LoginForm() {
         .unwrap()
         .then(async (res) => {
           if (res.token) {
-            setUserCookie(
-              UserCookieType.SESSION,
-              JSON.stringify({ token: res.token })
-            );
-            router.push("/dashboard");
+            setUserCookie(UserCookieType.SESSION, { token: res.token });
+            await getMyProfileAsync()
+              .unwrap()
+              .then((profile) => {
+                if (redirectUrl) {
+                  router.push(redirectUrl);
+                } else {
+                  router.push("/dashboard");
+                }
+              });
           }
         })
         .catch((err) => {
@@ -112,7 +114,11 @@ function LoginForm() {
           />
         </div>
         <div className="flex flex-col justify-center items-center gap-2">
-          <Button intent="default"  className="mt-4 w-full">
+          <Button
+            isLoading={isLoading}
+            intent="default"
+            className="mt-4 w-full"
+          >
             Login
           </Button>
           <a href="/forget-password" className="text-sm text-main mt-2">

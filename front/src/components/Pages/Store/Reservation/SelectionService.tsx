@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/Ui/ButtonShadcn";
 import { Avatar, AvatarFallback } from "@/components/Ui/avatar";
 import {
@@ -7,94 +8,133 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/Ui/select";
-import { getUserInitials } from "@/lib/helpers/utils";
+import { getUserInitials, humanizeMinutes } from "@/lib/helpers/utils";
 import { useLazyGetStoreServiceQuery } from "@/lib/services/services";
 import { User } from "@/types/User";
 import { useRouter } from "next/navigation";
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
+import Card from "@/components/cards/CardBase";
+import ErrorBaseShow from "@/components/Errors/ErrorBaseShow";
+import { getUserCookie, setUserCookie } from "@/lib/helpers/UserHelper";
+import { Service } from "@/types/Service";
 
 type SelectionServiceProps = {
   idStore: string;
   serviceId: string;
+  selectedEmployeeId?: string;
   collaborators: Array<User>;
-  callBackUser: (collaborator: User) => void;
+  callBackUser: (collaboratorId: string) => void;
+  callBackService: (service: Service) => void;
 };
 
 const SelectionService: FC<SelectionServiceProps> = ({
   collaborators = [],
   callBackUser,
+  callBackService,
   idStore,
+  selectedEmployeeId,
   serviceId,
 }) => {
-  const [getStoreService, { data: service }] = useLazyGetStoreServiceQuery();
+  const [getStoreService, { data: service, isError }] =
+    useLazyGetStoreServiceQuery();
 
   const router = useRouter();
   useEffect(() => {
-    getStoreService([idStore, serviceId]);
-  }, []);
+    (async () => {
+      await getStoreService([idStore, serviceId])
+        .unwrap()
+        .then((resp) => {
+          callBackService(resp);
+        });
+      if (collaborators.length === 0) return;
+      const session = await getUserCookie();
+      if (Object.keys(session?.collaboratorChoosen || {}).length > 0) {
+        if (
+          collaborators.filter(
+            (collaborator) =>
+              collaborator.id?.toString() === session?.collaboratorChoosen
+          ).length > 0
+        ) {
+          callBackUser(session?.collaboratorChoosen);
+        }
+      }
+    })();
+  }, [idStore, serviceId]);
+
+  const onSelect = async (userId: string) => {
+    callBackUser(userId);
+    await setUserCookie(undefined, {
+      collaboratorChoosen: userId,
+    });
+  };
 
   return (
     <div>
-      <h2 className="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-        Votre prestation
-      </h2>
-      <div className=" px-6 py-3 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex justify-between">
-        <div>
-          {!service?.name ? (
-            <Skeleton width={200} />
-          ) : (
-            <h3 className="font-bold text-md">{service?.name}</h3>
-          )}
-          {!service?.time ? (
-            <Skeleton width={200} />
-          ) : (
-            <p className="text-gray-500 text-md">
-              30min • <span className="text-black">{service?.price}€</span>
-            </p>
-          )}
-        </div>
-        <div className="flex flex-row items-center gap-4">
-          {collaborators.length > 0 && (
-            <Select
-              onValueChange={(e) => {
-                const user = JSON.parse(e) as User;
-                callBackUser(user);
-              }}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Avec qui ?" />
-              </SelectTrigger>
-              <SelectContent>
-                {collaborators.map((collaborator, i) => (
-                  <SelectItem
-                    key={collaborator.id}
-                    value={JSON.stringify(collaborator)}
-                  >
-                    <div className="flex items-center">
-                      <Avatar className="w-8 h-8">
-                        <AvatarFallback>
-                          {getUserInitials(collaborator.firstname)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="ml-2">{collaborator.firstname}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-          <Button
-            variant="link"
-            className="text-blue-500 p-0"
-            onClick={() => {
-              router.push(`/stores/${idStore}`);
-            }}
-          >
-            Changer
-          </Button>
-        </div>
-      </div>
+      <h3 className="mb-3 text-lg font-bold tracking-tight text-gray-900 dark:text-white flex items-center">
+        <span className=" h-5 w-5 text-sm bg-blue-500 text-white rounded-full flex justify-center items-center mr-2">
+          1
+        </span>
+        Service sélectionnée
+      </h3>
+      <Card className="px-6 py-3  flex justify-between">
+        {isError ? (
+          <ErrorBaseShow />
+        ) : (
+          <>
+            <div>
+              {!service?.name ? (
+                <Skeleton width={200} />
+              ) : (
+                <h3 className="font-bold text-md">{service?.name}</h3>
+              )}
+              {!service?.time ? (
+                <Skeleton width={200} />
+              ) : (
+                <p className="text-gray-500 text-md">
+                  {humanizeMinutes(service?.time)} •{" "}
+                  <span className="text-black">{service?.price}€</span>
+                </p>
+              )}
+            </div>
+            <div className="flex flex-row items-center gap-4">
+              {collaborators.length > 0 && (
+                <Select value={selectedEmployeeId} onValueChange={onSelect}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Avec qui ?" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {collaborators.map((collaborator, i) => (
+                      <SelectItem
+                        key={collaborator.id}
+                        value={collaborator.id.toString()}
+                      >
+                        <div className="flex items-center">
+                          <Avatar className="w-8 h-8">
+                            <AvatarFallback>
+                              {getUserInitials(collaborator.firstname)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="ml-2">{collaborator.firstname}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+              <Button
+                variant="link"
+                className="text-blue-500 p-0"
+                onClick={() => {
+                  router.push(`/stores/${idStore}`);
+                }}
+              >
+                Changer
+              </Button>
+            </div>
+          </>
+        )}
+      </Card>
     </div>
   );
 };

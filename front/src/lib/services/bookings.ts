@@ -1,6 +1,6 @@
 import api from "./api";
 import { HydraPaginateResp, HydraResp } from "@/types/HydraPaginateResp";
-import { Booking } from "@/types/Booking";
+import { BooKingPost, Booking } from "@/types/Booking";
 
 export const bookingsApi = api.injectEndpoints({
     endpoints: (build) => ({
@@ -13,6 +13,9 @@ export const bookingsApi = api.injectEndpoints({
                     },
                 };
             },
+            extraOptions: {
+                fetchPolicy: 'no-cache',
+            },
             providesTags: (result, _error, filters) =>
                 result
                     ? [
@@ -24,10 +27,18 @@ export const bookingsApi = api.injectEndpoints({
                     ]
                     : [],
         }),
+        createBooking: build.mutation<Booking, BooKingPost>({
+            query: (body) => ({
+                url: `/bookings`,
+                method: "POST",
+                body
+            }),
+        }),
     }),
     overrideExisting: true,
 });
 
 export const {
-    useLazyGetEmployeeBookingsQuery
+    useLazyGetEmployeeBookingsQuery,
+    useCreateBookingMutation
 } = bookingsApi;

@@ -18,3 +18,4 @@ interface ServerSideComponentProp<
 interface AnyProperties {
     [prop: string]: any
 }
+

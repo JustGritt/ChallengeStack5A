@@ -1,6 +1,6 @@
 "use client";
-import { useLazyGetStoreServiceQuery } from "@/lib/services/services";
 import {
+  useGetStoreQuery,
   useLazyGetAllStoresQuery,
   useLazyGetStoreQuery,
 } from "@/lib/services/stores";
@@ -14,25 +14,10 @@ import Skeleton from "react-loading-skeleton";
 
 type PresentationStoreProps = {
   storeId: string;
-  callBack?: (store: Store) => void;
 };
 
-const PresentationStore: FC<PresentationStoreProps> = ({
-  storeId,
-  callBack,
-}) => {
-  const [getStore, { isLoading, isError, data: store }] =
-    useLazyGetStoreQuery();
-
-  useEffect(() => {
-    getStore(storeId).then((resp) => {
-      if (resp.data) {
-        if (callBack) {
-          callBack(resp.data);
-        }
-      }
-    });
-  }, []);
+const PresentationStore: FC<PresentationStoreProps> = ({ storeId }) => {
+  const { isLoading, isError, data: store } = useGetStoreQuery(storeId);
 
   if (isError) {
     return notFound();

@@ -2,7 +2,7 @@ export type Service = {
     id: number,
     name: string,
     description: string,
-    time: 0,
+    time: number,
     store: string,
     price: number
 };
