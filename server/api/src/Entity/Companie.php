@@ -18,6 +18,7 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 use App\State\CompanieStateProcessor;
 use App\State\CompanieStateProvider;
+use App\Controller\AdminCompanyDashboardStats;
 
 #[ORM\Entity(repositoryClass: CompanieRepository::class)]
 #[ApiResource(
@@ -29,6 +30,14 @@ use App\State\CompanieStateProvider;
     ],
     normalizationContext: ['groups' => ['read-companie']],
     processor: CompanieStateProcessor::class,
+)]
+#[ApiResource(
+    operations: [
+         new Get(
+            uriTemplate: '/company/{id}/dashboard', 
+            controller: AdminCompanyDashboardStats::class, 
+         ) 
+    ],
 )]
 class Companie
 {
