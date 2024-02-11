@@ -46,7 +46,7 @@ export default function Affiliate() {
         rcs: Yup.string().required("Required"),
         capital: Yup.number().required("Required"),
         adresse: Yup.string().required("Required"),
-        structure: Yup.string().required("Required").oneOf(["SA", "SARL", "SAS", "SASU", "EURL", "GIE", "SCI"]),
+        structure: Yup.string().required("Required").oneOf(['SA', 'SAS', 'SARL', 'EURL', 'SASU', 'GIE', 'SCI', 'SCA', 'SCOP', 'SNC', 'SDF', 'SEL', 'SELARL', 'SEP', 'SNC', 'SARLU', 'OTHER']),
         firstname: Yup.string().required("Required"),
         lastname: Yup.string().required("Required"),
         birthday: Yup.date().required("Required"),
@@ -77,7 +77,7 @@ export default function Affiliate() {
             <>
                 <NavBar />
                 <div className="m-auto w-full flex justify-center items-center relative p-8 bg-[#EEF2FF] min-h-[70vh] flex-col-reverse lg:flex-row ">
-                    <div className="flex w-full max-w-[50%]">
+                    <div className="flex w-full md:max-w-[50%] max-w-[100%]">
                         <div className="bg-white rounded p-10 flex-col flex justify-center items-center w-full">
                             <div className="flex flex-col gap-2 justify-center w-full items-center">
                                 <svg
@@ -97,8 +97,8 @@ export default function Affiliate() {
                                 </h1>
                             </div>
                             <FormikProvider value={formik}>
-                                <Form id="register" className="flex flex-col px-4 gap-4 w-full">
-                                    <div className="flex w-full gap-8 justify-evenly">
+                                <Form id="register" className="flex flex-col p-4 gap-4 w-full">
+                                    <div className="flex w-full gap-8 justify-evenly lg:flex-row flex-col">
                                         <div className="w-full flex flex-col justify-between">
                                             <div className="w-full">
                                                 <div className="flex justify-between w-full items-center">
@@ -226,12 +226,22 @@ export default function Affiliate() {
                                                 >
                                                     <option value="" disabled>Select a structure</option>
                                                     <option value="SA">SA</option>
-                                                    <option value="SARL">SARL</option>
                                                     <option value="SAS">SAS</option>
-                                                    <option value="SASU">SASU</option>
+                                                    <option value="SARL">SARL</option>
                                                     <option value="EURL">EURL</option>
+                                                    <option value="SASU">SASU</option>
                                                     <option value="GIE">GIE</option>
                                                     <option value="SCI">SCI</option>
+                                                    <option value="SCA">SCA</option>
+                                                    <option value="SCOP">SCOP</option>
+                                                    <option value="SNC">SNC</option>
+                                                    <option value="SDF">SDF</option>
+                                                    <option value="SEL">SEL</option>
+                                                    <option value="SELARL">SELARL</option>
+                                                    <option value="SEP">SEP</option>
+                                                    <option value="SNC">SNC</option>
+                                                    <option value="SARLU">SARLU</option>
+                                                    <option value="OTHER">OTHER</option>
                                                 </Field>
                                             </div>
                                         </div>
@@ -366,7 +376,7 @@ export default function Affiliate() {
                                         </div>
                                     </div>
                                     <div className="flex flex-col justify-center items-center gap-2">
-                                        <Button intent="default" type="submit" className="mt-4 w-full">
+                                        <Button intent="default" type="submit" className="mt-4 w-full max-w-[250px]">
                                             Send request
                                         </Button>
                                     </div>

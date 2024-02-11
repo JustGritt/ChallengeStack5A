@@ -56,7 +56,7 @@ export default function AffiliateCreated() {
                         </p>
                     )
                 }
-                <a className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring" onClick={handleclick}>
+                <a className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white cursor-pointer hover:bg-indigo-700 focus:outline-none focus:ring" onClick={handleclick}>
                     Return to Home page
                 </a>
             </div>
