@@ -2,24 +2,68 @@
 
 import { Store } from "@/types/Store";
 import { useSelector } from "react-redux";
-import { selectCurrentUser } from "@/lib/services/slices/authSlice";
+import { selectCurrentUser, selectCurrentUserConfig } from "@/lib/services/slices/authSlice";
 import { useState, useEffect } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { BuildingStorefrontIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
 
+import { Button } from "@/components/Ui/Button";
+import Link from "next/link";
+import DashboardStat from '@/components/Dashboard/DashboardStat';
+import { Company } from "@/types/Company";
+import { getUserCookie } from "@/lib/helpers/UserHelper";
+import { UserCookieType } from "@/types/User";
+import { useRouter } from "next/navigation";
+
 export default function Stores() {
 
-    const user = useSelector(selectCurrentUser);
+    const router = useRouter();
+    const [userRoles, setUserRoles] = useState<string[]>([]);
     const [stores, setStores] = useState<Store[]>([]);
+    const [storesFetched, setStoresFetched] = useState(false);
 
+    // Get session
+    const user = useSelector(selectCurrentUser);
+    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
+    const [parsedSession, setParsedSession] = useState<any>({});
     useEffect(() => {
-        if (user) {
-            fetch(`https://api.odicylens.com/companies/${user?.companie?.id}`, { method: "GET" })
-                .then((res) => res.json())
-                .then((data) => { setStores(data.stores) });
-        }
-    }, [user]);
+        (async () => {
+            const session = await getUserCookie(UserCookieType.SESSION);
+            const parsedSession = JSON.parse(session?.value || "{}");
+            setParsedSession(parsedSession);
+            setUserRoles(Object.keys(userConfig).filter(key => (userConfig as any)[key] === true))
+        })();
+    }, [userConfig])
 
+    // Get companies if user is admin
+    useEffect(() => {
+        const fetchStores = async () => {
+            // Quick exit if user is not admin or owner
+            if(!userConfig?.isAdmin && !userConfig?.isOwner && !storesFetched) {
+                router.push('/dashboard');
+            }
+
+            // Admin
+            if (userConfig?.isAdmin && !storesFetched) {
+                fetch(`https://api.odicylens.com/companies`, { method: "GET" })
+                    .then((res) => res.json())
+                    .then((data) => setStores(data["hydra:member"].reduce((acc: Store[], company: Company) => acc.concat(company.stores), [])))
+                    setStoresFetched(true);
+                }
+            };
+
+            // Owner
+            if (userConfig?.isOwner && !storesFetched && parsedSession?.user?.companie?.id) {
+                fetch(`https://api.odicylens.com/companies/${parsedSession.user.companie.id}`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${parsedSession?.token}` }
+                }).then((res) => res.json()).then((data) => setStores(data.stores))
+                setStoresFetched(true);
+            }
+        fetchStores();
+    }, [userConfig, storesFetched, parsedSession]);
+
+    // Store pagination
     useEffect(() => {
         if (stores) {
             const pages = Math.ceil(stores.length / 5);
@@ -55,10 +99,14 @@ export default function Stores() {
                             <section>
                                 <div className="flex justify-between items-center">
                                     <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8 inline">Your Stores</h2>
-                                    <a href="/dashboard/stores/new" className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 dark:bg-indigo-600 dark:hover:bg-indigo-700 focus:outline-none dark:focus:ring-indigo-800 h-10 px-4 py-2 mr-4">
-                                        <BuildingStorefrontIcon className="h-5 w-5 inline-block -mt-1 mr-2" />
-                                        New store
-                                    </a>
+                                    {
+                                        userRoles.includes('isOwner') && (
+                                            <Link href="/dashboard/stores/new" className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 dark:bg-indigo-600 dark:hover:bg-indigo-700 focus:outline-none dark:focus:ring-indigo-800 h-10 px-4 py-2 mr-4">
+                                                <BuildingStorefrontIcon className="h-5 w-5 inline-block -mt-1 mr-2" />
+                                                New store
+                                            </Link>
+                                        )
+                                    }
                                 </div>
                                     <ul>
                                         {
@@ -71,13 +119,14 @@ export default function Stores() {
                                                         </div>
                                                     </div>
                                                     <div className="shrink-0 flex items-end gap-4">
-                                                        <a href={"/dashboard/stores/" + store.id} className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-indigo-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-200 focus:text-indigo-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700 mt-2">
+                                                        <Link href={"/dashboard/stores/" + store.id} className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-indigo-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-200 focus:text-indigo-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700 mt-2">
                                                             <ShoppingBagIcon className="h-4 w-4 inline-block mr-2" />
                                                             View store
-                                                        </a>
-                                                        <button type="button" className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900 mt-2">
+                                                        </Link>
+
+                                                        <Button intent="delete" type="button">
                                                             Delete
-                                                        </button>
+                                                        </Button>
                                                     </div>
                                                 </li>
                                             ))
@@ -144,9 +193,9 @@ export default function Stores() {
                                                     </p>
                                                     <div className="mt-10 flex items-center justify-center gap-x-6 flex-col">
                                                         Taking too long?
-                                                        <a href="/login" className="mt-4 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                                        <Link href="/login" className="mt-4 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                                             Go back
-                                                        </a>
+                                                        </Link>
                                                     </div>
                                                 </div>
                                             </section>
@@ -161,7 +210,9 @@ export default function Stores() {
                                 <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">
                                     You are not associated with any company yet
                                 </h2>
-                                <a href="/affiliate" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Become an affiliate</a>
+                                <Link href="/affiliate" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                                    Become an affiliate
+                                </Link>
                             </section>
                         )
                     }

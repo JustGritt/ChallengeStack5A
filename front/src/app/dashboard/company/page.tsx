@@ -4,6 +4,8 @@ import Link from "next/link";
 import DashboardStat from '@/components/Dashboard/DashboardStat';
 import { Company } from "@/types/Company";
 import { useSelector } from 'react-redux';
+import { getUserCookie } from "@/lib/helpers/UserHelper";
+import { UserCookieType } from "@/types/User";
 import { ShoppingBagIcon } from '@heroicons/react/24/outline'
 import { useEffect, useState } from 'react';
 import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
@@ -16,19 +18,40 @@ export default function Companies() {
     const [userRoles, setUserRoles] = useState<string[]>([]);
     const [companies, setCompanies] = useState<Company[]>([]);
 
+    // Get session
+    const [parsedSession, setParsedSession] = useState<any>({});
+    useEffect(() => {
+        (async () => {
+            const session = await getUserCookie(UserCookieType.SESSION);
+            const parsedSession = JSON.parse(session?.value || "{}");
+            setParsedSession(parsedSession);
+            setUserRoles(Object.keys(userConfig).filter(key => (userConfig as any)[key] === true))
+        })();
+    }, [userConfig]);
+
     useEffect(() => {
         const fetchCompanies = async () => {
-            if (userConfig?.isAdmin && !companiesFetched) {
-                fetch(`https://api.odicylens.com/companies`, { method: "GET" })
+            if (userConfig?.isAdmin && !companiesFetched && parsedSession?.token) {
+                fetch(`https://api.odicylens.com/companies`, { method: "GET", headers: { 'Authorization': `Bearer ${parsedSession?.token}` } })
                     .then((res) => res.json())
-                    .then((data) => setCompanies(data["hydra:member"])); // [1]
-                setCompaniesFetched(true);
-            }
-        };
-
-        setUserRoles(Object.keys(userConfig || {}).filter(role => userConfig[role]));
+                    .then((data) => setCompanies(data["hydra:member"]));
+                    setCompaniesFetched(true);
+                }
+            };
         fetchCompanies();
-    }, [userConfig, companiesFetched]);
+    }, [userConfig, companiesFetched, parsedSession]);
+
+    // useEffect(() => {
+    //     const fetchCompanies = async () => {
+    //         if (userConfig?.isAdmin && !companiesFetched) {
+    //             fetch(`https://api.odicylens.com/companies`, { method: "GET", headers: { 'Authorization': `Bearer ${parsedSession?.token}` } })
+    //                 .then((res) => res.json())
+    //                 .then((data) => setCompanies(data["hydra:member"]));
+    //                 setCompaniesFetched(true);
+    //             }
+    //         };
+    //     fetchCompanies();
+    // }, [userConfig, companiesFetched]);
 
     return (
         <section className="lg:pl-72 block min-h-screen">
