@@ -66,9 +66,15 @@ class BookingStateProcessor implements ProcessorInterface
         }
 
         if ($operation->getUriTemplate() === '/bookings/{id}{._format}' && $operation->getMethod() === 'PATCH') {
-            //check if the previous data has already patch on cancel 
-            if (true !== $context['previous_data']->isCancelled() && $data->isCancelled() !== $context['previous_data']->isCancelled()) {
-                throw new AccessDeniedException('You cannot cancel this booking.');
+            //check if the user is the owner of the booking
+            if (null !== $this->security->getUser() && $context['previous_data']->getCustomer() !== $this->security->getUser()) {
+                throw new AccessDeniedException('You are not allowed to update this booking. You are not the owner of this booking');
+            }
+            if (true === $context['previous_data']->isCancelled()) {
+                throw new AccessDeniedException('You have already cancelled this booking');
+            }
+            if (!$data->isCancelled()) {
+                throw new AccessDeniedException('You can only cancel a booking');
             }
 
             return $this->persistProcessor->process($data, $operation, $uriVariables, $context);

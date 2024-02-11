@@ -18,6 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use App\State\UserProcessor;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
+use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 #[ApiResource(
     operations: [
@@ -67,6 +68,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['create-user', 'update-user'])]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 6, max: 255)]
+    #[Assert\PasswordStrength([
+        'minScore' => PasswordStrength::STRENGTH_MEDIUM,
+        'message' => 'Your password is too easy to guess. Company\'s security policy requires to use a stronger password.'
+    ])]
     private string $plainPassword = '';
 
     #[Groups(['read-user',  'update-user', 'read-user-mutation'])]

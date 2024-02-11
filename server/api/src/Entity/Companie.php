@@ -18,6 +18,7 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 use App\State\CompanieStateProcessor;
 use App\State\CompanieStateProvider;
+use App\Controller\AdminCompanyDashboardStats;
 
 #[ORM\Entity(repositoryClass: CompanieRepository::class)]
 #[ApiResource(
@@ -29,6 +30,14 @@ use App\State\CompanieStateProvider;
     ],
     normalizationContext: ['groups' => ['read-companie']],
     processor: CompanieStateProcessor::class,
+)]
+#[ApiResource(
+    operations: [
+         new Get(
+            uriTemplate: '/company/{id}/dashboard', 
+            controller: AdminCompanyDashboardStats::class, 
+         ) 
+    ],
 )]
 class Companie
 {
@@ -65,11 +74,12 @@ class Companie
     #[Groups(['create-companie'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Assert\Choice(callback: 'getStructureChoice')]
     private ?string $rcs = null;
 
     #[Groups(['create-companie', 'update-companie'])]
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Positive]
     private ?int $capital = null;
 
     #[Groups(['update-companie', 'create-companie'])]
@@ -80,6 +90,7 @@ class Companie
     #[Groups(['update-companie', 'create-companie'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Assert\Choice(callback: 'getStructureChoice')]
     private ?string $structure = null;
 
     #[Groups(['update-companie', 'create-companie'])]
@@ -93,11 +104,13 @@ class Companie
     #[Groups(['update-companie', 'create-companie'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 255)]
     private ?string $firstname = null;
 
     #[Groups(['update-companie', 'create-companie'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 255)]
     private ?string $lastname = null;
 
     #[Groups(['update-companie', 'create-companie'])]
