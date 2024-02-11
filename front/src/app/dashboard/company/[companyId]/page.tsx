@@ -5,27 +5,30 @@ import Breadcrumb from '@/components/Header/Breadcrumb';
 import { Company } from "@/types/Company";
 import { Employee } from "@/types/User";
 import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import { selectCurrentUser } from '@/lib/services/slices/authSlice';
+import { useEffect, useMemo, useState } from 'react';
+import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
 import { IdentificationIcon, UserIcon, HomeModernIcon } from "@heroicons/react/20/solid";
 export default function CompanyDetails({ params }: { params: { companyId: string } }) {
 
     const user = useSelector(selectCurrentUser);
+    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
     const [companyInfo, setCompanyInfo] = useState<Company>();
     const [companyEmployees, setCompanyEmployees] = useState<Employee[]>([]);
+
+    const userRoles = useMemo(() => Object.keys(userConfig || {}).filter(role => userConfig[role]), [userConfig]);
 
     useEffect(() => {
         const fetchCompanyInfo = async () => {
             const response = await fetch(`https://api.odicylens.com/companies/${params.companyId}`);
             const data = await response.json();
 
-            if (data.owner.id === user?.id) {
+            if (userRoles.includes("isAdmin") || data.owner.id === user?.id) {
                 setCompanyInfo(data);
             }
         };
 
         fetchCompanyInfo();
-    }, [params.companyId, user?.id]);
+    }, [userRoles, user, params.companyId]);
 
     useEffect(() => {
         const fetchEmployees = async () => {
@@ -174,9 +177,9 @@ export default function CompanyDetails({ params }: { params: { companyId: string
                                             We are fetching the company details for you.
                                         </p>
                                         <div className="mt-10 flex items-center justify-center gap-x-6 flex-col">
-                                            Taking too long? <br/>
+                                            <strong className="text-lg font-semibold text-gray-900">Taking too long?</strong>
                                             You might not have access to this company.
-                                            <Link href="/dashboard" className="mt-4 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                            <Link href="/dashboard/company" className="mt-4 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                                 Go back
                                             </Link>
                                         </div>
