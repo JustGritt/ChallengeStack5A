@@ -33,7 +33,7 @@ class AdminCompanyDashboardStats extends AbstractController
             throw new AccessDeniedException('Sorry, you are not allowed to access this resource.');
         }
 
-        if (null !== $user->getCompanie() && $user->getCompanie() !== $store->getCompany() || null !== $user->getWork() && $user->getWork()->getCompany() !== $company) {
+        if (null !== $user->getCompanie() && $user->getCompanie() !== $company || null !== $user->getWork() && $user->getWork()->getCompany() !== $company) {
             throw new AccessDeniedException('Sorry, you are not allowed to access this resource.');
         }
         
