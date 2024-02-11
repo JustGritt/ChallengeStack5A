@@ -54,11 +54,21 @@ class Schedule
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotNull]
     #[Groups(['schedule-read', 'schedule-mutation'])]
+    #[Assert\LessThanOrEqual('today')]
+    /**
+     * @var string A "Y-m-d H:i:s" formatted value
+     */
+    #[Assert\Type("\DateTimeInterface")]
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotNull]
     #[Groups(['schedule-read', 'schedule-mutation'])]
+    /**
+     * @var string A "Y-m-d H:i:s" formatted value
+     */
+    #[Assert\Type("\DateTimeInterface")]
+    #[Assert\GreaterThan(propertyPath: 'startDate', message: 'The end date must be after the start date')]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\Column]
