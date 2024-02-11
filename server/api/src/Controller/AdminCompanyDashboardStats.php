@@ -29,11 +29,11 @@ class AdminCompanyDashboardStats extends AbstractController
     {
         $user = $this->getUser();
 
-        if (!$user instanceof User || !$store instanceof Store) {
+        if (!$user instanceof User || !$company instanceof Companie) {
             throw new AccessDeniedException('Sorry, you are not allowed to access this resource.');
         }
 
-        if ($user->getCompanie() !== $store->getCompany() || null !== $user->getWork() && $user->getWork() !== $store) {
+        if (null !== $user->getCompanie() && $user->getCompanie() !== $store->getCompany() || null !== $user->getWork() && $user->getWork()->getCompany() !== $company) {
             throw new AccessDeniedException('Sorry, you are not allowed to access this resource.');
         }
         
