@@ -1,11 +1,12 @@
 "use client"
 
-import { removeUserCookie } from "@/lib/helpers/UserHelper";
-import { resetCredentials } from "@/lib/services/slices/authSlice";
+import Link from "next/link";
 import AuthMiddleware from "@/middlewares/AuthMiddleware";
-import { UserCookieType } from "@/types/User";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
+import { UserCookieType } from "@/types/User";
+import { removeUserCookie } from "@/lib/helpers/UserHelper";
+import { resetCredentials } from "@/lib/services/slices/authSlice";
 
 export default function AffiliateCreated() {
 
@@ -26,11 +27,14 @@ export default function AffiliateCreated() {
                         🤝
                     </h1>
                     <p className="text-2xl font-bold tracking-tight text-gray-900 mt-4 sm:text-4xl">
-                        Thank you! and we are thrilled to have you join the Odicylens community. Your request will soon be answered by our staff.
+                        Thank you! <br/>
+                        We are thrilled to have you join the Odicylens community.
+                        Your request will soon be answered by our staff.
                     </p>
-                    <a className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring" onClick={handleclick}>
+
+                    <Link href="/" className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring" onClick={handleclick}>
                         Return to Home page
-                    </a>
+                    </Link>
                 </div>
             </section>
         </AuthMiddleware>

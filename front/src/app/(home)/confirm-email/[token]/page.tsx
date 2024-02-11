@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function ConfirmemailToken({ params }: { params: { token: string } }) {
@@ -45,9 +46,9 @@ export default function ConfirmemailToken({ params }: { params: { token: string 
                     <p className="mt-4 text-gray-500">
                         {currentStatus.message}
                     </p>
-                    <a href={currentStatus.buttonUrl} className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring">
+                    <Link href={currentStatus.buttonUrl} className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring">
                         {currentStatus.buttonUrl === "/reset-token" ? "Request new confirmation email" : "Login"}
-                    </a>
+                    </Link>
                 </div>
             )}
         </section>

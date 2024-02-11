@@ -25,10 +25,15 @@ export const companiesApi = api.injectEndpoints({
           ]
           : [],
     }),
+    getAllCompanies : build.query<HydraPaginateResp<Company>, void>({
+      query: () => `/companies`,
+      providesTags: ["Companies"],
+    }),
   }),
   overrideExisting: true,
 });
 
 export const {
-  useLazyGetCompaniesQuery
+  useLazyGetCompaniesQuery,
+  useGetAllCompaniesQuery
 } = companiesApi;

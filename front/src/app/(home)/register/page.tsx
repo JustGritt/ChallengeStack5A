@@ -1,20 +1,14 @@
 "use client";
-import {
-  Form,
-  Field,
-  FormikProvider,
-  useFormik,
-  ErrorMessage,
-  FormikConfig,
-} from "formik";
 import * as Yup from "yup";
+import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/Ui/Button";
-import { UserRegister } from "@/types/User";
 import toast from "react-hot-toast";
+import { Button } from "@/components/Ui/Button";
 import { useRouter } from "next/navigation";
-import { useRegisterMutation } from "@/lib/services/auth";
+import { UserRegister } from "@/types/User";
 import { ApiErrorResponse } from "@/types/ApiBase";
+import { useRegisterMutation } from "@/lib/services/auth";
+import { Form, Field, FormikProvider, useFormik, ErrorMessage, FormikConfig } from "formik";
 
 export default function Register() {
   const initialValues: UserRegister = {
@@ -61,12 +55,11 @@ export default function Register() {
                     <br />
                     If you encounter any issues or have questions, feel free to
                     contact our support team at :
-                    <a
-                      className="text-main hover:text-main-dark transition-all"
+                    <Link className="text-main hover:text-main-dark transition-all"
                       href="mailto:support@example.com"
                     >
                       support@example.com
-                    </a>
+                    </Link>
                   </p>
                 </div>
               </div>
@@ -223,7 +216,7 @@ export default function Register() {
                     className="mr-2 focus:outline-0 font-inter text-gray-600 placeholder:text-sm"
                   />
                   <span className="text-black text-sm font-inter">
-                    I have read and agree to the <a href="/terms" className="text-blue-500 hover:text-blue-700">Terms and Conditions</a>
+                    I have read and agree to the <Link href="/terms" className="text-blue-500 hover:text-blue-700">Terms and Conditions</Link>
                   </span>
                 </label>
                 <ErrorMessage
@@ -237,12 +230,12 @@ export default function Register() {
                   </Button>
                   <p className="text-black text-center text-sm font-inter">
                     Already a member?{" "}
-                    <a
+                    <Link
                       href="/login"
                       className="text-blue-500 hover:text-blue-700"
                     >
                       Sign in
-                    </a>
+                    </Link>
                   </p>
                 </div>
               </Form>

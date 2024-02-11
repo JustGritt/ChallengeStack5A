@@ -1,6 +1,7 @@
 "use client";
 
 import * as Yup from "yup";
+import Link from "next/link";
 import toast from "react-hot-toast";
 import { Button } from "@/components/Ui/Button";
 import { useRouter } from "next/navigation";
@@ -32,7 +33,7 @@ export default function ForgetPassword() {
                                     Password reset link sent
                                 </p>
                                 <p className="mt-1 text-sm text-gray-500">
-                                    We have sent a password reset link to your email address. Please check your email.
+                                    If your email address is registered, we have sent a password reset link to your email address. Please check your email.
                                 </p>
                             </div>
                         </div>
@@ -90,9 +91,9 @@ export default function ForgetPassword() {
                             </Button>
                             <p className="mt-10 text-center text-sm text-gray-500">
                                 Not a member yet?{' '}
-                                <a href="/register" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                                <Link href="/register" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
                                     Create an account
-                                </a>
+                                </Link>
                             </p>
                         </div>
                     </Form>
