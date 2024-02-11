@@ -15,21 +15,8 @@ export default function AffiliateCreated() {
     const user = useSelector(selectCurrentUser);
 
     useEffect(() => {
-        console.log(user)
-        // if (user) {
-        //     if (user.companie?.isValid === false) {
-        //         return () => {
-        //             dispatch(resetCredentials());
-        //             removeUserCookie(UserCookieType.SESSION);
-        //         }
-        //     } else {
-        //         return () => {
-        //             setTimeout(() => {
-        //                 router.push("/dashboard");
-        //             }, 3000);
-        //         }
-        //     }
-        // }
+        dispatch(resetCredentials());
+        removeUserCookie(UserCookieType.SESSION);
     }, [dispatch, router, user]);
 
     const handleclick = () => {
