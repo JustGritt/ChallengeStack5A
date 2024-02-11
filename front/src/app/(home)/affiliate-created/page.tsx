@@ -20,7 +20,11 @@ export default function AffiliateCreated() {
     }, [dispatch, router, user]);
 
     const handleclick = () => {
-        router.push("/");
+        if (user?.companie?.isValid) {
+            router.push("/dashboard");
+        } else {
+            router.push("/");
+        }
     }
 
     return (
@@ -44,7 +48,9 @@ export default function AffiliateCreated() {
                     )
                 }
                 <a className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white cursor-pointer hover:bg-indigo-700 focus:outline-none focus:ring" onClick={handleclick}>
-                    Return to Home page
+                    {
+                        user?.companie?.isValid ? "Go to Dashboard" : "Return Home"
+                    }
                 </a>
             </div>
         </section>
