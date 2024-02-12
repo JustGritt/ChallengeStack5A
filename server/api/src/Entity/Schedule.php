@@ -38,7 +38,7 @@ use App\State\ScheduleStateProcessor;
 #[ApiResource(
     uriTemplate: '/stores/{id}/schedules',
     uriVariables: [
-        'id' => new Link(fromClass: Store::class, toProperty: 'employee'),
+        'id' => new Link(fromClass: Store::class, toProperty: 'store'),
     ],
     operations: [ new GetCollection(normalizationContext: ['groups' => ['schedule-read']]) ]
 )]
