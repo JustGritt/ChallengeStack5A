@@ -91,7 +91,7 @@ export default function Companies() {
                                 {
                                     companyInfo ? (
                                         <section className="bg-white dark:bg-gray-900">
-                                            <div className="max-w-screen-md mb-8 lg:mb-16 grid grid-cols-2 gap-4">
+                                            <div className="w-full mb-8 lg:mb-16 grid grid-cols-2 gap-4">
                                                 <div>
                                                     <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">{companyInfo.name}</h2>
                                                     {

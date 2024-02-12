@@ -60,7 +60,6 @@ export default function UserCalendar() {
     }
 
     const data = bookings.map((booking) => {
-        console.log(bookings)
         return {
             title: booking.service.name,
             start: booking.startDate,

@@ -27,13 +27,23 @@ export default function Notifications() {
         (async () => {
             if (user?.roles.includes('ROLE_ADMIN') || user?.roles.includes('ROLE_SUPER_ADMIN')) {
                 await fetch('https://api.odicylens.com/companies?page=0', { method: 'GET', headers: { 'Authorization': `Bearer ${parsedSession?.token}` } })
-                    .then(response => response.json())
-                    .then(data => data['hydra:member'].map((company: any) => {
-                        if (!company.isValid) setNotifications(notifications => ([...notifications, company]))
-                    }))
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data && data['hydra:member']) {
+                            data['hydra:member'].map((company: any) => {
+                                if (!company.isValid) setNotifications(notifications => ([...notifications, company]))
+                            })
+                        }
+                    })
+                    .catch(error => console.error('There was an error!', error));
             }
         })();
-    }, [user, parsedSession?.token])
+    }, [user, parsedSession?.token]);
 
     return (
         <section className="lg:pl-72 block min-h-screen">

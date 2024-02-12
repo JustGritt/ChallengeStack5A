@@ -64,7 +64,6 @@ export default function Stores() {
 
 
     const deleteStore = (storeId: number) => {
-        console.log('Deleting store', storeId)
             if(userConfig?.isOwner) {
                 fetch(`https://api.odicylens.com/stores/${storeId}`, {
                 method: "DELETE",

@@ -42,8 +42,6 @@ export default function EditProfile() {
     });
 
     const onSubmitProfile: FormikConfig<UserUpdateProfile>["onSubmit"] = (values) => {
-        console.log(values)
-
         fetch(`https://api.odicylens.com/users/${user?.id}`, {
             method: "PATCH",
             headers: { 'Authorization': `Bearer ${parsedSession?.token}`, 'Content-Type': 'application/merge-patch+json' },

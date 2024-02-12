@@ -27,7 +27,6 @@ export default function DashboardStats() {
                     }
                 })
                     .then((res) => res.json())
-                    // .then((data) => console.log(data));
                     .then((data) => setCompanyStats(data));
                 setCompanyStatsFetched(true);
             }

@@ -1,30 +1,14 @@
 "use client";
 
-import { User } from "@/types/User";
-import { Store } from "@/types/Store";
-
-
-import Link from 'next/link';
-import Breadcrumb from '@/components/Header/Breadcrumb';
-import { Company } from "@/types/Company";
-import { Employee } from "@/types/User";
 import { useSelector } from 'react-redux';
-import { useEffect, useMemo, useState } from 'react';
-import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
-import { CheckIcon, IdentificationIcon, UserIcon, HomeModernIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
-import { Button } from '@/components/Ui/Button';
-import toast from "react-hot-toast";
+import { selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
+import { useEffect, useMemo, useState } from 'react';
 
 export default function Employees() {
-    const [stores, setStores] = useState<Store[]>([]);
 
-    const user = useSelector(selectCurrentUser);
     const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
-    const [companyInfo, setCompanyInfo] = useState<Company>();
-    const [companyEmployees, setCompanyEmployees] = useState<Employee[]>([]);
-    const [notifications, setNotifications] = useState<any[]>([]);
     const userRoles = useMemo(() => Object.keys(userConfig || {}).filter(role => userConfig[role]), [userConfig]);
 
     // Get session
@@ -41,7 +25,20 @@ export default function Employees() {
     const [employeesFetched, setEmployeesFetched] = useState(false);
     useEffect(() => {
         const fetchEmployees = async () => {
-            if (!employeesFetched && parsedSession?.token) {
+            if (!employeesFetched && parsedSession?.token && userRoles.includes("isAdmin")) {
+                fetch(`https://api.odicylens.com/company/2/employee`, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${parsedSession?.token}`
+                    }
+                })
+                    .then((res) => res.json())
+                    .then((data) => setEmployees(data));
+
+                setEmployeesFetched(true);
+            }
+
+            if (!employeesFetched && parsedSession?.token && (userRoles.includes("isOwner") || userRoles.includes("isWorker"))) {
                 fetch(`https://api.odicylens.com/company/${parsedSession?.user?.companie?.id}/employee`, {
                     method: "GET",
                     headers: {
@@ -71,8 +68,8 @@ export default function Employees() {
                                 <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8 inline">Your Employees ({employees.length})</h2>
                                 <ul className="mt-8 grid grid-cols-2 gap-4">
                                     {
-                                        employees.map((employee) => (
-                                            <li key={employee.id} className="flex justify-between gap-6 w-full rounded px-4 hover:bg-gray-100 shadow">
+                                        employees.map((employee, index) => (
+                                            <li key={index} className="flex justify-between gap-6 w-full rounded px-4 hover:bg-gray-100 shadow">
                                                 <div className="flex min-w-0 gap-4 py-4">
                                                     <div className="h-12 w-12 flex-none rounded-full bg-gray-200 grid place-items-center font-bold">{employee.firstname.charAt(0)}</div>
                                                     <div className="min-w-0 flex-auto">
