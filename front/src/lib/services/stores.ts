@@ -49,7 +49,16 @@ export const storesApi = api.injectEndpoints({
           ]
           : [],
     }),
-
+    addStore: build.mutation<Store, Partial<Store>>({
+      query: (data) => {
+        return {
+          url: "/stores",
+          method: "POST",
+          body: data,
+        };
+      },
+      invalidatesTags: [{ type: "Stores", id: "LIST" }],
+    }),
   }),
   overrideExisting: true,
 });
@@ -60,5 +69,5 @@ export const {
   useGetStoreQuery,
   useLazyGetStoreQuery,
   useGetStoreSchedulesQuery,
-
+  useAddStoreMutation,
 } = storesApi;

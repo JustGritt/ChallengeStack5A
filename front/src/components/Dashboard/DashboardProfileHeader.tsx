@@ -3,6 +3,7 @@ import { classNames } from "@/lib/helpers/utils";
 import { User } from "@/types/User";
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon, UserIcon } from "@heroicons/react/20/solid";
+import Link from "next/link";
 import React, { Fragment } from "react";
 
 function DashboardProfileHeader(user: User) {
@@ -37,7 +38,7 @@ function DashboardProfileHeader(user: User) {
           {userNavigation.map((item) => (
             <Menu.Item key={item.name}>
               {({ active }) => (
-                <a
+                <Link
                   href={item.href}
                   className={classNames(
                     active ? "bg-gray-50 dark:bg-gray-700" : "",
@@ -45,7 +46,7 @@ function DashboardProfileHeader(user: User) {
                   )}
                 >
                   {item.name}
-                </a>
+                </Link>
               )}
             </Menu.Item>
           ))}

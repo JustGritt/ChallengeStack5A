@@ -1,7 +1,7 @@
 import api from "./api";
 import { ApiSuccessBase } from "@/types/ApiBase";
 import { LoginResponse } from "@/types/Auth";
-import { User, UserCookieType, UserRegister, UserUpdate } from "@/types/User";
+import { User, UserCookieType, UserRegister, UserUpdateProfile, UserUpdatePassword } from "@/types/User";
 import { setCredentials } from "./slices/authSlice";
 
 export const authApi = api.injectEndpoints({
@@ -20,16 +20,19 @@ export const authApi = api.injectEndpoints({
         body: user,
       }),
     }),
-    updateUser: build.mutation<User, UserUpdate>({
+    updateUserPassword: build.mutation<User, UserUpdatePassword>({
+      query: (user) => ({
+        url: "/users/password",
+        method: "PATCH",
+        body: user,
+      }),
+    }),
+    updateUserProfile: build.mutation<User, UserUpdateProfile>({
       query: (user) => ({
         url: "/users/me",
         method: "PATCH",
         body: user,
       }),
-      async onQueryStarted(_, { queryFulfilled, dispatch, }) {
-        const { data: user } = await queryFulfilled;
-        dispatch(setCredentials({ user }));
-      },
     }),
     forgetPassword: build.mutation<ApiSuccessBase<any>, Record<"email", string>>({
       query: (user) => ({
@@ -45,6 +48,13 @@ export const authApi = api.injectEndpoints({
         body: user,
       }),
     }),
+    becomeAffiliate: build.mutation<{ kbis: string, name: string }, Record<"kbis" | "name", string>>({
+      query: ({ kbis, name }) => ({
+        url: "/companies",
+        method: "POST",
+        body: { kbis, name }
+      }),
+    }),
     validateEmailToken: build.mutation<ApiSuccessBase<any>, Record<"token", string>>({
       query: (token) => ({
         url: `/users/token/${token}`,
@@ -58,8 +68,10 @@ export const authApi = api.injectEndpoints({
 export const {
   useRegisterMutation,
   useLoginMutation,
-  useUpdateUserMutation,
+  useUpdateUserPasswordMutation,
+  useUpdateUserProfileMutation,
   useForgetPasswordMutation,
   useResetUserTokenMutation,
+  useBecomeAffiliateMutation,
   useValidateEmailTokenMutation,
 } = authApi;
