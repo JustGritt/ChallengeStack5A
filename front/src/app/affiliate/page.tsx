@@ -17,11 +17,23 @@ import { useBecomeAffiliateMutation, useGetMyProfileQuery, useLazyGetMyProfileQu
 import { ApiErrorResponse } from "@/types/ApiBase";
 import Footer from "@/components/Footer";
 import NavBar from "@/components/Header/NavBar";
-import { resetCredentials } from "@/lib/services/slices/authSlice";
-import { useDispatch } from "react-redux";
+import { resetCredentials, selectCurrentUser } from "@/lib/services/slices/authSlice";
+import { useDispatch, useSelector } from "react-redux";
 import AuthMiddleware from "@/middlewares/AuthMiddleware";
+import { useEffect, useRef } from "react";
 
 export default function Affiliate() {
+
+    const user = useSelector(selectCurrentUser);
+    const hasRun = useRef(false);
+
+    useEffect(() => {
+        if (!user && !hasRun.current) {
+            toast.error('You need to be logged in to access this page');
+            hasRun.current = true;
+        }
+    }, [user]);
+
     const initialValues: CompanyRequestType = {
         name: "",
         kbis: "",
