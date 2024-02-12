@@ -1,7 +1,7 @@
 import api from "./api";
 import { ApiSuccessBase } from "@/types/ApiBase";
 import { LoginResponse } from "@/types/Auth";
-import { CompanyRequestType, User, UserCookieType, UserRegister, UserUpdateProfile, UserUpdatePassword } from "@/types/User";
+import { CompanyRequestType, User, UserCookieType, UserRegister } from "@/types/User";
 import { setCredentials } from "./slices/authSlice";
 import { getUserCookie, setUserCookie } from "../helpers/UserHelper";
 
@@ -18,20 +18,6 @@ export const authApi = api.injectEndpoints({
       query: (user) => ({
         url: "/login",
         method: "POST",
-        body: user,
-      }),
-    }),
-    updateUserPassword: build.mutation<User, UserUpdatePassword>({
-      query: (user) => ({
-        url: "/users/password",
-        method: "PATCH",
-        body: user,
-      }),
-    }),
-    updateUserProfile: build.mutation<User, UserUpdateProfile>({
-      query: (user) => ({
-        url: "/users/me",
-        method: "PATCH",
         body: user,
       }),
     }),
@@ -94,8 +80,6 @@ export const authApi = api.injectEndpoints({
 export const {
   useRegisterMutation,
   useLoginMutation,
-  useUpdateUserPasswordMutation,
-  useUpdateUserProfileMutation,
   useForgetPasswordMutation,
   useResetUserTokenMutation,
   useBecomeAffiliateMutation,

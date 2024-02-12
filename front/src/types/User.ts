@@ -1,5 +1,6 @@
 import { Company } from "./Company"
 import { Store } from "./Store"
+import { use } from 'react';
 
 type UserROLES = "ROLE_ADMIN" | "ROLE_USER" | "ROLE_SUPER_ADMIN"
 
@@ -51,9 +52,6 @@ export type UserLogin = {
 
 export type UserUpdateProfile = {
     firstname: string
-}
-
-export type UserUpdatePassword = {
     confirmPassword: string
     plainPassword: string,
 }

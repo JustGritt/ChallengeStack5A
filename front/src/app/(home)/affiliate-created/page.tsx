@@ -1,12 +1,13 @@
 "use client"
 
-import { removeUserCookie } from "@/lib/helpers/UserHelper";
-import { resetCredentials, selectCurrentUser } from "@/lib/services/slices/authSlice";
+import Link from "next/link";
 import AuthMiddleware from "@/middlewares/AuthMiddleware";
-import { UserCookieType } from "@/types/User";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { UserCookieType } from "@/types/User";
+import { removeUserCookie } from "@/lib/helpers/UserHelper";
+import { resetCredentials } from "@/lib/services/slices/authSlice";
 
 export default function AffiliateCreated() {
 
