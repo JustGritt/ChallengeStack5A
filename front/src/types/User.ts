@@ -36,8 +36,6 @@ export type UserLogin = {
 
 export type UserUpdateProfile = {
     firstname: string
-    confirmPassword: string
-    plainPassword: string,
 }
 
 export type UserForgetPassword = {

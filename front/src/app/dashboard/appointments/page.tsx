@@ -1,25 +1,16 @@
 "use client";
 
-
-import BookingCalendar from '@/components/Calendar/BookingCalendar';
+import toast from "react-hot-toast";
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import { string } from 'yup';
 import { Button } from '@/components/Ui/Button';
-
-import Link from 'next/link';
-import Breadcrumb from '@/components/Header/Breadcrumb';
-import { Company } from "@/types/Company";
-import { Employee } from "@/types/User";
 import { useSelector } from 'react-redux';
-import { useEffect, useMemo, useState } from 'react';
-import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
-import { CheckIcon, IdentificationIcon, UserIcon, HomeModernIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
-import toast from "react-hot-toast";
+import { useEffect, useMemo, useState } from 'react';
+import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
+import { log } from "console";
 
 export default function Page() {
     const data: {
@@ -31,7 +22,7 @@ export default function Page() {
     const [scheduleFetched, setScheduleFetched] = useState(false);
     const [schedules, setSchedules] = useState([]);
 
-    const user = useSelector(selectCurrentUser);
+    const user: any = useSelector(selectCurrentUser);
     const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
     const userRoles = useMemo(() => Object.keys(userConfig || {}).filter(role => userConfig[role]), [userConfig]);
 
@@ -56,8 +47,8 @@ export default function Page() {
                         end: event.endDate
                     }));
 
-                    console.log(events);
-                    // setSchedules(events);
+                    console.log("events: ", events);
+                    setSchedules(events);
                 })
             setScheduleFetched(true);
         }
@@ -79,9 +70,8 @@ export default function Page() {
 
             data.push({
                 title,
-                // Replace 2024-02-13T07:00:00.000Z to 2024-02-15 10:00:00
-                start: arg.start.toISOString().replace('T', ' ').replace('Z', ''),
-                end: arg.end.toISOString().replace('T', ' ').replace('Z', ''),
+                start: arg.start.toISOString().replace('T', ' ').replace('Z', '').split('.')[0],
+                end: arg.end.toISOString().replace('T', ' ').replace('Z', '').split('.')[0]
             });
         }
     }
@@ -92,19 +82,32 @@ export default function Page() {
         }
     }
 
+    // Save events as Worker
     const saveEvents = () => {
-        data.forEach((event: any) => {
-            console.log(event)
-            // fetch(`https://api.odicylens.com/schedules`, {
-            //     method: "POST",
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify(event)
-            // })
-            //     .then((res) => res.json())
-            //     .then((data) => { console.log(data) });
-        });
+        if(userRoles.includes("isWorker")) {
+            console.log("data: ", data);
+            // const promises = data.map((event: any) => {
+            //     return fetch(`https://api.odicylens.com/schedules`, {
+            //         method: "POST",
+            //         headers: {
+            //             "Content-Type": "application/json",
+            //             "Authorization": `Bearer ${parsedSession?.token}`
+            //         },
+            //         body: JSON.stringify({
+            //             startDate: event.start,
+            //             endDate: event.end,
+            //             onVacation: event.title === "Vacation",
+            //             employee: `users/${user?.id}`,
+            //             store: `stores/${user?.work?.id}`
+            //         })
+            //     })
+            //     .then((res) => res.json());
+            // });
+
+            // Promise.all(promises)
+            //     .then((data) => { console.log(data) })
+            //     .catch((error) => { console.error(error) });
+        }
     }
 
     return (
@@ -127,6 +130,24 @@ export default function Page() {
 
                                 <FullCalendar
                                     plugins={[ timeGridPlugin, interactionPlugin ]}
+                                    initialView="timeGridWeek"
+                                    selectable={true}
+                                    nowIndicator={true}
+                                    selectMirror={true}
+                                    selectOverlap={true}
+                                    eventOverlap={false}
+                                    events={schedules}
+                                    select={handleDateSelect}
+                                    eventClick={handleRemoveEvent}
+                                />
+                            </div>
+                        )
+                    }
+                    {
+                        (userRoles.includes("isClient")) && (
+                            <div className="lg:flex lg:h-full lg:flex-col">
+                                <FullCalendar
+                                    plugins={[ timeGridPlugin ]}
                                     initialView="timeGridWeek"
                                     editable={true}
                                     selectable={true}
