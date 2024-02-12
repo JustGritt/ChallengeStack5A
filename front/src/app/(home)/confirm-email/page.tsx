@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useDispatch } from "react-redux";
+import Link from "next/link";
 
 export default function ConfirmEmail() {
 
@@ -29,9 +30,9 @@ export default function ConfirmEmail() {
                     <p className="mt-4 text-gray-500">
                         If you are not redirected to the Login page, click the button below.
                     </p>
-                    <a href="/login" className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring">
+                    <Link href="/login" className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring">
                         Return to Login page
-                    </a>
+                    </Link>
                 </div>
         </section>
     )
