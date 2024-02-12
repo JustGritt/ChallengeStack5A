@@ -82,8 +82,9 @@ class Service
 
     #[ORM\Column]
     #[Assert\NotBlank()]
-    #[Assert\PositiveOrZero()]
+    #[Assert\Positive]
     #[Assert\LessThanOrEqual(720)] //12 hours
+    #[Assert\DivisibleBy(30)]
     #[Groups(['service-read', 'service-mutation', 'store-read-full', 'admin-read-booking'])]
     private ?int $time = null;
 
