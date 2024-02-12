@@ -37,8 +37,6 @@ export default function Employees() {
         })();
     }, [])
 
-    console.log(parsedSession)
-
     const [employees, setEmployees] = useState<any[]>([]);
     const [employeesFetched, setEmployeesFetched] = useState(false);
     useEffect(() => {
@@ -51,9 +49,8 @@ export default function Employees() {
                     }
                 })
                     .then((res) => res.json())
-                    .then((data) => console.log(data));
-                    // .then((data) => setEmployees(data["hydra:member"]));
-                    setEmployeesFetched(true);
+                    .then((data) => setEmployees(data));
+                setEmployeesFetched(true);
             }
         };
         fetchEmployees();

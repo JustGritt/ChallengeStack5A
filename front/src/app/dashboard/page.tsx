@@ -3,7 +3,7 @@
 import DashboardCalendar from "@/components/Calendar/DashboardCalendar";
 import DashboardStat from '@/components/Dashboard/DashboardStat';
 import { useSelector } from 'react-redux';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
 
 export default function Dashboard() {
