@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import FormSearchHome from "@/components/Forms/FormSearchHome";
 import { useRouter } from "next/navigation";
-import { ArrowIcon } from "@/components/ArrowIcon/ArrowIcon";
+import { ArrowIcon } from "@/components/Icons/Icons";
 
 export default function Home() {
 
@@ -57,7 +57,7 @@ export default function Home() {
                 key={i}
                 className="flex items-center p-4 w-fit bg-white rounded-lg shadow-lg	h-fit"
               >
-                <ArrowIcon />
+                <d.icon />
                 <div className="items-center flex flex-col pl-4">
                   <h3 className="h-4 text-black">{d.title}</h3>
                   <p className="text-gray-500 text-sm h-4 mt-1">{d.value}</p>
@@ -102,46 +102,46 @@ const datasProfessionnal = [
   {
     title: "App downloads",
     value: "100M+",
-    icon: faDownload,
+    icon: ArrowIcon,
   },
   {
     title: "App downloads",
     value: "100M+",
-    icon: faDownload,
+    icon: ArrowIcon,
   },
   {
     title: "App downloads",
     value: "100M+",
-    icon: faDownload,
+    icon: ArrowIcon,
   },
   {
     title: "App downloads",
     value: "100M+",
-    icon: faDownload,
+    icon: ArrowIcon,
   },
   {
     title: "App downloads",
     value: "100M+",
-    icon: faDownload,
+    icon: ArrowIcon,
   },
   {
     title: "App downloads",
     value: "100M+",
-    icon: faDownload,
+    icon: ArrowIcon,
   },
   {
     title: "App downloads",
     value: "100M+",
-    icon: faDownload,
+    icon: ArrowIcon,
   },
   {
     title: "App downloads",
     value: "100M+",
-    icon: faDownload,
+    icon: ArrowIcon,
   },
   {
     title: "App downloads",
     value: "100M+",
-    icon: faDownload,
+    icon: ArrowIcon,
   },
 ];
