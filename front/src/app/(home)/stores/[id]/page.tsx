@@ -16,6 +16,8 @@ import { useGetStoreQuery } from "@/lib/services/stores";
 import StoreServicesCard from "@/components/Pages/Store/StoreServiceCard";
 import React from "react";
 import { notFound } from "next/navigation";
+import { Avatar, AvatarFallback } from "@/components/Ui/avatar";
+import { getUserInitials } from "@/lib/helpers/utils";
 
 const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
   params: { id },
@@ -69,7 +71,7 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
           {store?.name ?? <Skeleton width={150} />}
         </h2>
         <span className="text-gray-500">24h/24 - details de reservation</span>
-        <div className="flex w-full justify-between gap-8 flex-col xl:flex-row">
+        <div className="flex w-full justify-between gap-8 lg:flex-row flex-col-reverse lg:mt-4 mt-4">
           <div className=" lg:w-[60%] w-full ">
             <h1 className="text-black font-bold text-2xl my-2">
               Choix de prestation
@@ -128,15 +130,29 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
               Collaborateurs
             </h1>
 
-            <div className="rounded-lg p-6 shadow-lg flex flex-wrap gap-4">
-              <div className="w-fit rounded-lg flex flex-col items-center border border-1 border-gray-200 p-6">
-                <span className="bg-black px-10 py-8 rounded-full">A</span>
-                <span className="text-black">Anthoni</span>
-              </div>
-              <div className="w-fit rounded-lg flex flex-col items-center border border-1 border-gray-200 p-6">
-                <span className="bg-black px-10 py-8 rounded-full">R</span>
-                <span className="text-black">Reed</span>
-              </div>
+            <div className="rounded-lg p-6 shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] flex flex-wrap gap-4">
+              {(store?.users || []).length === 0 ? (
+                <div className="w-full rounded-lg flex flex-col items-center border border-1 border-gray-200 p-6 justify-center">
+                  <h3 className="text-gray-500 font-medium text-md my-2">
+                    Pas de collaborateurs enregistrés
+                  </h3>
+                </div>
+              ) : (
+                (store?.users || []).map((collaborator) => (
+                  <div
+                    key={collaborator.id}
+                    className="w-fit rounded-lg flex flex-col items-center border border-1 border-gray-200 p-4 flex-1"
+                  >
+                    <Avatar className="w-8 h-8">
+                      <AvatarFallback>
+                        {getUserInitials(collaborator.firstname)}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <span className="text-black text-lg">Anthoni</span>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>

@@ -1,9 +1,5 @@
 "use client";
 import StoreCard from "@/components/Pages/Store/StoreCard";
-import { CITIES } from "@/lib/constants/fakeDatas";
-
-import { ApiSuccessBase } from "@/types/ApiBase";
-import { Company } from "@/types/Company";
 import { useSearchParams } from "next/navigation";
 import { QueryStore, Store } from "@/types/Store";
 import React, {
@@ -19,10 +15,9 @@ import React, {
 } from "react";
 import { Button } from "@/components/Ui/Button";
 import { useLazyGetAllStoresQuery } from "@/lib/services/stores";
+import { RefDivCardSearch } from "@/types/ScrollDiv";
 
-export type RefDivCardSearch = {
-  scrollIntoView?: (name: string) => void;
-};
+
 
 type SearchSectionProps = {
   refSearch?: Ref<RefDivCardSearch>;

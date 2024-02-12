@@ -29,6 +29,13 @@ export default function DashboardMenu() {
     useEffect(() => {
         (async () => {
             const session = await getUserCookie(UserCookieType.SESSION);
+            if (user?.roles.includes('ROLE_ADMIN') || user?.roles.includes('ROLE_SUPER_ADMIN')) {
+                await fetch('https://api.odicylens.com/companies?page=0', { method: 'GET', headers: { 'Authorization': `Bearer ${session?.token}` } })
+                    .then(response => response.json())
+                    .then(data => data['hydra:member'].map((company: any) => {
+                        company.isValid ? setNotifications([...notifications, company]) : null
+                    }))
+            }
             const parsedSession = JSON.parse(session?.value || "{}");
             setParsedSession(parsedSession);
             setUserRoles(Object.keys(userConfig).filter(key => (userConfig as any)[key] === true))

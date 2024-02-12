@@ -34,3 +34,14 @@ export type HydraResp<T> = {
     "@id": "string",
     "@type": "string",
 } & T
+
+export interface HydraError {
+    '@id': string;
+    '@type': string;
+    detail: string;
+    'hydra:description': string;
+    'hydra:title': string;
+    status: number;
+    title: string;
+    type: string;
+}

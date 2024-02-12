@@ -32,7 +32,7 @@ export const storesApi = api.injectEndpoints({
       },
       providesTags: (result, _error, id) => [{ type: "Stores", id }],
     }),
-    getStoresSchedules: build.query<HydraPaginateResp<Schedule>, string>({
+    getStoreSchedules: build.query<HydraPaginateResp<Schedule>, string>({
       query: (idStore) => {
         return {
           url: `/stores/${idStore}/schedules`,
@@ -42,10 +42,10 @@ export const storesApi = api.injectEndpoints({
         result
           ? [
             ...result['hydra:member'].map(({ id }) => ({
-              type: "Stores" as const,
+              type: "StoreSchedules" as const,
               id,
             })),
-            { type: "Stores", id: "LIST" },
+            { type: "StoreSchedules", id: "LIST" },
           ]
           : [],
     }),
@@ -68,6 +68,6 @@ export const {
   useLazyGetAllStoresQuery,
   useGetStoreQuery,
   useLazyGetStoreQuery,
-  useGetStoresSchedulesQuery,
+  useGetStoreSchedulesQuery,
   useAddStoreMutation,
 } = storesApi;

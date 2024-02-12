@@ -29,7 +29,6 @@ const StoreServicesCard: FC<StoreServiceCardProps> = ({ services }) => {
                   );
                 }}
               >
-                {" "}
                 Choisir
               </Button>
             </div>

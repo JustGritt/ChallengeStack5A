@@ -6,6 +6,7 @@ import { selectCurrentUser } from "@/lib/services/slices/authSlice";
 import { useState, useEffect } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { BuildingStorefrontIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
+import Link from "next/link";
 
 export default function Stores() {
 
@@ -54,10 +55,10 @@ export default function Stores() {
                             <section>
                                 <div className="flex justify-between items-center">
                                     <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8 inline">Your Stores</h2>
-                                    <a href="/dashboard/stores/new" className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 dark:bg-indigo-600 dark:hover:bg-indigo-700 focus:outline-none dark:focus:ring-indigo-800 h-10 px-4 py-2 mr-4">
+                                    <Link href="/dashboard/stores/new" className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 dark:bg-indigo-600 dark:hover:bg-indigo-700 focus:outline-none dark:focus:ring-indigo-800 h-10 px-4 py-2 mr-4">
                                         <BuildingStorefrontIcon className="h-5 w-5 inline-block -mt-1 mr-2" />
                                         New store
-                                    </a>
+                                    </Link>
                                 </div>
                                     <ul>
                                         {

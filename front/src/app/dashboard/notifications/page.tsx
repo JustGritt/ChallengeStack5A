@@ -1,12 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import { Button } from "@/components/Ui/Button";
 import { useSelector } from 'react-redux';
 import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
 import { selectCurrentUser} from '@/lib/services/slices/authSlice';
 import { useEffect, useState } from 'react'
-import { BellIcon, CheckIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { CheckIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 
 
 export default function Notifications() {
@@ -71,15 +72,16 @@ export default function Notifications() {
                                                 {notification.name}
                                             </h3>
                                             <div className="flex gap-4">
+                                                <Link href={`/dashboard/company/${notification.id}`} className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-200 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+                                                    <MagnifyingGlassIcon className="w-5 h-5 me-2" aria-hidden="true" />
+                                                    Check company
+                                                </Link>
+
                                                 <Button id={`validate-company-${notification.id}`} intent="default" className="inline-flex items-center" onClick={() => validateCompany(notification.id)}>
                                                     <CheckIcon className="w-5 h-5 me-2" aria-hidden="true" />
                                                     Validate
                                                 </Button>
 
-                                                <a href={`/dashboard/company/${notification.id}`} className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-200 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700">
-                                                    <XMarkIcon className="w-5 h-5 me-2" aria-hidden="true" />
-                                                    Remove
-                                                </a>
                                             </div>
                                         </div>
                                     </li>

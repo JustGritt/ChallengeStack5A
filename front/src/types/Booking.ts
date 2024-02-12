@@ -1,4 +1,5 @@
 import { HydraResp } from "./HydraPaginateResp";
+import { Service } from "./Service";
 import { User } from "./User";
 
 export interface Booking {
@@ -8,13 +9,14 @@ export interface Booking {
     id: number;
     customer: HydraResp<Pick<User, "email">>;
     employee: HydraResp<Pick<User, "email">>;
-    service: {
-        "@context": string;
-        "@id": string;
-        "@type": string;
-        name: string;
-    };
+    service: HydraResp<Pick<Service, "name">>;
     startDate: string;
     endDate: string;
     store: string;
+}
+
+export type BooKingPost = {
+    employee: string,//"users/1"
+    service: string,//"services/1"
+    startDate: string
 }
