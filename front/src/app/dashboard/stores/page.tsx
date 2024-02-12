@@ -1,18 +1,18 @@
 "use client";
 
-import { Store } from "@/types/Store";
-import { useSelector } from "react-redux";
-import { selectCurrentUser, selectCurrentUserConfig } from "@/lib/services/slices/authSlice";
-import { useState, useEffect } from 'react';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
-import { BuildingStorefrontIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
-
-import { Button } from "@/components/Ui/Button";
 import Link from "next/link";
+import toast from "react-hot-toast";
+import { Store } from "@/types/Store";
+import { Button } from "@/components/Ui/Button";
 import { Company } from "@/types/Company";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from 'react';
+import { BuildingStorefrontIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
+import { selectCurrentUser, selectCurrentUserConfig } from "@/lib/services/slices/authSlice";
+import { ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from '@heroicons/react/20/solid'
 
 export default function Stores() {
 
@@ -62,6 +62,43 @@ export default function Stores() {
         fetchStores()
     }, [userConfig, storesFetched, parsedSession]);
 
+
+    const deleteStore = (storeId: number) => {
+        console.log('Deleting store', storeId)
+            if(userConfig?.isOwner) {
+                fetch(`https://api.odicylens.com/stores/${storeId}`, {
+                method: "DELETE",
+                headers: { 'Authorization': `Bearer ${parsedSession?.token}` }
+            })
+            .then(() => {
+                setStores(stores.filter(store => store.id !== storeId));
+            });
+        }
+    }
+
+    // Delete store
+    const handleDeleteStore = (storeId: number) => {
+        toast.custom((t) => (
+            <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 w-72">
+                <div className="flex justify-between items-center">
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Delete store</h2>
+                    <button onClick={() => { toast.dismiss(t.id) }} className=" top-3 end-2.5 text-gray-800 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                        <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+                    </button>
+                </div>
+
+                <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                    You are about to delete <strong>{stores.find(store => store.id === storeId)?.name}</strong> are you sure?
+                </p>
+
+                <div className="flex items-center justify-between gap-4">
+                    <Button onClick={() => { deleteStore(storeId); toast.dismiss(t.id) }} intent="delete" className="mt-4">
+                        Delete store
+                    </Button>
+                </div>
+            </div>
+        ));
+    }
 
     // Store pagination
     useEffect(() => {
@@ -124,7 +161,7 @@ export default function Stores() {
                                                             View store
                                                         </Link>
 
-                                                        <Button intent="delete" type="button">
+                                                        <Button intent="delete" type="button" onClick={() => handleDeleteStore(store.id)}>
                                                             Delete
                                                         </Button>
                                                     </div>

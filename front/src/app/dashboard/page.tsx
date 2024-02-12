@@ -31,7 +31,12 @@ export default function Dashboard() {
 
 					{
                         (userRoles.includes('isOwner') && user?.companie) && (
-							<DashboardStat />
+							<section>
+								<h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">
+									Dashboard
+								</h2>
+								<DashboardStat />
+							</section>
                         )
 					}
 				</div>
