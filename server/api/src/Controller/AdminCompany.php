@@ -33,7 +33,7 @@ class AdminCompany extends AbstractController
             throw new AccessDeniedException('Sorry, you are not allowed to access this resource.');
         }
 
-        if (null !== $user->getCompanie() && $user->getCompanie() !== $company || null !== $user->getWork() && $user->getWork()->getCompany() !== $company || null !== $user && $user->getRoles()[0] === 'ROLE_SUPER_ADMIN') {
+        if (null !== $user->getCompanie() && $user->getCompanie() !== $company || null !== $user->getWork() && $user->getWork()->getCompany() !== $company || null !== $user && $user->getRoles()[0] !== 'ROLE_SUPER_ADMIN') {
             throw new AccessDeniedException('Sorry, you are not allowed to access this resource.');
         }
 
