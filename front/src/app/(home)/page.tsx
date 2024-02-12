@@ -1,13 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import * as Yup from "yup";
 import React from "react";
-import Faq from "../../components/partials/Faq";
-import { Button } from "@/components/Ui/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDownload } from "@fortawesome/free-solid-svg-icons";
+import Faq from "@/components/partials/Faq";
 import FormSearchHome from "@/components/Forms/FormSearchHome";
+import { Button } from "@/components/Ui/Button";
 import { useRouter } from "next/navigation";
+import { ArrowDownTrayIcon } from '@heroicons/react/24/outline'
 
 export default function Home() {
 
@@ -56,11 +54,7 @@ export default function Home() {
                 key={i}
                 className="flex items-center p-4 w-fit bg-white rounded-lg shadow-lg	h-fit"
               >
-                <FontAwesomeIcon
-                  size="xl"
-                  icon={d.icon}
-                  className="bg-main-light p-2 rounded-md text-main tex-3xl h-fit"
-                />
+                <ArrowDownTrayIcon className="w-8 h-8 text-black" />
                 <div className="items-center flex flex-col pl-4">
                   <h3 className="h-4 text-black">{d.title}</h3>
                   <p className="text-gray-500 text-sm h-4 mt-1">{d.value}</p>
@@ -105,46 +99,37 @@ const datasProfessionnal = [
   {
     title: "App downloads",
     value: "100M+",
-    icon: faDownload,
   },
   {
-    title: "App downloads",
-    value: "100M+",
-    icon: faDownload,
+    title: "Active users",
+    value: "1M+",
   },
   {
-    title: "App downloads",
-    value: "100M+",
-    icon: faDownload,
+    title: "Daily transactions",
+    value: "10M+",
   },
   {
-    title: "App downloads",
-    value: "100M+",
-    icon: faDownload,
+    title: "Revenue",
+    value: "1M+",
   },
   {
-    title: "App downloads",
+    title: "Subscriptions",
     value: "100M+",
-    icon: faDownload,
   },
   {
-    title: "App downloads",
-    value: "100M+",
-    icon: faDownload,
+    title: "New users",
+    value: "10M+",
   },
   {
-    title: "App downloads",
+    title: "Affiliates",
     value: "100M+",
-    icon: faDownload,
   },
   {
-    title: "App downloads",
-    value: "100M+",
-    icon: faDownload,
+    title: "Collaborators",
+    value: "10M+",
   },
   {
-    title: "App downloads",
+    title: "Partners",
     value: "100M+",
-    icon: faDownload,
   },
 ];
