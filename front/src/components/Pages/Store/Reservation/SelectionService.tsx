@@ -12,7 +12,7 @@ import { getUserInitials, humanizeMinutes } from "@/lib/helpers/utils";
 import { useLazyGetStoreServiceQuery } from "@/lib/services/services";
 import { User } from "@/types/User";
 import { useRouter } from "next/navigation";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import Card from "@/components/cards/CardBase";
 import ErrorBaseShow from "@/components/Errors/ErrorBaseShow";

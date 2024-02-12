@@ -44,6 +44,7 @@ const Reservation: FC<
             selectedEmployeeId={selectedEmployeeId}
             collaborators={store.users}
             callBackUser={(user) => {
+              setDate(undefined)
               setSelectedEmployeeId(user);
             }}
             callBackService={setSelectedService}
