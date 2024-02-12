@@ -22,7 +22,12 @@ import { UserCookieType } from "@/types/User";
 import toast from "react-hot-toast";
 
 export default function Page() {
-    const data = [];
+    const data: {
+        title: string;
+        start: any;
+        end: any;
+    }[] = [];
+
     const [scheduleFetched, setScheduleFetched] = useState(false);
     const [schedules, setSchedules] = useState([]);
 

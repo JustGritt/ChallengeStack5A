@@ -51,7 +51,7 @@ export default function Employees() {
             }
         };
         fetchEmployees();
-    }, [employeesFetched, parsedSession]);
+    }, [employeesFetched, parsedSession, userRoles]);
 
     return (
         <section className="lg:pl-72 block min-h-screen">
