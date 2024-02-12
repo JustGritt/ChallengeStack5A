@@ -1,5 +1,5 @@
 import api from "./api";
-import { User, UserCookieType, UserRegister, UserUpdate } from "@/types/User";
+import { User, UserCookieType } from "@/types/User";
 import { setCredentials } from "./slices/authSlice";
 import { getUserCookie, setUserCookie } from "../helpers/UserHelper";
 import { HydraPaginateResp } from "@/types/HydraPaginateResp";
