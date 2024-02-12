@@ -35,10 +35,11 @@ const ValidationCard: FC<ValidationCardProps> = ({
   const router = useRouter();
 
   const handleSubmit = async () => {
+    
     await createBooking({
       employee: "/users/" + employee,
       service: "/services/" + service.id,
-      startDate: startDate.toDateString(),
+      startDate: startDate.toISOString(),
     })
       .unwrap()
       .then((resp) => {

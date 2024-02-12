@@ -21,9 +21,8 @@ const Reservation: FC<
     refetchOnReconnect: false,
     refetchOnFocus: false,
   });
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState<
-    undefined | string
-  >();
+  const [selectedEmployeeId, setSelectedEmployeeId] =
+    useState<string>("no-one");
   const [selectedService, setSelectedService] = useState<undefined | Service>();
   const [selectedDate, setDate] = useState<Date | undefined>();
   const user = useSelector(selectCurrentUser);
@@ -43,8 +42,10 @@ const Reservation: FC<
             serviceId={serviceId}
             selectedEmployeeId={selectedEmployeeId}
             collaborators={store.users}
-            callBackUser={(user) => {
-              setDate(undefined)
+            callBackUser={(user, isInitializeValue) => {
+              if (!isInitializeValue) {
+                setDate(undefined);
+              }
               setSelectedEmployeeId(user);
             }}
             callBackService={setSelectedService}
@@ -54,14 +55,12 @@ const Reservation: FC<
         {!store ? (
           <Skeleton count={30} />
         ) : (
-          selectedEmployeeId && (
-            <CustomCalendar
-              date={selectedDate}
-              idEmployee={selectedEmployeeId}
-              idStore={id}
-              onSelectDate={setDate}
-            />
-          )
+          <CustomCalendar
+            date={selectedDate}
+            idEmployee={selectedEmployeeId}
+            idStore={id}
+            onSelectDate={setDate}
+          />
         )}
         {selectedEmployeeId && selectedDate && <RegisterLoginSection />}
         {selectedService && user && selectedDate && selectedEmployeeId && (

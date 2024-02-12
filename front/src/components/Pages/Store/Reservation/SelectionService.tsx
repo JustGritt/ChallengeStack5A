@@ -18,13 +18,14 @@ import Card from "@/components/cards/CardBase";
 import ErrorBaseShow from "@/components/Errors/ErrorBaseShow";
 import { getUserCookie, setUserCookie } from "@/lib/helpers/UserHelper";
 import { Service } from "@/types/Service";
+import { randomUUID } from "crypto";
 
 type SelectionServiceProps = {
   idStore: string;
   serviceId: string;
   selectedEmployeeId?: string;
   collaborators: Array<User>;
-  callBackUser: (collaboratorId: string) => void;
+  callBackUser: (collaboratorId: string, initializeValue?: boolean) => void;
   callBackService: (service: Service) => void;
 };
 
@@ -56,13 +57,14 @@ const SelectionService: FC<SelectionServiceProps> = ({
               collaborator.id?.toString() === session?.collaboratorChoosen
           ).length > 0
         ) {
-          callBackUser(session?.collaboratorChoosen);
+          callBackUser(session?.collaboratorChoosen, true);
         }
       }
     })();
   }, [idStore, serviceId]);
 
   const onSelect = async (userId: string) => {
+    if (userId === selectedEmployeeId) return;
     callBackUser(userId);
     await setUserCookie(undefined, {
       collaboratorChoosen: userId,
@@ -99,11 +101,20 @@ const SelectionService: FC<SelectionServiceProps> = ({
             </div>
             <div className="flex flex-row items-center gap-4">
               {collaborators.length > 0 && (
-                <Select value={selectedEmployeeId} onValueChange={onSelect}>
+                <Select
+                  defaultValue={"no-one"}
+                  value={selectedEmployeeId}
+                  onValueChange={onSelect}
+                >
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Avec qui ?" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem key={"no-one"} value={"no-one"}>
+                      <div className="flex items-center h-8">
+                        <span className="ml-2 ">Personne</span>
+                      </div>
+                    </SelectItem>
                     {collaborators.map((collaborator, i) => (
                       <SelectItem
                         key={collaborator.id}

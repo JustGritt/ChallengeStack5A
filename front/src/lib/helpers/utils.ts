@@ -24,3 +24,7 @@ export const humanizeMinutes = (time: number) => {
 export function capitalize(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+export function createDateAsUTC(date: Date) {
+    return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+}

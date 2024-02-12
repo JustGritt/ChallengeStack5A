@@ -2,7 +2,6 @@
 
 import React, { FC } from "react";
 import Slider from "react-slick";
-
 import useCalendar from "use-calendar-react-hook";
 import {
   getIntlDayAndMonth,
@@ -16,12 +15,17 @@ type CalendarCarouselProps = {
     start: Date;
     end: Date;
   }>;
+  workingPeriods?: Array<{
+    start: Date;
+    end: Date;
+  }>;
   isLoading?: boolean;
   onSelectDate?: (date: Date) => void;
 };
 
 const CalendarCarousel: FC<CalendarCarouselProps> = ({
   offPeriods = [],
+  workingPeriods = [],
   isLoading,
   onSelectDate,
 }) => {
@@ -38,9 +42,7 @@ const CalendarCarousel: FC<CalendarCarouselProps> = ({
         })
         .map(({ date }, i) => {
           const { day, month, dayWeek } = getIntlDayAndMonth(date, "fr-FR");
-
           const workinHours = getWorkinHours(date);
-
           return (
             <div className="!flex flex-col items-center" key={date}>
               <div className="w-fit">
@@ -50,14 +52,14 @@ const CalendarCarousel: FC<CalendarCarouselProps> = ({
                     {day} {month}
                   </p>
                 </div>
-
                 <div className="gap-2 flex flex-col">
                   {workinHours.map(
                     ({ twenty_four_hour_format, military_format }, i) => {
                       const isOff = isOffHour(
                         military_format,
                         new Date(date),
-                        offPeriods
+                        offPeriods,
+                        workingPeriods
                       );
                       return (
                         <span
