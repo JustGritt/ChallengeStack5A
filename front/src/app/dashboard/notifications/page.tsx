@@ -7,12 +7,12 @@ import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
 import { selectCurrentUser} from '@/lib/services/slices/authSlice';
 import { useEffect, useState } from 'react'
-import { CheckIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
-
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 
 export default function Notifications() {
 
     // Get session
+    const user = useSelector(selectCurrentUser);
     const [parsedSession, setParsedSession] = useState<any>({});
     useEffect(() => {
         (async () => {
@@ -22,33 +22,28 @@ export default function Notifications() {
         })();
     }, [])
 
-    const user = useSelector(selectCurrentUser);
     const [notifications, setNotifications] = useState<any[]>([]);
-
-    const validateCompany = (id: number) => {
-        fetch(`https://api.odicylens.com/companies/${id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/merge-patch+json',
-                    'Authorization': `Bearer ${parsedSession?.token}`
-                },
-                body: JSON.stringify({ isValid: true })
-            })
-            .then(response => response.json())
-            .then(data => { if (data.isValid) setNotifications(notifications.filter(notification => notification.id !== id)) })
-    }
-
     useEffect(() => {
         (async () => {
             if (user?.roles.includes('ROLE_ADMIN') || user?.roles.includes('ROLE_SUPER_ADMIN')) {
                 await fetch('https://api.odicylens.com/companies?page=0', { method: 'GET', headers: { 'Authorization': `Bearer ${parsedSession?.token}` } })
-                    .then(response => response.json())
-                    .then(data => data['hydra:member'].map((company: any) => {
-                        if (!company.isValid) setNotifications(notifications => ([...notifications, company]))
-                    }))
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data && data['hydra:member']) {
+                            data['hydra:member'].map((company: any) => {
+                                if (!company.isValid) setNotifications(notifications => ([...notifications, company]))
+                            })
+                        }
+                    })
+                    .catch(error => console.error('There was an error!', error));
             }
         })();
-    }, [user, parsedSession?.token])
+    }, [user, parsedSession?.token]);
 
     return (
         <section className="lg:pl-72 block min-h-screen">
@@ -59,14 +54,12 @@ export default function Notifications() {
                     </h2>
 
                     <ol className="relative">
-
                         {
                             notifications.length > 0 ? (
                                 notifications.map((notification: any) => (
                                     <li className="flex items-center mb-6" key={notification.id}>
 
                                         <div className="w-full flex justify-between items-center">
-
                                             <h3 className="flex items-center text-lg font-semibold text-gray-900 dark:text-white">
                                                 <span className="bg-yellow-100 text-yellow-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Waiting for validation</span>
                                                 {notification.name}
@@ -76,12 +69,6 @@ export default function Notifications() {
                                                     <MagnifyingGlassIcon className="w-5 h-5 me-2" aria-hidden="true" />
                                                     Check company
                                                 </Link>
-
-                                                <Button id={`validate-company-${notification.id}`} intent="default" className="inline-flex items-center" onClick={() => validateCompany(notification.id)}>
-                                                    <CheckIcon className="w-5 h-5 me-2" aria-hidden="true" />
-                                                    Validate
-                                                </Button>
-
                                             </div>
                                         </div>
                                     </li>
