@@ -38,7 +38,7 @@ export default function DashboardMenu() {
     // Get company to validate
     const fetchCompanies = useCallback(async () => {
         if (userRoles.includes('isAdmin')) {
-            const response = await fetch('https://api.odicylens.com/companies?page=0', {
+            const response = await fetch('https://api.odicylens.com/companies', {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${parsedSession?.token}` }
             }).then(response => response.json());
@@ -58,7 +58,7 @@ export default function DashboardMenu() {
         { name: 'Store', href: '/dashboard/stores', icon: ShoppingCartIcon, current: pathname === '/dashboard/stores', role: ['isAdmin', 'isOwner'] },
         { name: 'Employees', href: '/dashboard/employees', icon: UsersIcon, current: pathname === '/dashboard/employees', role: ['isAdmin', 'isOwner'] },
         { name: 'Reservations', href: '/dashboard/appointments', icon: CalendarIcon, current: pathname === '/dashboard/appointments', role: ['isAdmin', 'isOwner', 'isWorker', 'isClient'] },
-        { name: 'History', href: '/dashboard/history', icon: ClockIcon, current: pathname === '/dashboard/history', role: ['isAdmin', 'isOwner', 'isWorker', 'isClient'] },
+        { name: 'History', href: '/dashboard/history', icon: ClockIcon, current: pathname === '/dashboard/history', role: ['isWorker', 'isClient'] },
     ]
 
     return (

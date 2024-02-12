@@ -8,5 +8,11 @@ export type Company = {
     isValid: boolean,
     stores: Store[],
     owner: Owner,
-    refused: boolean
+    refused: boolean,
+    adresse: string,
+    ownerAdresse: string,
+    rcs: string,
+    capital: number,
+    structure: string,
+    registrationDate: string,
 }

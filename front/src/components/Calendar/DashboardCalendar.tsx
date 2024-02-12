@@ -26,17 +26,20 @@ export default function UserCalendar() {
 
     // Get bookings
     useEffect(() => {
-        if (parsedSession?.user?.id && !bookingFetched) {
-            getBookings(parsedSession?.user?.id);
-            console.log("bookings", bookings)
+        if (userRoles.includes("isClient") &&  parsedSession?.user?.id && !bookingFetched) {
+            getUserBookings(parsedSession?.user?.id, parsedSession?.token);
+        }
+
+        if (userRoles.includes("isWorker") &&  parsedSession?.user?.id && !bookingFetched) {
+            getEmployeeBookings(parsedSession?.user?.id, parsedSession?.token);
         }
     }, [parsedSession, bookingFetched])
 
-    const getBookings = (id: number) => {
-        fetch(`https://api.odicylens.com/users/${parsedSession?.user?.id}/bookings`, {
+    const getUserBookings = (id: number, token: string) => {
+        fetch(`https://api.odicylens.com/users/${id}/bookings`, {
             method: "GET",
             headers: {
-                "Authorization": `Bearer ${parsedSession?.token}`
+                "Authorization": `Bearer ${token}`
             }
         })
             .then((res) => res.json())
@@ -44,22 +47,30 @@ export default function UserCalendar() {
         setBookingFetched(true);
     }
 
-    // const data = [
-    //     {
-    //         title: 'Work',
-    //         start: '2024-02-04T08:00:00.347Z',
-    //         end: '2024-02-04T11:00:35.347Z'
-    //     },
-    // ]
+    const getEmployeeBookings = (id: number, token: string) => {
+        fetch(`https://api.odicylens.com/employee/${id}/bookings`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        })
+            .then((res) => res.json())
+            .then((data) => { setBookings(data["hydra:member"]) })
+        setBookingFetched(true);
+    }
 
     const data = bookings.map((booking) => {
+        console.log(bookings)
         return {
             title: booking.service.name,
             start: booking.startDate,
             end: booking.endDate,
+            extendedProps: {
+                customer: booking.customer.email,
+                employee: booking.employee.email,
+            }
         }
     })
-
 
     return (
         <div className="lg:flex lg:h-full lg:flex-col">

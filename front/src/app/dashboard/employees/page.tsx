@@ -2,33 +2,62 @@
 
 import { User } from "@/types/User";
 import { Store } from "@/types/Store";
-import { useState, useEffect, use } from 'react';
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "@/lib/services/slices/authSlice";
+
+
+import Link from 'next/link';
+import Breadcrumb from '@/components/Header/Breadcrumb';
+import { Company } from "@/types/Company";
+import { Employee } from "@/types/User";
+import { useSelector } from 'react-redux';
+import { useEffect, useMemo, useState } from 'react';
+import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
+import { CheckIcon, IdentificationIcon, UserIcon, HomeModernIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import { getUserCookie } from "@/lib/helpers/UserHelper";
+import { UserCookieType } from "@/types/User";
+import { Button } from '@/components/Ui/Button';
+import toast from "react-hot-toast";
 
 export default function Employees() {
     const [stores, setStores] = useState<Store[]>([]);
-    const [employees, setEmployees] = useState<User[]>([]);
+
     const user = useSelector(selectCurrentUser);
+    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
+    const [companyInfo, setCompanyInfo] = useState<Company>();
+    const [companyEmployees, setCompanyEmployees] = useState<Employee[]>([]);
+    const [notifications, setNotifications] = useState<any[]>([]);
+    const userRoles = useMemo(() => Object.keys(userConfig || {}).filter(role => userConfig[role]), [userConfig]);
 
+    // Get session
+    const [parsedSession, setParsedSession] = useState<any>({});
     useEffect(() => {
-        if (user) {
-            fetch(`https://api.odicylens.com/companies/${user?.companie?.id}`, { method: "GET" })
-                .then((res) => res.json())
-                .then((data) => { setStores(data.stores) });
-        }
-    }, [user]);
+        (async () => {
+            const session = await getUserCookie(UserCookieType.SESSION);
+            const parsedSession = JSON.parse(session?.value || "{}");
+            setParsedSession(parsedSession);
+        })();
+    }, [])
 
+    console.log(parsedSession)
+
+    const [employees, setEmployees] = useState<any[]>([]);
+    const [employeesFetched, setEmployeesFetched] = useState(false);
     useEffect(() => {
-        if (stores && stores.length > 0) {
-            const allEmployees: User[] = [];
-            Promise.all(stores.map(store =>
-                fetch(`https://api.odicylens.com/stores/${store.id}`, { method: "GET" })
-                    .then(res => res.json())
-                    .then(data => allEmployees.push(...data.users))
-            )).then(() => setEmployees(allEmployees));
-        }
-    }, [stores]);
+        const fetchEmployees = async () => {
+            if (!employeesFetched && parsedSession?.token) {
+                fetch(`https://api.odicylens.com/company/${parsedSession?.user?.companie?.id}/employee`, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${parsedSession?.token}`
+                    }
+                })
+                    .then((res) => res.json())
+                    .then((data) => console.log(data));
+                    // .then((data) => setEmployees(data["hydra:member"]));
+                    setEmployeesFetched(true);
+            }
+        };
+        fetchEmployees();
+    }, [employeesFetched, parsedSession]);
 
     return (
         <section className="lg:pl-72 block min-h-screen">
