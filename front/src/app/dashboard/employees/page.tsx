@@ -8,7 +8,7 @@ import { selectCurrentUser } from "@/lib/services/slices/authSlice";
 
 export default function Employees() {
     const [stores, setStores] = useState<Store[]>([]);
-    const [employees, setEmployees] = useState<User[]>([]); // [1]
+    const [employees, setEmployees] = useState<User[]>([]);
     const user = useSelector(selectCurrentUser);
 
     useEffect(() => {
@@ -20,7 +20,7 @@ export default function Employees() {
     }, [user]);
 
     useEffect(() => {
-        if (stores.length > 0) {
+        if (stores && stores.length > 0) {
             const allEmployees: User[] = [];
             Promise.all(stores.map(store =>
                 fetch(`https://api.odicylens.com/stores/${store.id}`, { method: "GET" })

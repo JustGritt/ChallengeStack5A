@@ -7,15 +7,30 @@ import { Employee } from "@/types/User";
 import { useSelector } from 'react-redux';
 import { useEffect, useMemo, useState } from 'react';
 import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
-import { IdentificationIcon, UserIcon, HomeModernIcon } from "@heroicons/react/20/solid";
+import { CheckIcon, IdentificationIcon, UserIcon, HomeModernIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import { getUserCookie } from "@/lib/helpers/UserHelper";
+import { UserCookieType } from "@/types/User";
+import { Button } from '@/components/Ui/Button';
+import toast from "react-hot-toast";
+
 export default function CompanyDetails({ params }: { params: { companyId: string } }) {
 
     const user = useSelector(selectCurrentUser);
     const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
     const [companyInfo, setCompanyInfo] = useState<Company>();
     const [companyEmployees, setCompanyEmployees] = useState<Employee[]>([]);
-
+    const [notifications, setNotifications] = useState<any[]>([]);
     const userRoles = useMemo(() => Object.keys(userConfig || {}).filter(role => userConfig[role]), [userConfig]);
+
+    // Get session
+    const [parsedSession, setParsedSession] = useState<any>({});
+    useEffect(() => {
+        (async () => {
+            const session = await getUserCookie(UserCookieType.SESSION);
+            const parsedSession = JSON.parse(session?.value || "{}");
+            setParsedSession(parsedSession);
+        })();
+    }, [])
 
     useEffect(() => {
         const fetchCompanyInfo = async () => {
@@ -26,7 +41,6 @@ export default function CompanyDetails({ params }: { params: { companyId: string
                 setCompanyInfo(data);
             }
         };
-
         fetchCompanyInfo();
     }, [userRoles, user, params.companyId]);
 
@@ -39,7 +53,6 @@ export default function CompanyDetails({ params }: { params: { companyId: string
                     const data = await response.json();
                     allEmployees.push(...data.users);
                 });
-
                 await Promise.all(fetches);
                 setCompanyEmployees(allEmployees);
             }
@@ -47,6 +60,60 @@ export default function CompanyDetails({ params }: { params: { companyId: string
 
         fetchEmployees();
     }, [companyInfo]);
+
+    const validateCompany = (id: number) => {
+        fetch(`https://api.odicylens.com/companies/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/merge-patch+json',
+                    'Authorization': `Bearer ${parsedSession?.token}`
+                },
+                body: JSON.stringify({ isValid: true })
+            })
+            .then(response => response.json())
+            .then(data => { if (data.isValid) setNotifications(notifications.filter(notification => notification.id !== id)) })
+    }
+
+    const refuseCompany = (id: number) => {
+        fetch(`https://api.odicylens.com/companies/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/merge-patch+json',
+                    'Authorization': `Bearer ${parsedSession?.token}`
+                },
+                body: JSON.stringify({ refused: true })
+            })
+            .then(response => response.json())
+            .then(() => {
+                toast.custom((t) => (
+                    <div aria-live="assertive" className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6">
+                        <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
+                            <div className="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                            <div className="p-4">
+                                <div className="flex items-start">
+                                <div className="flex-shrink-0">
+                                    <CheckIcon className="w-6 h-6 text-green-400" aria-hidden="true" />
+                                </div>
+                                <div className="ml-3 w-0 flex-1 pt-0.5">
+                                    <p className="text-sm font-medium text-gray-900">The company has been refused</p>
+                                    <p className="mt-1 text-sm text-gray-500">
+                                        The company owner has been notified
+                                    </p>
+                                </div>
+                                <div className="ml-4 flex flex-shrink-0">
+                                    <button type="button" className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                    <span className="sr-only">Close</span>
+                                    <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+                                    </button>
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            })
+    }
 
     return (
         <section className="lg:pl-72 block min-h-screen">
@@ -56,11 +123,46 @@ export default function CompanyDetails({ params }: { params: { companyId: string
                         {
                             companyInfo ? (
                                 <section className="bg-white dark:bg-gray-900">
-                                    <div className="max-w-screen-md mb-8 lg:mb-16">
-                                        <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">{companyInfo.name}</h2>
-                                        <p className="text-gray-500 sm:text-xl dark:text-gray-400">
-                                            On this page you can find all the details about the company.
-                                        </p>
+                                    <div className="max-w-screen-md mb-8 lg:mb-16 grid grid-cols-2 gap-4">
+                                        <div>
+                                            <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">{companyInfo.name}</h2>
+                                            {
+                                                companyInfo.refused ? (
+                                                    <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/20">
+                                                        <XMarkIcon className="w-5 h-5 mr-1" />
+                                                        Refused
+                                                    </span>
+                                                ) : (
+                                                    companyInfo.isValid ? (
+                                                        <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                                                            <CheckIcon className="w-5 h-5 mr-1" />
+                                                            Validated
+                                                        </span>
+                                                    ) : (
+                                                        <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/20">
+                                                            <XMarkIcon className="w-5 h-5 mr-1" />
+                                                            Not validated
+                                                        </span>
+                                                    )
+                                                )
+                                            }
+                                        </div>
+
+                                        {
+                                            (!companyInfo.isValid && !companyInfo.refused ) && (
+                                                <div className="flex justify-end items-baseline gap-4">
+                                                    <Button id={`validate-company-${companyInfo.id}`} intent="default" className="inline-flex items-center" onClick={() => validateCompany(companyInfo.id)}>
+                                                        <CheckIcon className="w-5 h-5 me-2" aria-hidden="true" />
+                                                        Validate
+                                                    </Button>
+
+                                                    <Button id={`refuse-company-${companyInfo.id}`} intent="delete" className=" inline-flex items-center" onClick={() => refuseCompany(companyInfo.id)}>
+                                                        <CheckIcon className="w-5 h-5 me-2" aria-hidden="true" />
+                                                        Refuse
+                                                    </Button>
+                                                </div>
+                                            )
+                                        }
                                     </div>
                                     <div className="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0">
                                         <div>

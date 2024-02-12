@@ -9,7 +9,6 @@ import { BuildingStorefrontIcon, ShoppingBagIcon } from '@heroicons/react/24/out
 
 import { Button } from "@/components/Ui/Button";
 import Link from "next/link";
-import DashboardStat from '@/components/Dashboard/DashboardStat';
 import { Company } from "@/types/Company";
 import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
@@ -49,8 +48,7 @@ export default function Stores() {
                     .then((res) => res.json())
                     .then((data) => setStores(data["hydra:member"].reduce((acc: Store[], company: Company) => acc.concat(company.stores), [])))
                     setStoresFetched(true);
-                }
-            };
+            }
 
             // Owner
             if (userConfig?.isOwner && !storesFetched && parsedSession?.user?.companie?.id) {
@@ -60,8 +58,10 @@ export default function Stores() {
                 }).then((res) => res.json()).then((data) => setStores(data.stores))
                 setStoresFetched(true);
             }
-        fetchStores();
+        }
+        fetchStores()
     }, [userConfig, storesFetched, parsedSession]);
+
 
     // Store pagination
     useEffect(() => {

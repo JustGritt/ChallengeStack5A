@@ -7,12 +7,11 @@ import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
 import { selectCurrentUser} from '@/lib/services/slices/authSlice';
 import { useEffect, useState } from 'react'
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
+import { CheckIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 
 export default function Notifications() {
 
     // Get session
-    const user = useSelector(selectCurrentUser);
     const [parsedSession, setParsedSession] = useState<any>({});
     useEffect(() => {
         (async () => {
@@ -22,7 +21,22 @@ export default function Notifications() {
         })();
     }, [])
 
+    const user = useSelector(selectCurrentUser);
     const [notifications, setNotifications] = useState<any[]>([]);
+
+    const validateCompany = (id: number) => {
+        fetch(`https://api.odicylens.com/companies/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/merge-patch+json',
+                    'Authorization': `Bearer ${parsedSession?.token}`
+                },
+                body: JSON.stringify({ isValid: true })
+            })
+            .then(response => response.json())
+            .then(data => { if (data.isValid) setNotifications(notifications.filter(notification => notification.id !== id)) })
+    }
+
     useEffect(() => {
         (async () => {
             if (user?.roles.includes('ROLE_ADMIN') || user?.roles.includes('ROLE_SUPER_ADMIN')) {
@@ -59,6 +73,11 @@ export default function Notifications() {
                                                     <MagnifyingGlassIcon className="w-5 h-5 me-2" aria-hidden="true" />
                                                     Check company
                                                 </Link>
+
+                                                <Button id={`validate-company-${notification.id}`} intent="default" className="inline-flex items-center" onClick={() => validateCompany(notification.id)}>
+                                                    <CheckIcon className="w-5 h-5 me-2" aria-hidden="true" />
+                                                    Validate
+                                                </Button>
                                             </div>
                                         </div>
                                     </li>
