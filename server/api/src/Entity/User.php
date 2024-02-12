@@ -18,6 +18,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 use App\State\UserProcessor;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
+use Symfony\Component\Validator\Constraints\PasswordStrength;
+use App\Validator\PasswordPutGroupsGenerator;
 
 #[ApiResource(
     operations: [
@@ -29,7 +31,6 @@ use ApiPlatform\Metadata\Link;
     normalizationContext: ['groups' => ['read-user', 'read-user-mutation']],
     processor: UserProcessor::class,
 )]
-
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(['email'])]
@@ -65,9 +66,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Groups(['create-user', 'update-user'])]
-    #[Assert\NotBlank()]
     #[Assert\Length(min: 6, max: 255)]
-    private string $plainPassword = '';
+    private ?string $plainPassword = null;
 
     #[Groups(['read-user',  'update-user', 'read-user-mutation'])]
     #[ORM\Column(nullable: true)]
@@ -176,12 +176,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPlainPassword(): string
+    public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
 
-    public function setPlainPassword(string $plainPassword): void
+    public function setPlainPassword(?string $plainPassword): void
     {
         $this->plainPassword = $plainPassword;
         $this->password = $plainPassword;

@@ -19,10 +19,11 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Controller\AdminDashboardStats;
 use ApiPlatform\Metadata\Link;
+use App\State\StoreStateProvider;
 
 #[ApiResource(
     operations: [
-        new GetCollection(normalizationContext: ['groups' => ['store-read']]),
+        new GetCollection(normalizationContext: ['groups' => ['store-read']], provider: StoreStateProvider::class),
         new Get(normalizationContext: ['groups' => ['store-read', 'store-read-full']]),
         new Post(denormalizationContext: ['groups' => ['create-stores']]),
         new Patch(denormalizationContext: ['groups' => ['update-companie']]),

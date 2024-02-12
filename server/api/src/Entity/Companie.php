@@ -18,6 +18,8 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 use App\State\CompanieStateProcessor;
 use App\State\CompanieStateProvider;
+use App\Controller\AdminCompanyDashboardStats;
+use App\Controller\AdminCompany;
 
 #[ORM\Entity(repositoryClass: CompanieRepository::class)]
 #[ApiResource(
@@ -29,6 +31,22 @@ use App\State\CompanieStateProvider;
     ],
     normalizationContext: ['groups' => ['read-companie']],
     processor: CompanieStateProcessor::class,
+)]
+#[ApiResource(
+    operations: [
+         new Get(
+            uriTemplate: '/company/{id}/dashboard', 
+            controller: AdminCompanyDashboardStats::class, 
+         ) 
+    ],
+)]
+#[ApiResource(
+    operations: [
+         new Get(
+            uriTemplate: '/company/{id}/employee', 
+            controller: AdminCompany::class, 
+         ) 
+    ],
 )]
 class Companie
 {
@@ -62,63 +80,67 @@ class Companie
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
-    #[Groups(['create-companie'])]
+    #[Groups(['create-companie', 'admin-read'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Assert\Choice(callback: 'getStructureChoice')]
     private ?string $rcs = null;
 
-    #[Groups(['create-companie', 'update-companie'])]
+    #[Groups(['create-companie', 'update-companie', 'admin-read'])]
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Positive]
     private ?int $capital = null;
 
-    #[Groups(['update-companie', 'create-companie'])]
+    #[Groups(['update-companie', 'create-companie', 'admin-read'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     private ?string $adresse = null;
 
-    #[Groups(['update-companie', 'create-companie'])]
+    #[Groups(['update-companie', 'create-companie', 'admin-read'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Assert\Choice(callback: 'getStructureChoice')]
     private ?string $structure = null;
 
-    #[Groups(['update-companie', 'create-companie'])]
+    #[Groups(['update-companie', 'create-companie', 'admin-read'])]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $company_duration = null;
 
-    #[Groups(['update-companie', 'create-companie'])]
+    #[Groups(['update-companie', 'create-companie', 'admin-read'])]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $registrationDate = null;
 
-    #[Groups(['update-companie', 'create-companie'])]
+    #[Groups(['update-companie', 'create-companie', 'admin-read'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 255)]
     private ?string $firstname = null;
 
-    #[Groups(['update-companie', 'create-companie'])]
+    #[Groups(['update-companie', 'create-companie', 'admin-read'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 255)]
     private ?string $lastname = null;
 
-    #[Groups(['update-companie', 'create-companie'])]
+    #[Groups(['update-companie', 'create-companie', 'admin-read'])]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $birthday = null;
 
-    #[Groups(['update-companie', 'create-companie'])]
+    #[Groups(['update-companie', 'create-companie', 'admin-read'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     private ?string $birthdayPlace = null;
 
-    #[Groups(['update-companie', 'create-companie'])]
+    #[Groups(['update-companie', 'create-companie', 'admin-read'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     private ?string $ownerAdresse = null;
 
-    #[Groups(['read-user-mutation', 'update-companie', 'read-companie'])]
+    #[Groups(['read-user-mutation', 'update-companie', 'read-companie', 'admin-read'])]
     #[ORM\Column]
     private ?bool $refused = false;
 
-    #[Groups(['update-companie', 'read-companie', 'create-companie'])]
+    #[Groups(['update-companie', 'read-companie', 'create-companie', 'admin-read'])]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $endDuration = null;
 

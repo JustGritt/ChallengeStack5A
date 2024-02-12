@@ -1,7 +1,7 @@
 import api from "./api";
 import { ApiSuccessBase } from "@/types/ApiBase";
 import { LoginResponse } from "@/types/Auth";
-import { User, UserCookieType, UserRegister, UserUpdateProfile, UserUpdatePassword } from "@/types/User";
+import { CompanyRequestType, User, UserCookieType, UserRegister } from "@/types/User";
 import { setCredentials } from "./slices/authSlice";
 
 export const authApi = api.injectEndpoints({
@@ -20,20 +20,6 @@ export const authApi = api.injectEndpoints({
         body: user,
       }),
     }),
-    updateUserPassword: build.mutation<User, UserUpdatePassword>({
-      query: (user) => ({
-        url: "/users/password",
-        method: "PATCH",
-        body: user,
-      }),
-    }),
-    updateUserProfile: build.mutation<User, UserUpdateProfile>({
-      query: (user) => ({
-        url: "/users/me",
-        method: "PATCH",
-        body: user,
-      }),
-    }),
     forgetPassword: build.mutation<ApiSuccessBase<any>, Record<"email", string>>({
       query: (user) => ({
         url: "/forgot_password/",
@@ -48,12 +34,13 @@ export const authApi = api.injectEndpoints({
         body: user,
       }),
     }),
-    becomeAffiliate: build.mutation<{ kbis: string, name: string }, Record<"kbis" | "name", string>>({
-      query: ({ kbis, name }) => ({
+    becomeAffiliate: build.mutation<ApiSuccessBase<any>, CompanyRequestType>({
+      query: (Company) => ({
         url: "/companies",
         method: "POST",
-        body: { kbis, name }
+        body: Company,
       }),
+      invalidatesTags: ["Me"],
     }),
     validateEmailToken: build.mutation<ApiSuccessBase<any>, Record<"token", string>>({
       query: (token) => ({
@@ -68,8 +55,6 @@ export const authApi = api.injectEndpoints({
 export const {
   useRegisterMutation,
   useLoginMutation,
-  useUpdateUserPasswordMutation,
-  useUpdateUserProfileMutation,
   useForgetPasswordMutation,
   useResetUserTokenMutation,
   useBecomeAffiliateMutation,

@@ -1,5 +1,6 @@
 import { Company } from "./Company"
 import { Store } from "./Store"
+import { use } from 'react';
 
 type UserROLES = "ROLE_ADMIN" | "ROLE_USER" | "ROLE_SUPER_ADMIN"
 
@@ -14,6 +15,22 @@ export type User = {
     isValid: boolean,
     work?: Store,
     companie?: Company
+}
+
+export type CompanyRequestType = {
+    name: string,
+    kbis: string,
+    rcs: string,
+    capital: number,
+    adresse: string,
+    structure: string,
+    registrationDate: Date,
+    firstname: string,
+    lastname: string,
+    birthday: Date,
+    birthdayPlace: string,
+    ownerAdresse: string,
+    endDuration: Date,
 }
 
 export enum UserCookieType {
@@ -35,9 +52,6 @@ export type UserLogin = {
 
 export type UserUpdateProfile = {
     firstname: string
-}
-
-export type UserUpdatePassword = {
     confirmPassword: string
     plainPassword: string,
 }

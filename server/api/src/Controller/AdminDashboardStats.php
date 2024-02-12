@@ -28,15 +28,13 @@ class AdminDashboardStats extends AbstractController
     {
         $user = $this->getUser();
 
-        /*
         if (!$user instanceof User || !$store instanceof Store) {
             throw new AccessDeniedException('Sorry, you are not allowed to access this resource.');
         }
 
-        if ($user->getCompanie() !== $store->getCompany() || null !== $user->getWork() && $user->getWork() !== $store) {
+        if (null !== $user->getCompanie() && $user->getCompanie() !== $store->getCompany() || null !== $user->getWork() && $user->getWork() !== $store) {
             throw new AccessDeniedException('Sorry, you are not allowed to access this resource.');
         }
-        */
         
         $stats = [
             'total_bookings_today' => $this->getTotalBookings($store, new \DateTime('today'), new \DateTime('tomorrow')),

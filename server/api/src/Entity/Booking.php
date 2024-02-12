@@ -16,13 +16,15 @@ use App\Entity\Store;
 use ApiPlatform\Metadata\Link;
 use App\State\BookingStateProcessor;
 use App\State\BookingStateProvider;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
 #[ApiResource(
     operations: [
         new Get(normalizationContext: ['groups' => ['booking-read-full']]),
         new Post(denormalizationContext: ['groups' => ['booking-mutation']]),
-        new Patch(denormalizationContext: ['groups' => ['booking-mutation-put']], security: "object.customer == user"),
+        new Patch(denormalizationContext: ['groups' => ['booking-mutation-put']]),
     ],
     normalizationContext: ['groups' => ['booking-read-full']],
     processor: BookingStateProcessor::class,
@@ -40,7 +42,7 @@ use App\State\BookingStateProvider;
         'id' => new Link(fromClass: Store::class, toProperty: 'customer'),
     ],
     operations: [ new GetCollection(normalizationContext: ['groups' => ['booking-read-full']] ) ],
-    #provider: BookingStateProvider::class,
+    provider: BookingStateProvider::class,
 )]
 #[ApiResource(
     uriTemplate: '/employee/{id}/bookings',
@@ -75,6 +77,7 @@ class Booking
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['booking-read-full', 'booking-mutation'])]
+    #[Assert\Type("\DateTimeInterface")]
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
