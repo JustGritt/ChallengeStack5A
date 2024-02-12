@@ -1,4 +1,5 @@
 import { Button } from "@/components/Ui/Button";
+import { humanizeMinutes } from "@/lib/helpers/utils";
 import { Service } from "@/types/Service";
 import { useRouter } from "next/navigation";
 import React, { FC } from "react";
@@ -19,7 +20,7 @@ const StoreServicesCard: FC<StoreServiceCardProps> = ({ services }) => {
           >
             <span className="text-black flex-1">{service.name}</span>
             <span className="text-gray-500 flex-1 text-end px-4">
-              {service.time} • {service.price}€
+              {humanizeMinutes(service?.time)} • {service.price}€
             </span>
             <div>
               <Button

@@ -8,7 +8,10 @@ import React, {
 } from "react";
 import CalendarCarousel from "../Slider/CalendarCarousel";
 import { useLazyGetEmployeeBookingsQuery } from "@/lib/services/bookings";
-import { useGetStoreSchedulesQuery } from "@/lib/services/stores";
+import {
+  useGetStoreSchedulesQuery,
+  useLazyGetStoreSchedulesQuery,
+} from "@/lib/services/stores";
 import Skeleton from "react-loading-skeleton";
 import { useLazyGetUserSchedulesQuery } from "@/lib/services/user";
 import LoaderSimple from "../Ui/Loader/LoaderSimple";
@@ -19,12 +22,13 @@ import {
   setUserCookie,
 } from "@/lib/helpers/UserHelper";
 import { Button } from "../Ui/ButtonShadcn";
-
-
+import { createDateAsUTC } from "@/lib/helpers/utils";
+import { HydraPaginateResp } from "@/types/HydraPaginateResp";
+import { Schedule } from "@/types/Schedule";
 
 type CustomCalendarProps = {
   idStore: string;
-  idEmployee?: string;
+  idEmployee: string;
   onSelectDate: (date?: Date) => void;
   date?: Date;
 };
@@ -43,13 +47,19 @@ const CustomCalendar: FC<CustomCalendarProps> = ({
     { isFetching: isUserSchedulesLoading, data: userSchedules },
   ] = useLazyGetUserSchedulesQuery();
 
-  const { data: schedules, isFetching: isSchedulesLoading } =
-    useGetStoreSchedulesQuery(idStore);
+  const [
+    getStoreSchedules,
+    { data: schedules, isFetching: isSchedulesLoading },
+  ] = useLazyGetStoreSchedulesQuery();
 
   useEffect(() => {
-    if (!idEmployee) return;
-    getEmployeeBookings(idEmployee, true);
-    getUserSchedulesQuery(idEmployee, true);
+    if (idEmployee === "no-one") {
+      getStoreSchedules(idStore);
+      return;
+    } else {
+      getEmployeeBookings(idEmployee, true);
+      getUserSchedulesQuery(idEmployee, true);
+    }
   }, [idEmployee]);
 
   useEffect(() => {
@@ -66,16 +76,45 @@ const CustomCalendar: FC<CustomCalendarProps> = ({
   const employeeDaysoff = useCallback(
     () =>
       data?.["hydra:member"]
-        .concat((schedules?.["hydra:member"] || []) as [])
-        .concat((userSchedules?.["hydra:member"] || []) as [])
-        .filter((booking) => booking.startDate && booking.endDate)
         .map((booking) => {
           return {
-            start: new Date(booking.startDate),
-            end: new Date(booking.endDate),
+            id: booking.id,
+            startDate: booking.startDate,
+            endDate: booking.endDate,
+            employee: booking.employee,
+            store: booking.store,
+          } as Schedule;
+        })
+        .map((booking) => {
+          return {
+            start: createDateAsUTC(new Date(booking.startDate)),
+            end: createDateAsUTC(new Date(booking.endDate)),
           };
         }),
-    [data, schedules, userSchedules]
+    [data]
+  );
+
+  const employeeWorkingDays = useCallback(
+    () =>
+      (
+        (userSchedules?.["hydra:member"] ??
+          []) as HydraPaginateResp<Schedule>["hydra:member"]
+      )
+        .filter((booking) => booking.startDate && booking.endDate)
+        .concat(
+          idEmployee === "no-one"
+            ? ((schedules?.["hydra:member"] ??
+                []) as [] as HydraPaginateResp<Schedule>["hydra:member"])
+            : []
+        )
+        .filter((schedule) => !schedule.onVacation)
+        .map((booking) => {
+          return {
+            start: createDateAsUTC(new Date(booking.startDate)),
+            end: createDateAsUTC(new Date(booking.endDate)),
+          };
+        }),
+    [schedules, userSchedules, idEmployee]
   );
 
   const handleOnSelectDate = async (date?: Date) => {
@@ -88,6 +127,9 @@ const CustomCalendar: FC<CustomCalendarProps> = ({
     }
     onSelectDate(date);
   };
+
+  console.log(date);
+  
 
   return (
     <>
@@ -138,6 +180,7 @@ const CustomCalendar: FC<CustomCalendarProps> = ({
             ) : (
               <CalendarCarousel
                 offPeriods={employeeDaysoff()}
+                workingPeriods={employeeWorkingDays()}
                 isLoading={
                   isSchedulesLoading || isFetching || isUserSchedulesLoading
                 }

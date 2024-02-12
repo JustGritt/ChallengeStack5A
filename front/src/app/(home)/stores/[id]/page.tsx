@@ -149,7 +149,9 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
                       </AvatarFallback>
                     </Avatar>
 
-                    <span className="text-black text-lg">Anthoni</span>
+                    <span className="text-black text-lg">
+                      {collaborator.firstname}
+                    </span>
                   </div>
                 ))
               )}

@@ -35,13 +35,30 @@ const ValidationCard: FC<ValidationCardProps> = ({
   const router = useRouter();
 
   const handleSubmit = async () => {
+    
     await createBooking({
       employee: "/users/" + employee,
       service: "/services/" + service.id,
-      startDate: startDate.toDateString(),
+      startDate: startDate.toISOString(),
     })
       .unwrap()
       .then((resp) => {
+        toast({
+          className: cn(
+            "fixed top-4 z-[100] flex max-h-screen w-full flex-col-reverse py-4 px-4 right-4  sm:flex-col md:max-w-[420px]"
+          ),
+          title: `Booking successfully created`,
+          description: `You've now a meet for ${new Intl.DateTimeFormat(
+            "en-FR",
+            {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              weekday: "long",
+            }
+          ).format(new Date(startDate))} please don't be late`,
+          variant: "default",
+        });
         router.push(`/dashboard/appointments`);
       })
       .catch((error: { data: HydraError }) => {

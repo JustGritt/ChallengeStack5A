@@ -69,5 +69,6 @@ export const {
   useGetStoreQuery,
   useLazyGetStoreQuery,
   useGetStoreSchedulesQuery,
+  useLazyGetStoreSchedulesQuery,
   useAddStoreMutation,
 } = storesApi;
