@@ -1,13 +1,11 @@
 "use client"
 
-import Link from "next/link";
-import AuthMiddleware from "@/middlewares/AuthMiddleware";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { UserCookieType } from "@/types/User";
 import { removeUserCookie } from "@/lib/helpers/UserHelper";
-import { resetCredentials } from "@/lib/services/slices/authSlice";
+import { resetCredentials, selectCurrentUser } from "@/lib/services/slices/authSlice";
 
 export default function AffiliateCreated() {
 
@@ -16,8 +14,10 @@ export default function AffiliateCreated() {
     const user = useSelector(selectCurrentUser);
 
     useEffect(() => {
-        dispatch(resetCredentials());
-        removeUserCookie(UserCookieType.SESSION);
+        if (!user?.companie?.isValid === false || !user?.companie) {
+            dispatch(resetCredentials());
+            removeUserCookie(UserCookieType.SESSION);
+        }
     }, [dispatch, router, user]);
 
     const handleclick = () => {
@@ -48,11 +48,11 @@ export default function AffiliateCreated() {
                         </p>
                     )
                 }
-                <a className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white cursor-pointer hover:bg-indigo-700 focus:outline-none focus:ring" onClick={handleclick}>
+                <button className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white cursor-pointer hover:bg-indigo-700 focus:outline-none focus:ring" onClick={handleclick}>
                     {
                         user?.companie?.isValid ? "Go to Dashboard" : "Return Home"
                     }
-                </a>
+                </button>
             </div>
         </section>
     )
