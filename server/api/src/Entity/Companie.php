@@ -19,6 +19,7 @@ use ApiPlatform\Metadata\GetCollection;
 use App\State\CompanieStateProcessor;
 use App\State\CompanieStateProvider;
 use App\Controller\AdminCompanyDashboardStats;
+use App\Controller\AdminCompany;
 
 #[ORM\Entity(repositoryClass: CompanieRepository::class)]
 #[ApiResource(
@@ -36,6 +37,14 @@ use App\Controller\AdminCompanyDashboardStats;
          new Get(
             uriTemplate: '/company/{id}/dashboard', 
             controller: AdminCompanyDashboardStats::class, 
+         ) 
+    ],
+)]
+#[ApiResource(
+    operations: [
+         new Get(
+            uriTemplate: '/company/{id}/employee', 
+            controller: AdminCompany::class, 
          ) 
     ],
 )]

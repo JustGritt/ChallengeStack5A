@@ -3,6 +3,7 @@
 import Breadcrumb from "@/components/Header/Breadcrumb";
 import { Store } from "@/types/Store";
 import { useState, useEffect } from 'react';
+import Link from "next/link";
 
 export default function Stores({ params }: { params: { storeId: string } }) {
 
@@ -25,7 +26,7 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                         <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
                                             {store.name}
                                         </h2>
-                                        <p className="text-center">{store.address}, {store.postalCode} {store.city}, {store.country}</p>
+                                        <p className="mr-4">{store.address}, {store.postalCode} {store.city}, {store.country}</p>
                                     </div>
 
                                     <div className=" flex justify-end items-end mt-4 gap-8">
@@ -60,7 +61,7 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                                 store.users.length === 0 ? (
                                                     <p>No employees yet</p>
                                                 ) : (
-                                                    store.users.map((user) => (
+                                                    store.users.slice(0, 3).map((user, index) => (
                                                         <a href={`/dashboard/stores/${store?.id}/employees/${user.id}`} key={user.id}>
                                                             <li className="flex justify-between gap-6 w-full rounded px-4 hover:bg-gray-100 shadow">
                                                                 <div className="flex min-w-0 gap-4 py-4">
@@ -86,16 +87,20 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                         </h2>
 
                                         <div className="flex items-center justify-between gap-4">
-                                            <a href={`/dashboard/stores/${params.storeId}/services/add`} className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">
+                                            {/* <Link href={`/dashboard/stores/${params.storeId}/services/add`} className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">
                                                 New Service
-                                            </a>
+                                            </Link> */}
+
+                                            <Link href={`/dashboard/stores/${params.storeId}/services`} className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">
+                                                See all
+                                            </Link>
                                         </div>
                                     </div>
 
                                     <div className="max-w-screen-xl mx-auto lg:pt-8">
                                         <ul className="flex flex-col gap-4">
                                             {
-                                                store.services.length > 1 ? (store.services.map((service) => (
+                                                store.services.length > 1 ? (store.services.slice(0, 3).map((service) => (
                                                     <a href={`/dashboard/stores/${params.storeId}/services/${service.id}`} key={service.id}>
                                                         <li key={service.id} className="flex justify-between gap-x-6 py-5 hover:bg-gray-100 w-full rounded shadow">
                                                             <div className="min-w-0 flex flex-auto items-center justify-between px-6">
@@ -128,9 +133,9 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                     </p>
                                     <div className="mt-10 flex items-center justify-center gap-x-6 flex-col">
                                         Taking too long?
-                                        <a href="/login" className="mt-4 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                        <Link href="/login" className="mt-4 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                             Go back
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
                             </section>
