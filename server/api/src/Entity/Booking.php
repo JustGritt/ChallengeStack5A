@@ -93,6 +93,11 @@ class Booking
     #[Groups(['booking-mutation-put'])]
     private ?bool $cancelled = false;
 
+    #[Groups(['booking-mutation'])]
+    #[Assert\Positive]
+    #[ORM\Column(nullable: true)]
+    private ?float $amount = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -178,6 +183,18 @@ class Booking
     public function setCancelled(bool $cancelled): static
     {
         $this->cancelled = $cancelled;
+
+        return $this;
+    }
+
+    public function getAmount(): ?float
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(?float $amount): static
+    {
+        $this->amount = $amount;
 
         return $this;
     }

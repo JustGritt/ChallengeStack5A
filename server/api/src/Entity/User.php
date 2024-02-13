@@ -36,7 +36,7 @@ use App\Validator\PasswordPutGroupsGenerator;
 #[UniqueEntity(['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[Groups(['read-user-mutation', 'read-companie', 'store-read-full'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read-full', 'schedule-read'])]
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue]

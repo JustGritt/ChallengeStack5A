@@ -20,6 +20,7 @@ api_platform:
 
     # Good defaults for REST APIs
     defaults:
+        pagination_enabled: false
         stateless: true
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']

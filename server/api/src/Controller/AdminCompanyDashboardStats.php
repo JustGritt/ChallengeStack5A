@@ -89,7 +89,7 @@ class AdminCompanyDashboardStats extends AbstractController
 
         if ($full) {
            //get all bookings 
-            $bookings = $this->entityManager->getRepository(Booking::class)->findBy(['store' => $stores]);
+            $bookings = $this->entityManager->getRepository(Booking::class)->findBy(['store' => $stores, 'cancelled' => false]);
             $total = 0;
             foreach ($bookings as $booking) {
                 $total += $booking->getService()->getPrice();
@@ -105,6 +105,7 @@ class AdminCompanyDashboardStats extends AbstractController
             ->where('b.store IN (:stores)')
             ->andWhere('b.startDate >= :from')
             ->andWhere('b.endDate <= :to')
+            ->andWhere('b.cancelled = false')
             ->setParameter('stores', $stores)
             ->setParameter('from', $from)
             ->setParameter('to', $to)

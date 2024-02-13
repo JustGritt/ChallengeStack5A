@@ -162,6 +162,95 @@ class OpenApiFactory implements OpenApiFactoryInterface
             ),
         );
 
+        $dashboardStats = new Model\PathItem(
+            get: new Model\Operation(
+                operationId: 'getStats',
+                tags: ['Dashboard'],
+                summary: 'Get the stats of the dashboard',
+                description: 'Get the stats of the dashboard',
+                responses: [
+                    '200' => [
+                        'description' => 'The stats of the dashboard',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'total_bookings_today' => [
+                                            'type' => 'integer',
+                                            'description' => 'The total bookings of today',
+                                        ],
+                                        'total_bookings_last_day' => [
+                                            'type' => 'integer',
+                                            'description' => 'The total bookings of the last day',
+                                        ],
+                                        'total_bookings_month' => [
+                                            'type' => 'integer',
+                                            'description' => 'The total bookings of the month',
+                                        ],
+                                        'total_bookings_from_beginning' => [
+                                            'type' => 'integer',
+                                            'description' => 'The total bookings from the beginning',
+                                        ],
+                                        'total_benefits' => [
+                                            'type' => 'number',
+                                            'description' => 'The total benefits of today',
+                                        ],
+                                        'total_benefits_last_day' => [
+                                            'type' => 'number',
+                                            'description' => 'The total benefits of the last day',
+                                        ],
+                                        'total_benefits_month' => [
+                                            'type' => 'number',
+                                            'description' => 'The total benefits of the month',
+                                        ],
+                                        'total_benefits_from_beginning' => [
+                                            'type' => 'number',
+                                            'description' => 'The total benefits from the beginning',
+                                        ],
+                                        'total_cancelled_bookings_today' => [
+                                            'type' => 'integer',
+                                            'description' => 'The total cancelled bookings of today',
+                                        ],
+                                        'total_cancelled_bookings_last_day' => [
+                                            'type' => 'integer',
+                                            'description' => 'The total cancelled bookings of the last day',
+                                        ],
+                                        'total_cancelled_bookings_month' => [
+                                            'type' => 'integer',
+                                            'description' => 'The total cancelled bookings of the month',
+                                        ],
+                                        'total_cancelled_bookings_from_beginning' => [
+                                            'type' => 'integer',
+                                            'description' => 'The total cancelled bookings from the beginning',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    '403' => [
+                        'description' => 'You are not allowed to access this page',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'message' => [
+                                            'type' => 'string',
+                                            'description' => 'You are not allowed to access this page',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ),
+        );
+
+        $openApi->getPaths()->addPath('/dashboard/stats', $dashboardStats);
+
         $openApi->getPaths()->addPath('/users/token/{token}', $pathItem);
         
         $openApi->getPaths()->addPath('/users/resend-email', $resendEmail);
