@@ -11,7 +11,6 @@ import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
 import { useState, useEffect } from 'react';
 import { BuildingStorefrontIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
-import Link from "next/link";
 import { selectCurrentUser, selectCurrentUserConfig } from "@/lib/services/slices/authSlice";
 import { ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from '@heroicons/react/20/solid'
 
@@ -24,7 +23,7 @@ export default function Stores() {
 
     // Get session
     const user = useSelector(selectCurrentUser);
-    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
+    const userConfig = useSelector(selectCurrentUserConfig);
     const [parsedSession, setParsedSession] = useState<any>({});
     useEffect(() => {
         (async () => {

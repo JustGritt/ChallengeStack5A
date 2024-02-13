@@ -8,7 +8,6 @@ import { useRegisterMutation } from "@/lib/services/auth";
 import { Button } from "@/components/Ui/Button";
 import { UserRegister } from "@/types/User";
 import { ApiErrorResponse } from "@/types/ApiBase";
-import { useRegisterMutation } from "@/lib/services/auth";
 import { Form, Field, FormikProvider, useFormik, ErrorMessage, FormikConfig } from "formik";
 
 export default function Register() {
