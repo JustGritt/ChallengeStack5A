@@ -22,7 +22,7 @@ use App\State\ScheduleStateProcessor;
 #[ApiResource(
     operations: [
         new Post(denormalizationContext: ['groups' => ['schedule-mutation']]),
-        new Patch(denormalizationContext: ['groups' => ['schedule-mutation']]),
+        new Patch(denormalizationContext: ['groups' => ['schedule-mutation', 'admin-patch']]),
         new Delete(),
     ],
     normalizationContext: ['groups' => ['schedule-read']],
@@ -81,6 +81,10 @@ class Schedule
     #[Groups(['schedule-read', 'schedule-mutation'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Store $store = null;
+
+    #[Groups(['admin-patch', 'schedule-read'])]
+    #[ORM\Column(nullable: true)]
+    private ?bool $refused = null;
 
 
     public function getId(): ?int
@@ -144,6 +148,18 @@ class Schedule
     public function setStore(?Store $store): static
     {
         $this->store = $store;
+
+        return $this;
+    }
+
+    public function isRefused(): ?bool
+    {
+        return $this->refused;
+    }
+
+    public function setRefused(?bool $refused): static
+    {
+        $this->refused = $refused;
 
         return $this;
     }
