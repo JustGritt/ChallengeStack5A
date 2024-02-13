@@ -8,7 +8,7 @@ import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slice
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 
-export default function UserCalendar() {
+export default function StoreCalendar() {
 
     const [schedules, setSchedules] = useState([]);
 
@@ -158,7 +158,6 @@ export default function UserCalendar() {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 bg-white">
-                                        {/* Schedule filter all onVacation: true */}
                                         {
                                             schedules.filter((schedule: any) => schedule.onVacation).length > 0 ? (
                                                 schedules.filter((schedule: any) => schedule.onVacation).map((schedule: any) => (
@@ -208,41 +207,29 @@ export default function UserCalendar() {
                                             <th scope="col" className="py-4 px-3  text-left text-sm font-semibold text-gray-900">
                                                 End
                                             </th>
-                                            <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                                                <span className="sr-only">Edit</span>
-                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 bg-white">
                                         {
                                             schedules.length > 0 ? (
-                                                schedules.map((schedule: any) => (
-                                                    <tr key={schedule.id}>
-                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                                            {
-                                                                schedule.onVacation ? (
-                                                                    <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-700 ring-1 ring-inset ring-yellow-600/20">Vacation</span>
-                                                                ) : (
-                                                                    <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Working</span>
-                                                                )
-                                                            }
-                                                        </td>
-                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                                            {schedule.employee.email}
-                                                        </td>
-                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                                            {schedule.startDate.replace("T", " ").split("+")[0]}
-                                                        </td>
-                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                                            {schedule.endDate.replace("T", " ").split("+")[0]}
-                                                        </td>
-                                                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                                            <Button intent="delete">
-                                                                Cancel
-                                                            </Button>
-                                                        </td>
-                                                    </tr>
-                                                ))
+                                                schedules
+                                                    .filter((schedule: any) => !schedule.onVacation)
+                                                    .map((schedule: any) => (
+                                                        <tr key={schedule.id}>
+                                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                                <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Working</span>
+                                                            </td>
+                                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                                {schedule.employee.email}
+                                                            </td>
+                                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                                {schedule.startDate.replace("T", " ").split("+")[0]}
+                                                            </td>
+                                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                                {schedule.endDate.replace("T", " ").split("+")[0]}
+                                                            </td>
+                                                        </tr>
+                                                    ))
                                             ) : (
                                                 <tr>
                                                     <td colSpan={5} className="text-center py-8 px-3 text-sm text-gray-500">
