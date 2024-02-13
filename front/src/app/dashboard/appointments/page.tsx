@@ -44,7 +44,7 @@ export default function Page() {
   const userRoles = useMemo(
     () =>
       Object.keys(userConfig).filter(
-        (role) => userConfig[role as keyof typeof userConfig] !== undefined
+        (role) => !!userConfig[role as keyof typeof userConfig]
       ),
     [userConfig]
   );
