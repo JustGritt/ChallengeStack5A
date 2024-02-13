@@ -1,11 +1,9 @@
 import { Company } from "./Company";
+import { HydraResp } from "./HydraPaginateResp";
 import { Service } from "./Service";
 import { User } from "./User";
 
-export type Store = {
-    "@context": string;
-    "@id": string;
-    "@type": string;
+export type Store = HydraResp<{
     id: number;
     name: string;
     address: string;
@@ -17,7 +15,7 @@ export type Store = {
     services: Service[];
     users: User[];
     company: Company;
-}
+}>
 
 export type NewStore = Omit<Store, 'id' | '@id' | '@context' | '@type' | 'services' | 'users' | 'company'>
 

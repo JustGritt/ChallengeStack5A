@@ -2,6 +2,7 @@ import api from "./api";
 import { HydraPaginateResp } from "@/types/HydraPaginateResp";
 import { QueryStore, Store } from "@/types/Store";
 import { createQueryParams } from "../utils";
+import { Schedule } from "@/types/Schedule";
 
 export const storesApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -31,6 +32,23 @@ export const storesApi = api.injectEndpoints({
       },
       providesTags: (result, _error, id) => [{ type: "Stores", id }],
     }),
+    getStoreSchedules: build.query<HydraPaginateResp<Schedule>, string>({
+      query: (idStore) => {
+        return {
+          url: `/stores/${idStore}/schedules`,
+        };
+      },
+      providesTags: (result, _error, filters) =>
+        result
+          ? [
+            ...result['hydra:member'].map(({ id }) => ({
+              type: "StoreSchedules" as const,
+              id,
+            })),
+            { type: "StoreSchedules", id: "LIST" },
+          ]
+          : [],
+    }),
     addStore: build.mutation<Store, Partial<Store>>({
       query: (data) => {
         return {
@@ -49,5 +67,8 @@ export const {
   useGetAllStoresQuery,
   useLazyGetAllStoresQuery,
   useGetStoreQuery,
+  useLazyGetStoreQuery,
+  useGetStoreSchedulesQuery,
+  useLazyGetStoreSchedulesQuery,
   useAddStoreMutation,
 } = storesApi;

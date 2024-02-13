@@ -9,15 +9,9 @@ import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slice
 export default function Dashboard() {
 
 	const user = useSelector(selectCurrentUser);
-    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
+    const userConfig = useSelector(selectCurrentUserConfig);
     const [userRoles, setUserRoles] = useState<string[]>([]);
 
-    // Get session
-    useEffect(() => {
-        (async () => {
-            setUserRoles(Object.keys(userConfig).filter(key => (userConfig as any)[key] === true))
-        })();
-    }, [userConfig]);
 
 	return (
 		<section className="lg:pl-72 block min-h-screen">

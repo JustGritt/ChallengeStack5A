@@ -8,8 +8,7 @@ import { useSelector } from "react-redux";
 
 export default function UserCalendar() {
 
-    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
-    const [userRoles, setUserRoles] = useState<string[]>([]);
+    const userConfig = useSelector(selectCurrentUserConfig);
     const [bookings, setBookings] = useState<any[]>([])
     const [bookingFetched, setBookingFetched] = useState(false)
 
@@ -20,20 +19,19 @@ export default function UserCalendar() {
             const session = await getUserCookie(UserCookieType.SESSION);
             const parsedSession = JSON.parse(session?.value || "{}");
             setParsedSession(parsedSession);
-            setUserRoles(Object.keys(userConfig).filter(key => (userConfig as any)[key] === true))
         })();
     }, [userConfig]);
 
     // Get bookings
     useEffect(() => {
-        if (userRoles.includes("isClient") &&  parsedSession?.user?.id && !bookingFetched) {
+        if (userConfig.isClient &&  parsedSession?.user?.id && !bookingFetched) {
             getUserBookings(parsedSession?.user?.id, parsedSession?.token);
         }
 
-        if (userRoles.includes("isWorker") &&  parsedSession?.user?.id && !bookingFetched) {
+        if (userConfig.isWorker &&  parsedSession?.user?.id && !bookingFetched) {
             getEmployeeBookings(parsedSession?.user?.id, parsedSession?.token);
         }
-    }, [parsedSession, bookingFetched])
+    }, [parsedSession, bookingFetched, userConfig])
 
     const getUserBookings = (id: number, token: string) => {
         fetch(`https://api.odicylens.com/users/${id}/bookings`, {

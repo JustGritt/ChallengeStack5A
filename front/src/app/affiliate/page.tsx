@@ -13,7 +13,7 @@ import { Button } from "@/components/Ui/Button";
 import { CompanyRequestType, UserRegister } from "@/types/User";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { useBecomeAffiliateMutation, useGetMyProfileQuery, useLazyGetMyProfileQuery } from "@/lib/services/auth";
+import { useBecomeAffiliateMutation } from "@/lib/services/auth";
 import { ApiErrorResponse } from "@/types/ApiBase";
 import Footer from "@/components/Footer";
 import NavBar from "@/components/Header/NavBar";

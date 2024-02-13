@@ -7,11 +7,11 @@ import { classNames } from '@/lib/helpers/utils';
 import { usePathname } from 'next/navigation'
 import { useSelector } from 'react-redux';
 import { getUserCookie } from "@/lib/helpers/UserHelper";
-import { UserCookieType } from "@/types/User";
+import { USER_ROLES, UserCookieType } from "@/types/User";
 import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
 import { Dialog, Transition } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import { Fragment, useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { Bars3Icon, BellIcon, CalendarIcon, ShoppingCartIcon, Cog6ToothIcon, HomeIcon, UsersIcon, XMarkIcon, ClockIcon, UserIcon, SparklesIcon } from '@heroicons/react/24/outline'
 
 export default function DashboardMenu() {
@@ -22,22 +22,35 @@ export default function DashboardMenu() {
 
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [notifications, setNotifications] = useState<any[]>([]);
-    const [userRoles, setUserRoles] = useState<any[]>([]);
+
+    const userRoles = useMemo(
+        () => 
+            Object.keys(userConfig.roles).filter(
+                (role) => userConfig[role as keyof typeof userConfig] !== undefined
+            ),
+        [userConfig]
+    )
 
     // Get session
     const [parsedSession, setParsedSession] = useState<any>({});
     useEffect(() => {
         (async () => {
             const session = await getUserCookie(UserCookieType.SESSION);
+            if (userConfig.roles.includes(USER_ROLES.ROLE_ADMIN) || userConfig.roles.includes(USER_ROLES.ROLE_USER)) {
+                await fetch('https://api.odicylens.com/companies?page=0', { method: 'GET', headers: { 'Authorization': `Bearer ${session?.token}` } })
+                    .then(response => response.json())
+                    .then(data => data['hydra:member'].map((company: any) => {
+                        company.isValid ? setNotifications([...notifications, company]) : null
+                    }))
+            }
             const parsedSession = JSON.parse(session?.value || "{}");
             setParsedSession(parsedSession);
-            setUserRoles(Object.keys(userConfig).filter(key => (userConfig as any)[key] === true))
         })();
     }, [userConfig])
 
     // Get company to validate
     const fetchCompanies = useCallback(async () => {
-        if (userRoles.includes('isAdmin')) {
+        if (userConfig.isAdmin) {
             const response = await fetch('https://api.odicylens.com/companies', {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${parsedSession?.token}` }

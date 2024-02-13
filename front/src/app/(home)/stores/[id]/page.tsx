@@ -15,6 +15,9 @@ import StoreServiceCard from "@/components/Pages/Store/StoreServiceCard";
 import { useGetStoreQuery } from "@/lib/services/stores";
 import StoreServicesCard from "@/components/Pages/Store/StoreServiceCard";
 import React from "react";
+import { notFound } from "next/navigation";
+import { Avatar, AvatarFallback } from "@/components/Ui/avatar";
+import { getUserInitials } from "@/lib/helpers/utils";
 import CustomCalendar from "@/components/Calendar/CustomCalendar";
 import { StripeLogo } from "@/components/Icons/Icons";
 import { loadStripe } from "@stripe/stripe-js";
@@ -76,6 +79,10 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
   const { isLoading, isError, data: store } = useGetStoreQuery(id);
   const refSectionServices = React.useRef<null | HTMLDivElement>(null);
 
+  if (isError) {
+    return notFound();
+  }
+
   const handleClick = async () => {
     console.log('click')
     const { sessionId } = await fetch("/api/checkout/session", {
@@ -100,12 +107,16 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
           </h1>
           <div className="flex gap-2 justify-center items-center">
             <FontAwesomeIcon className="text-gray-500" icon={faLocationDot} />
-            <Link
-              className="text-gray-500 underline hover:no-underline"
-              href={`${data.address}`}
-            >
-              {store?.address ?? <Skeleton width={200} />}
-            </Link>
+            {!store?.address ? (
+              <Skeleton width={200} />
+            ) : (
+              <Link
+                className="text-gray-500 underline hover:no-underline"
+                href={`${store?.address}`}
+              >
+                {store?.address}
+              </Link>
+            )}
           </div>
         </div>
         <Button
@@ -119,28 +130,31 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
         </Button>
       </section>
       <section className="max-w-6xl w-full flex px-6 md:px-10 lg:px-0 "></section>
-      <section className=" max-w-6xl w-full px-6 md:px-10 lg:px-0">
-        <h2>
+      <section
+        className=" max-w-6xl w-full px-6 md:px-10 lg:px-0"
+        ref={refSectionServices}
+      >
+        <h2 className="text-black font-bold text-2xl my-2">
           Réserver en ligne pour un RDV chez{" "}
           {store?.name ?? <Skeleton width={150} />}
         </h2>
         <span className="text-gray-500">24h/24 - details de reservation</span>
-        <div className="flex w-full justify-between gap-8 flex-col xl:flex-row">
+        <div className="flex w-full justify-between gap-8 lg:flex-row flex-col-reverse lg:mt-4 mt-4">
           <div className=" lg:w-[60%] w-full ">
             <h1 className="text-black font-bold text-2xl my-2">
               Choix de prestation
             </h1>
-            <div className="w-full my-4" ref={refSectionServices}>
+            <div className="w-full my-4">
               <h2 className="text-black font-bold text-xl my-2">Services</h2>
               {store?.services ? (
-                <StoreServicesCard services={store?.services} />
+                <StoreServicesCard
+                  services={store?.services.map((s) => {
+                    return { ...s, store: store.id.toString() };
+                  })}
+                />
               ) : (
                 <Skeleton count={6} className="w-full" />
               )}
-              <div className="mt-6">
-                <CustomCalendar />
-              </div>
-              {/* <StoreServiceCard /> */}
             </div>
             <div className="w-full my-4">
               <div className="my-4">
@@ -160,9 +174,10 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
                   </Link>
                 </div>
               </div>
+
               {/* <CustomMap /> */}
             </div>
-            <div className="w-full my-4">
+            {/* <div className="w-full my-4">
               <h2 className="text-black font-bold text-xl my-2">À propos</h2>
               <div className="rounded-lg border border-1 border-gray-300 py-8 px-6 shadow-lg">
                 <p className="text-gray-500">
@@ -176,22 +191,38 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
                   mollit anim id est laborum.
                 </p>
               </div>
-            </div>
+            </div> */}
           </div>
           <div className="w-full max-w-[400px]">
             <h1 className="text-black font-bold text-2xl my-2">
               Collaborateurs
             </h1>
 
-            <div className="rounded-lg p-6 shadow-lg flex flex-wrap gap-4">
-              <div className="w-fit rounded-lg flex flex-col items-center border border-1 border-gray-200 p-6">
-                <span className="bg-black px-10 py-8 rounded-full">A</span>
-                <span className="text-black">Anthoni</span>
-              </div>
-              <div className="w-fit rounded-lg flex flex-col items-center border border-1 border-gray-200 p-6">
-                <span className="bg-black px-10 py-8 rounded-full">R</span>
-                <span className="text-black">Reed</span>
-              </div>
+            <div className="rounded-lg p-6 shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] flex flex-wrap gap-4">
+              {(store?.users || []).length === 0 ? (
+                <div className="w-full rounded-lg flex flex-col items-center border border-1 border-gray-200 p-6 justify-center">
+                  <h3 className="text-gray-500 font-medium text-md my-2">
+                    Pas de collaborateurs enregistrés
+                  </h3>
+                </div>
+              ) : (
+                (store?.users || []).map((collaborator) => (
+                  <div
+                    key={collaborator.id}
+                    className="w-fit rounded-lg flex flex-col items-center border border-1 border-gray-200 p-4 flex-1"
+                  >
+                    <Avatar className="w-8 h-8">
+                      <AvatarFallback>
+                        {getUserInitials(collaborator.firstname)}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <span className="text-black text-lg">
+                      {collaborator.firstname}
+                    </span>
+                  </div>
+                ))
+              )}
             </div>
           </div>
           <div>

@@ -23,7 +23,7 @@ export default function Stores() {
 
     // Get session
     const user = useSelector(selectCurrentUser);
-    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
+    const userConfig = useSelector(selectCurrentUserConfig);
     const [parsedSession, setParsedSession] = useState<any>({});
     useEffect(() => {
         (async () => {

@@ -21,18 +21,9 @@ export default function EditProfile() {
         confirmPassword: ""
     };
     const user = useSelector(selectCurrentUser);
-    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
-    const [userRoles, setUserRoles] = useState<string[]>([]);
+    const userConfig = useSelector(selectCurrentUserConfig);
     const [parsedSession, setParsedSession] = useState<any>({});
 
-    useEffect(() => {
-        (async () => {
-            const session = await getUserCookie(UserCookieType.SESSION);
-            const parsedSession = JSON.parse(session?.value || "{}");
-            setParsedSession(parsedSession);
-            setUserRoles(Object.keys(userConfig).filter(key => (userConfig as any)[key] === true))
-        })();
-    }, [userConfig]);
 
     // Update profile
     const validationProfileSchema = Yup.object().shape({
