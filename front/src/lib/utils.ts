@@ -77,3 +77,8 @@ export function uniqByKeepLast<T extends object>(arr: Array<T>, key: keyof T): T
     return acc;
   }, []);
 }
+
+export async function fetcher(url: string) {
+  const res = await fetch(url)
+  return await res.json()
+}

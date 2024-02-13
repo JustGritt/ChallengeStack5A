@@ -16,6 +16,8 @@ import { useGetStoreQuery } from "@/lib/services/stores";
 import StoreServicesCard from "@/components/Pages/Store/StoreServiceCard";
 import React from "react";
 import CustomCalendar from "@/components/Calendar/CustomCalendar";
+import { StripeLogo } from "@/components/Icons/Icons";
+import { loadStripe } from "@stripe/stripe-js";
 
 const data = {
   storeName: "StoreCard",
@@ -66,12 +68,28 @@ const data = {
   ],
 };
 
+const stripePromise = loadStripe('pk_test_51OMwURF9MmQfZRp3FWy76r8hxd5EsxW4GJGN2oXBz8L2Sp97UohCfqcGokB1kGfdX8E5YMMkwd85Dy931aEOhNdU00046RjC2C');
+
 const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
   params: { id },
 }) => {
   const { isLoading, isError, data: store } = useGetStoreQuery(id);
-
   const refSectionServices = React.useRef<null | HTMLDivElement>(null);
+
+  const handleClick = async () => {
+    console.log('click')
+    const { sessionId } = await fetch("/api/checkout/session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ amount: 100 })
+    }).then((res) => res.json());
+    const stripe = await stripePromise;
+    const { error } = await stripe!.redirectToCheckout({
+      sessionId,
+    });
+  }
 
   return (
     <main className="w-full z-40 flex flex-col bg-white py-4 px-3 items-center">
@@ -175,6 +193,13 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
                 <span className="text-black">Reed</span>
               </div>
             </div>
+          </div>
+          <div>
+            <Button className="flex w-full max-w-[350px] justify-center items-center" onClick={handleClick}>
+              Pay your order
+              <span>|</span>
+              <StripeLogo className={`w-12`} />
+            </Button>
           </div>
         </div>
       </section>
