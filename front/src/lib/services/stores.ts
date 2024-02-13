@@ -44,8 +44,7 @@ export const storesApi = api.injectEndpoints({
             ...result['hydra:member'].map(({ id }) => ({
               type: "StoreSchedules" as const,
               id,
-            })),
-            { type: "StoreSchedules", id: "LIST" },
+            }))
           ]
           : [],
     }),

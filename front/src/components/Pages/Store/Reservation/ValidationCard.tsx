@@ -5,11 +5,11 @@ import { Service } from "@/types/Service";
 import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
-import React, { FC } from "react";
+import React, { FC, useCallback } from "react";
 import { useToast } from "@/components/Ui/use-toast";
 import { HydraError } from "@/types/HydraPaginateResp";
 import { cn } from "@/lib/utils";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { useGetStoreSchedulesQuery } from "@/lib/services/stores";
 
 type ValidationCardProps = {
   service: Service;
@@ -32,12 +32,29 @@ const ValidationCard: FC<ValidationCardProps> = ({
     },
   ] = useCreateBookingMutation();
 
+  const { data: schedules, isFetching: isSchedulesLoading } =
+    useGetStoreSchedulesQuery(service.store.split("/")[2]);
+
   const router = useRouter();
 
-  const handleSubmit = async () => {
-    
+  const handleSubmit = useCallback(async () => {
+    if (!schedules) return;
+    const availableEmployee = schedules!["hydra:member"]
+      .map((schedule) => {
+        if (
+          new Date(schedule.startDate).getTime() <=
+            new Date(startDate).getTime() &&
+          new Date(schedule.endDate).getTime() >= new Date(startDate).getTime()
+        ) {
+          return schedule.employee;
+        }
+      })
+      .filter((employee) => employee !== undefined)[0];
     await createBooking({
-      employee: "/users/" + employee,
+      employee:
+        employee === "no-one"
+          ? `/users/${availableEmployee?.id}`
+          : `/users/${employee}`,
       service: "/services/" + service.id,
       startDate: startDate.toISOString(),
     })
@@ -73,7 +90,8 @@ const ValidationCard: FC<ValidationCardProps> = ({
           variant: "destructive",
         });
       });
-  };
+  }, [schedules]);
+
   return (
     <section className="flex flex-col w-full">
       <h3 className="my-3 text-lg font-bold tracking-tight text-gray-900 dark:text-white flex items-center">

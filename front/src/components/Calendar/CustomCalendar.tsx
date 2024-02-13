@@ -8,10 +8,7 @@ import React, {
 } from "react";
 import CalendarCarousel from "../Slider/CalendarCarousel";
 import { useLazyGetEmployeeBookingsQuery } from "@/lib/services/bookings";
-import {
-  useGetStoreSchedulesQuery,
-  useLazyGetStoreSchedulesQuery,
-} from "@/lib/services/stores";
+import { useLazyGetStoreSchedulesQuery } from "@/lib/services/stores";
 import Skeleton from "react-loading-skeleton";
 import { useLazyGetUserSchedulesQuery } from "@/lib/services/user";
 import LoaderSimple from "../Ui/Loader/LoaderSimple";
@@ -94,18 +91,17 @@ const CustomCalendar: FC<CustomCalendarProps> = ({
     [data]
   );
 
+
   const employeeWorkingDays = useCallback(
     () =>
-      (
-        (userSchedules?.["hydra:member"] ??
-          []) as HydraPaginateResp<Schedule>["hydra:member"]
+      (idEmployee === "no-one"
+        ? ((schedules?.["hydra:member"] ??
+            []) as [] as HydraPaginateResp<Schedule>["hydra:member"])
+        : []
       )
-        .filter((booking) => booking.startDate && booking.endDate)
         .concat(
-          idEmployee === "no-one"
-            ? ((schedules?.["hydra:member"] ??
-                []) as [] as HydraPaginateResp<Schedule>["hydra:member"])
-            : []
+          (userSchedules?.["hydra:member"] ??
+            []) as HydraPaginateResp<Schedule>["hydra:member"]
         )
         .filter((schedule) => !schedule.onVacation)
         .map((booking) => {
@@ -127,9 +123,6 @@ const CustomCalendar: FC<CustomCalendarProps> = ({
     }
     onSelectDate(date);
   };
-
-  console.log(date);
-  
 
   return (
     <>

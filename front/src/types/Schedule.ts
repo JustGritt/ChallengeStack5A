@@ -6,6 +6,6 @@ export type Schedule = HydraResp<{
     "startDate": string,
     "endDate": string,
     "onVacation": boolean,
-    "employee": HydraResp<Pick<User, "email">>,
+    "employee": HydraResp<Pick<User, "email" | "id">>,
     "store": string
 }>

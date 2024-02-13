@@ -21,14 +21,6 @@ export const getIntlDayAndMonth = (date: string, locale: string) => {
     }
 }
 
-const getMiliTaryHoursFromDate = (date: Date) => {
-    const militaryHour = new Date(); // Create a new Date object
-    const hours = ("0" + militaryHour.getHours()).slice(-2); // Get hours and pad with leading zero if needed
-    const minutes = ("0" + militaryHour.getMinutes()).slice(-2); // Get minutes and pad with leading zero if needed
-
-    return hours + minutes
-}
-
 interface Range {
     start: Date;
     end: Date;
@@ -58,8 +50,6 @@ export const getWorkinHours = (date: string) => {
         const militaryTime =
             parseInt(day.military_format.slice(0, 2)) * 60 +
             parseInt(day.military_format.slice(2));
-        // const dayOfWeek = new Date(date).getDay();
-
         return (
             militaryTime >= 600 &&
             militaryTime <= 1080

@@ -1,8 +1,6 @@
 "use client";
 import {
   useGetStoreQuery,
-  useLazyGetAllStoresQuery,
-  useLazyGetStoreQuery,
 } from "@/lib/services/stores";
 import { Store } from "@/types/Store";
 import { notFound } from "next/navigation";
