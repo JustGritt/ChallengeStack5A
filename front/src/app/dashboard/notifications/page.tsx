@@ -4,8 +4,8 @@ import Link from "next/link";
 import { Button } from "@/components/Ui/Button";
 import { useSelector } from 'react-redux';
 import { getUserCookie } from "@/lib/helpers/UserHelper";
-import { UserCookieType } from "@/types/User";
-import { selectCurrentUser} from '@/lib/services/slices/authSlice';
+import { USER_ROLES, UserCookieType } from "@/types/User";
+import { selectCurrentUser, selectCurrentUserConfig} from '@/lib/services/slices/authSlice';
 import { useEffect, useState } from 'react'
 import { CheckIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 
@@ -13,6 +13,7 @@ export default function Notifications() {
 
     // Get session
     const user = useSelector(selectCurrentUser);
+    const userConfig = useSelector(selectCurrentUserConfig);
     const [parsedSession, setParsedSession] = useState<any>({});
     useEffect(() => {
         (async () => {
@@ -25,7 +26,7 @@ export default function Notifications() {
     const [notifications, setNotifications] = useState<any[]>([]);
     useEffect(() => {
         (async () => {
-            if (user?.roles.includes('ROLE_ADMIN') || user?.roles.includes('ROLE_SUPER_ADMIN')) {
+            if (userConfig.roles.includes(USER_ROLES.ROLE_ADMIN) || userConfig.roles.includes(USER_ROLES.ROLE_SUPER_ADMIN)) {
                 await fetch('https://api.odicylens.com/companies?page=0', { method: 'GET', headers: { 'Authorization': `Bearer ${parsedSession?.token}` } })
                     .then(response => {
                         if (!response.ok) {
@@ -43,7 +44,7 @@ export default function Notifications() {
                     .catch(error => console.error('There was an error!', error));
             }
         })();
-    }, [user, parsedSession?.token]);
+    }, [user, parsedSession?.token, userConfig]);
 
     return (
         <section className="lg:pl-72 block min-h-screen">
@@ -69,10 +70,10 @@ export default function Notifications() {
                                                     <MagnifyingGlassIcon className="w-5 h-5 me-2" aria-hidden="true" />
                                                     Check company
                                                 </Link>
-                                                <Button id={`validate-company-${notification.id}`} intent="default" className="inline-flex items-center" onClick={() => validateCompany(notification.id)}>
+                                                {/* <Button id={`validate-company-${notification.id}`} intent="default" className="inline-flex items-center" onClick={() => validateCompany(notification.id)}>
                                                     <CheckIcon className="w-5 h-5 me-2" aria-hidden="true" />
                                                     Validate
-                                                </Button>
+                                                </Button> */}
                                             </div>
                                         </div>
                                     </li>

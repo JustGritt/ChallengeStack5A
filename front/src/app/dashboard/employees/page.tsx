@@ -8,8 +8,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 export default function Employees() {
 
-    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
-    const userRoles = useMemo(() => Object.keys(userConfig || {}).filter(role => userConfig[role]), [userConfig]);
+    const userConfig = useSelector(selectCurrentUserConfig);
 
     // Get session
     const [parsedSession, setParsedSession] = useState<any>({});
@@ -25,7 +24,7 @@ export default function Employees() {
     const [employeesFetched, setEmployeesFetched] = useState(false);
     useEffect(() => {
         const fetchEmployees = async () => {
-            if (!employeesFetched && parsedSession?.token && userRoles.includes("isAdmin")) {
+            if (!employeesFetched && parsedSession?.token && userConfig.isAdmin) {
                 fetch(`https://api.odicylens.com/company/2/employee`, {
                     method: "GET",
                     headers: {
@@ -38,7 +37,7 @@ export default function Employees() {
                 setEmployeesFetched(true);
             }
 
-            if (!employeesFetched && parsedSession?.token && (userRoles.includes("isOwner") || userRoles.includes("isWorker"))) {
+            if (!employeesFetched && parsedSession?.token && (userConfig.isOwner || userConfig.isAdmin)) {
                 fetch(`https://api.odicylens.com/company/${parsedSession?.user?.companie?.id}/employee`, {
                     method: "GET",
                     headers: {
@@ -51,7 +50,7 @@ export default function Employees() {
             }
         };
         fetchEmployees();
-    }, [employeesFetched, parsedSession, userRoles]);
+    }, [employeesFetched, parsedSession, userConfig]);
 
     return (
         <section className="lg:pl-72 block min-h-screen">
