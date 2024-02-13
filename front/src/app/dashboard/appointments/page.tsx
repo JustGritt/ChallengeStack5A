@@ -10,7 +10,8 @@ import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
 import { useEffect, useMemo, useState } from 'react';
 import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
-import { log } from "console";
+
+import StoreCalendar from "@/components/Calendar/StoreCalendar";
 
 export default function Page() {
     const data: {
@@ -59,6 +60,21 @@ export default function Page() {
         const title = eventCategory.value;
         const calendarApi = arg.view.calendar;
         calendarApi.unselect();
+
+        // If the title is not empty and the difference between the start and end date is below 10 hours
+        if(title === "Work" && (arg.end - arg.start) / 1000 / 60 / 60 > 10) {
+            toast.error("You can't work more than 10 hours at once");
+            return;
+        }
+
+        // If there are events at the same time, prevent the user from adding a new one
+        if(calendarApi.getEvents().some((event: any) => {
+            console.log(event);
+            return (arg.start >= event.start && arg.start <= event.end) || (arg.end >= event.start && arg.end <= event.end);
+        })) {
+            toast.error("You can't add an event at the same time as another one");
+            return;
+        }
 
         if (title) {
             calendarApi.addEvent({
@@ -115,8 +131,18 @@ export default function Page() {
             <div className="p-4 sm:p-6 lg:p-8 h-full">
                 <div className="mx-auto bg-white dark:bg-slate-800 px-8 py-8 rounded-xl shadow">
                     {
-                        (userRoles.includes("isOwner") || userRoles.includes("isWorker")) && (
+                        userRoles.includes("isOwner") && (
                             <div className="lg:flex lg:h-full lg:flex-col">
+                                <StoreCalendar />
+                            </div>
+                        )
+                    }
+                    {
+                        (userRoles.includes("isWorker")) && (
+                            <div className="lg:flex lg:h-full lg:flex-col">
+                                <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">
+                                    Your schedule
+                                </h2>
                                 <div className="flex justify-center items-center mb-8">
                                     <select id="selectedEvent" className="flex-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                         <option defaultValue="work">Work</option>
