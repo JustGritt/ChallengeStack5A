@@ -86,6 +86,27 @@ export default function StoreCalendar() {
         setSelectedDate(new Date(new Date(selectedDate).getTime() + 24 * 60 * 60 * 1000).toISOString().split("T")[0]);
     }
 
+    const cancelVacation = (scheduleId: string) => {
+        // PATCH /schedules/{id} and inform the user that the vacation has been canceled
+        console.log(scheduleId);
+        fetch(`https://api.odicylens.com/schedules/${scheduleId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/merge-patch+json",
+                "Authorization": `Bearer ${parsedSession.token}`
+            },
+            body: JSON.stringify({
+                onVacation: false,
+                refused: true
+            })
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log("events: ", data);
+                // setSchedules(data["hydra:member"]);
+            })
+    }
+
     return (
         <div className="lg:flex lg:h-full lg:flex-col">
             <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">
@@ -175,7 +196,7 @@ export default function StoreCalendar() {
                                                             {schedule.endDate.replace("T", " ").split("+")[0]}
                                                         </td>
                                                         <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                                            <Button intent="delete">
+                                                            <Button intent="delete" onClick={() => cancelVacation(schedule.id)}>
                                                                 Cancel
                                                             </Button>
                                                         </td>

@@ -44,13 +44,14 @@ export default function EmployeeCalendar() {
             })
                 .then((res) => res.json())
                 .then((data) => {
+                    console.log(data["hydra:member"]);
                     const events = data["hydra:member"].map((event: any) => ({
                         title: event.onVacation ? "Vacation" : "Work",
                         start: event.startDate.replace('Z', '+01:00'),
-                        end: event.endDate.replace('Z', '+01:00')
+                        end: event.endDate.replace('Z', '+01:00'),
                     }));
 
-                    console.log(events);
+                    // console.log(events);
                     setSchedules(events);
                 })
             setScheduleFetched(true);
@@ -71,9 +72,6 @@ export default function EmployeeCalendar() {
 
         // If there are events at the same time, prevent the user from adding a new one
         if(calendarApi.getEvents().some((event: any) => {
-            console.log(event);
-
-            // If the event is at the same time as another one (Add 1 hour to the end date to prevent the user from adding an event at the same time as another one)
             return (arg.start >= event.start && arg.start <= event.end) || (arg.end >= event.start && arg.end <= event.end);
         })) {
             toast.error("You can't add an event at the same time as another one");
@@ -109,9 +107,9 @@ export default function EmployeeCalendar() {
         const events = calendarApi.getEvents();
         console.log(events);
 
-        // if (confirm('Are you sure you want to delete this event?')) {
-        //     arg.event.remove();
-        // }
+        if (confirm('Are you sure you want to delete this event?')) {
+            arg.event.remove();
+        }
     }
 
     // Save events as Worker
