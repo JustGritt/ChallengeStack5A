@@ -170,7 +170,7 @@ export default function Stores() {
                                     </ul>
 
                                     {
-                                        pages.length > 1 ? (
+                                        pages && (
                                             <section className="flex items-center justify-between border-t border-gray-200 bg-white px-4 pt-8 pb-4">
                                                 <div className="flex flex-1 justify-between sm:hidden">
                                                     <button type="button" onClick={handlePreviousPage} className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
@@ -212,26 +212,6 @@ export default function Stores() {
                                                                 <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
                                                             </button>
                                                         </nav>
-                                                    </div>
-                                                </div>
-                                            </section>
-                                        ) : (
-                                            <section className="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
-                                                <div className="text-center">
-                                                    <h1 className="text-9xl mb-8 animate-bounce">
-                                                        🏃
-                                                    </h1>
-                                                    <strong className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-                                                        Loading...
-                                                    </strong>
-                                                    <p className="mt-6 text-base leading-7 text-gray-600">
-                                                        We are fetching the stores for you.
-                                                    </p>
-                                                    <div className="mt-10 flex items-center justify-center gap-x-6 flex-col">
-                                                        Taking too long?
-                                                        <Link href="/login" className="mt-4 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                                            Go back
-                                                        </Link>
                                                     </div>
                                                 </div>
                                             </section>

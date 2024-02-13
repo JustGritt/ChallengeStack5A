@@ -106,16 +106,24 @@ export default function UpdateProfile() {
                                 Time <span className="text-red-600">*</span>
                             </label>
                             <ErrorMessage name="time" component="span" className="text-red-600 leading-3 text-sm" />
-                            <Field type="number" placeholder="Your service" name="time" className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm w-full" step={5} />
+                            <Field type="number" placeholder="Your service" name="time" className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm w-full" step={30} min={30} />
                         </div>
 
                         <div className="flex w-full flex-col">
                             <label htmlFor="price" className="text-black text-sm font-semibold">
-                                Price <span className="text-red-600">*</span>
+                                Price (€) <span className="text-red-600">*</span>
                             </label>
                             <ErrorMessage name="price" component="span" className="text-red-600 leading-3 text-sm" />
                             <Field type="number" placeholder="50" name="price" className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm w-full" />
                         </div>
+                    </div>
+
+                    <div className="flex w-full flex-col mt-4">
+                        <label htmlFor="serviceDescription" className="text-black text-sm font-semibold">
+                            Service description <span className="text-red-600">*</span>
+                        </label>
+                        <ErrorMessage name="serviceDescription" component="span" className="text-red-600 leading-3 text-sm" />
+                        <Field type="text" placeholder="Your service description" name="serviceDescription" className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm w-full" />
                     </div>
 
                     <div className="flex flex-col justify-center items-center gap-2">

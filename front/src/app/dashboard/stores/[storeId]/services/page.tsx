@@ -21,39 +21,39 @@ export default function EditStoreServices({ params }: { params: { storeId: strin
                 {
                     store ? (
                         <div className="mx-auto bg-white dark:bg-slate-800 px-8 py-8 rounded-xl shadow border mt-4">
-                                    <div className="flex items-center justify-between">
-                                        <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4 inline-block">
-                                            Services
-                                        </h2>
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4 inline-block">
+                                    Services
+                                </h2>
 
-                                        <div className="flex items-center justify-between gap-4">
-                                            <Link href={`/dashboard/stores/${params.storeId}/services/add`} className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">
-                                                New Service
-                                            </Link>
-                                        </div>
-                                    </div>
-
-                                    <div className="max-w-screen-xl mx-auto lg:pt-8">
-                                        <ul className="flex flex-col gap-4">
-                                            {
-                                                store.services.length > 1 ? (store.services.map((service) => (
-                                                    <a href={`/dashboard/stores/${params.storeId}/services/${service.id}`} key={service.id}>
-                                                        <li key={service.id} className="flex justify-between gap-x-6 py-5 hover:bg-gray-100 w-full rounded shadow">
-                                                            <div className="min-w-0 flex flex-auto items-center justify-between px-6">
-                                                                <p className="text-sm font-semibold leading-6 text-gray-900">{service.name}</p>
-                                                                <p className="text-sm font-semibold leading-6 text-gray-900">{service.price} €</p>
-                                                            </div>
-                                                        </li>
-                                                    </a>
-                                                ))) : (
-                                                    <div>
-                                                        <p className="text-center">No employees found</p>
-                                                    </div>
-                                                )
-                                            }
-                                        </ul>
-                                    </div>
+                                <div className="flex items-center justify-between gap-4">
+                                    <Link href={`/dashboard/stores/${params.storeId}/services/add`} className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">
+                                        New Service
+                                    </Link>
                                 </div>
+                            </div>
+
+                            <div className="mx-auto lg:pt-8">
+                                <ul className="flex flex-col gap-4">
+                                    {
+                                        store.services.length > 1 ? (store.services.map((service) => (
+                                            <a href={`/dashboard/stores/${params.storeId}/services/${service.id}`} key={service.id}>
+                                                <li key={service.id} className="flex justify-between gap-x-6 py-5 hover:bg-gray-100 w-full rounded shadow">
+                                                    <div className="min-w-0 flex flex-auto items-center justify-between px-6">
+                                                        <p className="text-sm font-semibold leading-6 text-gray-900">{service.name}</p>
+                                                        <p className="text-sm font-semibold leading-6 text-gray-900">{service.price} €</p>
+                                                    </div>
+                                                </li>
+                                            </a>
+                                        ))) : (
+                                            <div>
+                                                <p className="text-center">No employees found</p>
+                                            </div>
+                                        )
+                                    }
+                                </ul>
+                            </div>
+                        </div>
                     ) : (
                         <section className="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
                             <div className="text-center">
