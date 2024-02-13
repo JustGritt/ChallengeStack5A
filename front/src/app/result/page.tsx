@@ -1,12 +1,16 @@
 "use client";
 
-import { fetcher } from '@/lib/utils';
+import { cn, fetcher } from '@/lib/utils';
+import { BooKingPost } from '@/types/Booking';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { HydraError } from "@/types/HydraPaginateResp";
+import { useToast } from "@/components/Ui/use-toast";
 import useSWR from 'swr';
 
 export default function Result() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { toast } = useToast()
 
     const sessionId = searchParams ? searchParams.get("session_id") : "";
 
@@ -16,6 +20,67 @@ export default function Result() {
             : null,
         fetcher
     )
+
+    const createBookingServer = async (payload: BooKingPost) => {
+        try {
+            const res = await fetch('/api/services/booking', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+            return data;
+        }
+        catch (error) {
+        }
+    }
+
+    if (data) {
+        const intentPayment = data.payment_intent;
+        if (intentPayment.status === "succeeded") {
+            createBookingServer({
+                employee: intentPayment.metadata.employee,
+                service: intentPayment.metadata.service,
+                startDate: intentPayment.metadata.startDate.toISOString(),
+                amount: intentPayment.amount / 100,
+            })
+                .then((resp) => {
+                    toast({
+                        className: cn(
+                            "fixed top-4 z-[100] flex max-h-screen w-full flex-col-reverse py-4 px-4 right-4  sm:flex-col md:max-w-[420px]"
+                        ),
+                        title: `Booking successfully created`,
+                        description: `You've now a meet for ${new Intl.DateTimeFormat(
+                            "en-FR",
+                            {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                                weekday: "long",
+                            }
+                        ).format(new Date(intentPayment.metadata.startDate))} please don't be late`,
+                        variant: "default",
+                    });
+                    router.push(`/dashboard/appointments`);
+                })
+                .catch((error: { data: HydraError }) => {
+                    toast({
+                        className: cn(
+                            "fixed top-4 z-[100] flex max-h-screen w-full flex-col-reverse py-4 px-4 right-4  sm:flex-col md:max-w-[420px]"
+                        ),
+                        title: "Une erreur est survenue.",
+                        description:
+                            error?.data.detail ??
+                            "Désolé, quelque chose ne s'est pas bien passe.",
+                        variant: "destructive",
+                    });
+                });
+        }
+    }
+
+
 
     return (
         <section className="block min-h-screen">

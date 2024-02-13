@@ -84,7 +84,6 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
   }
 
   const handleClick = async () => {
-    console.log('click')
     const { sessionId } = await fetch("/api/checkout/session", {
       method: "POST",
       headers: {

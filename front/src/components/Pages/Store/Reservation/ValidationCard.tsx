@@ -7,9 +7,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import React, { FC } from "react";
 import { useToast } from "@/components/Ui/use-toast";
+import { StripeLogo } from "@/components/Icons/Icons";
 import { HydraError } from "@/types/HydraPaginateResp";
 import { cn } from "@/lib/utils";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { BooKingPost } from "@/types/Booking";
+import Pay from "@/components/payment/payment";
 
 type ValidationCardProps = {
   service: Service;
@@ -33,46 +36,14 @@ const ValidationCard: FC<ValidationCardProps> = ({
   ] = useCreateBookingMutation();
 
   const router = useRouter();
-
   const handleSubmit = async () => {
-    
-    await createBooking({
+    await Pay({
       employee: "/users/" + employee,
       service: "/services/" + service.id,
       startDate: startDate.toISOString(),
-    })
-      .unwrap()
-      .then((resp) => {
-        toast({
-          className: cn(
-            "fixed top-4 z-[100] flex max-h-screen w-full flex-col-reverse py-4 px-4 right-4  sm:flex-col md:max-w-[420px]"
-          ),
-          title: `Booking successfully created`,
-          description: `You've now a meet for ${new Intl.DateTimeFormat(
-            "en-FR",
-            {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              weekday: "long",
-            }
-          ).format(new Date(startDate))} please don't be late`,
-          variant: "default",
-        });
-        router.push(`/dashboard/appointments`);
-      })
-      .catch((error: { data: HydraError }) => {
-        toast({
-          className: cn(
-            "fixed top-4 z-[100] flex max-h-screen w-full flex-col-reverse py-4 px-4 right-4  sm:flex-col md:max-w-[420px]"
-          ),
-          title: "Une erreur est survenue.",
-          description:
-            error?.data.detail ??
-            "Désolé, quelque chose ne s'est pas bien passe.",
-          variant: "destructive",
-        });
-      });
+      amount: service.price,
+      serviceName: service.name,
+    });
   };
   return (
     <section className="flex flex-col w-full">
@@ -111,10 +82,14 @@ const ValidationCard: FC<ValidationCardProps> = ({
         <Button
           onClick={handleSubmit}
           isLoading={isLoadingCreateBooking}
-          className="mt-4 w-full py-5"
+          className="mt-4 w-full py-5 flex gap-2 justify-center items-center"
         >
-          <FontAwesomeIcon className="mr-3" icon={faCreditCard} />
-          Valider
+          <div className="flex gap-2 items-center pb-[2px] mr-1">
+            <FontAwesomeIcon icon={faCreditCard} />
+            Valider
+          </div>
+          <span>•</span>
+          <StripeLogo className={`w-12`} />
         </Button>
         <p className="text-[13px] font-light italic tracking-tight text-gray-300 dark:text-white">
           Vous avez la possibilité de valider votre commande sans paiement en
