@@ -16,11 +16,10 @@ export const userApi = api.injectEndpoints({
             providesTags: (result, _error, filters) =>
                 result
                     ? [
-                        ...result['hydra:member'].map(({ id }) => ({
-                            type: "UserSchedules" as const,
+                        ...result['hydra:member'].map(({ employee: { id } }) => ({
+                            type: "StoreSchedules" as const,
                             id,
-                        })),
-                        { type: "UserSchedules", id: "LIST" },
+                        }))
                     ]
                     : [],
         }),

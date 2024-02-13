@@ -33,6 +33,7 @@ const CalendarCarousel: FC<CalendarCarouselProps> = ({
 
   return (
     <Slider {...calendarCarouselSettings}>
+    
       {currentScope
         .filter(({ date }) => {
           return (
@@ -58,7 +59,7 @@ const CalendarCarousel: FC<CalendarCarouselProps> = ({
                       const isOff = isOffHour(
                         military_format,
                         new Date(date),
-                        offPeriods,
+                        [],
                         workingPeriods
                       );
                       return (
