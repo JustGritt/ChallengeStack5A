@@ -83,8 +83,8 @@ class Schedule
     private ?Store $store = null;
 
     #[Groups(['admin-patch', 'schedule-read'])]
-    #[ORM\Column(nullable: true)]
-    private ?bool $refused = null;
+    #[ORM\Column()]
+    private bool $refused = false;
 
 
     public function getId(): ?int
@@ -152,12 +152,12 @@ class Schedule
         return $this;
     }
 
-    public function isRefused(): ?bool
+    public function isRefused(): bool
     {
         return $this->refused;
     }
 
-    public function setRefused(?bool $refused): static
+    public function setRefused(bool $refused): static
     {
         $this->refused = $refused;
 
