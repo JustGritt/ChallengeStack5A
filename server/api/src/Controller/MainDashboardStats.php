@@ -76,7 +76,7 @@ class MainDashboardStats extends AbstractController
     private function getTotalBenefits(\DateTime $from = null, \DateTime $to = null, $full = false): int
     {
         if ($full) {
-            $bookings = $this->entityManager->getRepository(Booking::class)->findAll();
+            $bookings = $this->entityManager->getRepository(Booking::class)->findBy(['cancelled' => false]);
             $total = 0;
             foreach ($bookings as $booking) {
                 $total += $booking->getService()->getPrice();
@@ -90,6 +90,7 @@ class MainDashboardStats extends AbstractController
             ->join('b.service', 's')
             ->where('b.startDate >= :from')
             ->andWhere('b.endDate < :to')
+            ->andWhere('b.cancelled = false')
             ->setParameter('from', $from)
             ->setParameter('to', $to)
             ->getQuery()
