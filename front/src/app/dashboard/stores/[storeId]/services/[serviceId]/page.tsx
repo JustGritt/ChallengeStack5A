@@ -20,7 +20,6 @@ export default function Stores({ params }: { params: { storeId: string, serviceI
 
     const [services, setservices] = useState<any[]>([]);
     useEffect(() => {
-        console.log(params.storeId, params.serviceId, parsedSession?.token)
         if(parsedSession?.token) {
             fetch(`https://api.odicylens.com/stores/${params.storeId}`, {
                 method: 'GET',
@@ -31,7 +30,6 @@ export default function Stores({ params }: { params: { storeId: string, serviceI
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data.services);
                     setservices(data.services);
                 });
         }

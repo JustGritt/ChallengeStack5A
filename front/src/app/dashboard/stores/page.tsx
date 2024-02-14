@@ -59,7 +59,6 @@ export default function Stores() {
                 setStoresFetched(true);
             }
 
-            console.log(userConfig, parsedSession)
             // Owner
             if (userConfig?.isWorker && !storesFetched && parsedSession?.user?.companie?.id) {
                 fetch(`https://api.odicylens.com/stores/${parsedSession.user.work.id}`, {
@@ -210,9 +209,9 @@ export default function Stores() {
                                                                     const currentPageClasses = "z-10 bg-indigo-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600";
                                                                     const otherPageClasses = "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0";
                                                                     return (
-                                                                        <p key={page} className={`${commonClasses} ${isCurrentPage ? currentPageClasses : otherPageClasses}`}>
-                                                                            { page }
-                                                                        </p>
+                                                                        <button key={page} type="button" onClick={() => setCurrentPage(page)} className={`${commonClasses} ${isCurrentPage ? currentPageClasses : otherPageClasses}`}>
+                                                                            {page}
+                                                                        </button>
                                                                     );
                                                                 })
                                                             }
