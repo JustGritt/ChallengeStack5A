@@ -38,7 +38,7 @@ export default function Stores() {
     useEffect(() => {
         const fetchStores = async () => {
             // Quick exit if user is not admin or owner
-            if(!userConfig?.isAdmin && !userConfig?.isOwner && !storesFetched) {
+            if(!userConfig?.isAdmin && !userConfig?.isOwner && !userConfig?.isWorker && !storesFetched) {
                 router.push('/dashboard');
             }
 
@@ -53,6 +53,16 @@ export default function Stores() {
             // Owner
             if (userConfig?.isOwner && !storesFetched && parsedSession?.user?.companie?.id) {
                 fetch(`https://api.odicylens.com/companies/${parsedSession.user.companie.id}`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${parsedSession?.token}` }
+                }).then((res) => res.json()).then((data) => setStores(data.stores))
+                setStoresFetched(true);
+            }
+
+            console.log(userConfig, parsedSession)
+            // Owner
+            if (userConfig?.isWorker && !storesFetched && parsedSession?.user?.companie?.id) {
+                fetch(`https://api.odicylens.com/stores/${parsedSession.user.work.id}`, {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${parsedSession?.token}` }
                 }).then((res) => res.json()).then((data) => setStores(data.stores))
