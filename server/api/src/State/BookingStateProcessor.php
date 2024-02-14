@@ -39,6 +39,10 @@ class BookingStateProcessor implements ProcessorInterface
                 throw new AccessDeniedException('The employee is not working in the store');
             }
 
+            if (null !== $user && null !== $user->getWork()) {
+                throw new AccessDeniedException('Sorry you cannot book a service because you are an employee.');
+            }
+
             //check if the user as already a booking at the same time for the same service
             $bookings = $store->getBookings();
             foreach ($bookings as $booking) {
