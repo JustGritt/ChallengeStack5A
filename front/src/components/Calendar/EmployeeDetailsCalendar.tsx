@@ -33,15 +33,15 @@ export default function EmployeeDetailsCalendar({ employeeId, employeeStore }: {
     }, [])
 
     useEffect(() => {
-        if (user && !scheduleFetched) {
+        if (user && !scheduleFetched && employeeId && parsedSession?.token) {
             fetch(`https://api.odicylens.com/users/${employeeId}/schedules`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${parsedSession?.token}`
                 }
             })
-                .then((res) => res.json())
-                .then((data) => {
+            .then((res) => res.json())
+            .then((data) => {
                     const events = data["hydra:member"].map((event: any) => ({
                         title: event.onVacation ? "Vacation" : event.refused ? "Vacation refused (Work)" : "Work",
                         start: event.startDate,
@@ -165,115 +165,108 @@ export default function EmployeeDetailsCalendar({ employeeId, employeeStore }: {
         }
     }
 
-    // Save events as Worker
-    const saveEvents = () => {
+    // Save events as Owner
+    const saveEvents = async () => {
         if(userRoles.includes("isOwner")) {
-            const deletePromises = scheduleToDelete.map((id: any) => {
-                return fetch(`https://api.odicylens.com/schedules/${id}`, {
+            // Delete schedules
+            for (const id of scheduleToDelete) {
+                const res = await fetch(`https://api.odicylens.com/schedules/${id}`, {
                     method: "DELETE",
                     headers: {
                         "Authorization": `Bearer ${parsedSession?.token}`
                     }
-                })
-                .then((res) => {
-                    if(res.status === 204) {
-                        toast.custom((t) => (
-                            <div aria-live="assertive" className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6">
-                                <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
-                                    <div className="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                                    <div className="p-4">
-                                        <div className="flex items-start">
-                                        <div className="flex-shrink-0">
-                                            <CheckIcon className="w-6 h-6 text-green-400" aria-hidden="true" />
-                                        </div>
-                                        <div className="ml-3 w-0 flex-1 pt-0.5">
-                                            <p className="text-sm font-medium text-gray-900">
-                                                The events have been deleted
-                                            </p>
-                                            <p className="mt-1 text-sm text-gray-500">
-                                                You might have to reload the page to see the changes
-                                            </p>
-                                        </div>
-                                        <div className="ml-4 flex flex-shrink-0">
-                                            <button type="button" className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                            <span className="sr-only">Close</span>
-                                            <XMarkIcon className="h-5 w-5" aria-hidden="true" />
-                                            </button>
-                                        </div>
-                                        </div>
+                });
+
+                if(res.status === 204) {
+                    toast.custom((t) => (
+                        <div aria-live="assertive" className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6">
+                            <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
+                                <div className="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                                <div className="p-4">
+                                    <div className="flex items-start">
+                                    <div className="flex-shrink-0">
+                                        <CheckIcon className="w-6 h-6 text-green-400" aria-hidden="true" />
+                                    </div>
+                                    <div className="ml-3 w-0 flex-1 pt-0.5">
+                                        <p className="text-sm font-medium text-gray-900">
+                                            The events have been deleted
+                                        </p>
+                                        <p className="mt-1 text-sm text-gray-500">
+                                            You might have to reload the page to see the changes
+                                        </p>
+                                    </div>
+                                    <div className="ml-4 flex flex-shrink-0">
+                                        <button type="button" className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                        <span className="sr-only">Close</span>
+                                        <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+                                        </button>
                                     </div>
                                     </div>
                                 </div>
+                                </div>
                             </div>
-                        ));
-                    } else {
-                        toast.error("An error occured while deleting the event");
-                    }
+                        </div>
+                    ));
+                } else {
+                    toast.error("An error occured while deleting the event");
+                }
+            }
+
+            const postPromises = newSchedules.map((event: any) => {
+                return fetch(`https://api.odicylens.com/schedules`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${parsedSession?.token}`
+                    },
+                    body: JSON.stringify({
+                        startDate: event.start,
+                        endDate: event.end,
+                        onVacation: event.title === "Vacation",
+                        employee: `users/${employeeId}`,
+                        store: `stores/${employeeStore}`
+                    })
                 });
             });
 
-            Promise.all(deletePromises)
-                .then(() => {
-                    const postPromises = newSchedules.map((event: any) => {
-                        return fetch(`https://api.odicylens.com/schedules`, {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "Authorization": `Bearer ${parsedSession?.token}`
-                            },
-                            body: JSON.stringify({
-                                startDate: event.start,
-                                endDate: event.end,
-                                onVacation: event.title === "Vacation",
-                                employee: `users/${employeeId}`,
-                                store: `stores/${employeeStore.split("/")[2]}`
-                            })
-                        })
-                    });
-
-                    return Promise.all(postPromises)
-                    .then(() => {
-                        toast.custom((t) => (
-                            <div aria-live="assertive" className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6">
-                                <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
-                                    <div className="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                                    <div className="p-4">
-                                        <div className="flex items-start">
-                                        <div className="flex-shrink-0">
-                                            <CheckIcon className="w-6 h-6 text-green-400" aria-hidden="true" />
-                                        </div>
-                                        <div className="ml-3 w-0 flex-1 pt-0.5">
-                                            <p className="text-sm font-medium text-gray-900">
-                                                The events have been saved
-                                            </p>
-                                        </div>
-                                        <div className="ml-4 flex flex-shrink-0">
-                                            <button type="button" className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                            <span className="sr-only">Close</span>
-                                            <XMarkIcon className="h-5 w-5" aria-hidden="true" />
-                                            </button>
-                                        </div>
-                                        </div>
-                                    </div>
-                                    </div>
+            try {
+                await Promise.all(postPromises);
+                toast.custom((t) => (
+                    <div aria-live="assertive" className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6">
+                        <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
+                            <div className="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                            <div className="p-4">
+                                <div className="flex items-start">
+                                <div className="flex-shrink-0">
+                                    <CheckIcon className="w-6 h-6 text-green-400" aria-hidden="true" />
+                                </div>
+                                <div className="ml-3 w-0 flex-1 pt-0.5">
+                                    <p className="text-sm font-medium text-gray-900">
+                                        The events have been saved
+                                    </p>
+                                </div>
+                                <div className="ml-4 flex flex-shrink-0">
+                                    <button type="button" className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                    <span className="sr-only">Close</span>
+                                    <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+                                    </button>
+                                </div>
                                 </div>
                             </div>
-                        ))
-                    })
-                    .catch(() => {
-                        toast.error("An error occured while saving the event");
-                    });
-                })
-                .then(() => {
-                    if(scheduleToDelete.length > 0) {
-                        setScheduleToDelete([]);
-                        window.location.reload();
-                    }
-                })
-                .catch((err) => {
-                    console.error(err);
-                    toast.error("An error occured while saving the events");
-                });
+                            </div>
+                        </div>
+                    </div>
+                ))
+            } catch (err) {
+                console.error(err);
+                toast.error("An error occured while saving the event");
+            }
+
+            // Reload page if any schedules were deleted
+            if(scheduleToDelete.length > 0) {
+                setScheduleToDelete([]);
+                window.location.reload();
+            }
         }
     }
 

@@ -48,7 +48,7 @@ export default function EmployeeDetails({ params }: { params: { employeeId: stri
             }
         };
         fetchEmployees();
-    }, [employeeFetched, parsedSession, userRoles]);
+    }, [employeeFetched, params.employeeId, parsedSession, userRoles]);
 
     return (
         <section className="lg:pl-72 block min-h-screen">
@@ -102,7 +102,7 @@ export default function EmployeeDetails({ params }: { params: { employeeId: stri
                 <div className="mt-4 mx-auto bg-white dark:bg-slate-800 px-8 pt-8 pb-4 rounded-xl shadow border">
                 <EmployeeDetailsCalendar
                     employeeId={params?.employeeId}
-                    employeeStore={employee?.work ?? null}
+                    employeeStore={employee?.work.toString().split("/").pop() as string}
                 />
                 </div>
             </div>
