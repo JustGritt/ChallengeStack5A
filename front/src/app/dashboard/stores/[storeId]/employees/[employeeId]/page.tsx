@@ -1,17 +1,15 @@
 "use client";
 
-import Link from 'next/link';
-import { Company } from "@/types/Company";
+import EmployeeDetailsCalendar from "@/components/Calendar/EmployeeDetailsCalendar";
+
 import { Employee } from "@/types/User";
 import { useSelector } from 'react-redux';
 import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
 import { ShoppingBagIcon } from '@heroicons/react/24/outline'
 import { useEffect, useMemo, useState } from 'react';
-import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
-import { CheckIcon, IdentificationIcon, UserIcon, HomeModernIcon, XMarkIcon } from "@heroicons/react/20/solid";
-import EmployeeDetailsCalendar from "@/components/Calendar/EmployeeDetailsCalendar";
-import { parse } from 'path';
+import { selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
+import { CheckIcon, IdentificationIcon, UserIcon, XMarkIcon } from "@heroicons/react/20/solid";
 
 export default function EmployeeDetails({ params }: { params: { employeeId: string } }) {
 
@@ -54,11 +52,11 @@ export default function EmployeeDetails({ params }: { params: { employeeId: stri
         <section className="lg:pl-72 block min-h-screen">
             <div className="p-4 sm:p-6 lg:p-8 h-full">
                 <div className="mx-auto bg-white dark:bg-slate-800 px-8 pt-8 pb-4 rounded-xl shadow border">
-                    <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">
+                    <h2 className="text-center text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">
                         Employee details
                     </h2>
 
-                    <div className="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0">
+                    <div className="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0 pb-6">
                         <div className="flex justify-center items-center flex-col">
                             <div className="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
                                 <UserIcon className="w-5 h-5 text-primary-600 lg:w-6 lg:h-6 dark:text-primary-300" />
@@ -93,17 +91,14 @@ export default function EmployeeDetails({ params }: { params: { employeeId: stri
                                         <XMarkIcon className="w-5 h-5 mr-1" />
                                         Not validated
                                     </span>
-                            )}
+                                )}
                             </p>
                         </div>
                     </div>
                 </div>
 
                 <div className="mt-4 mx-auto bg-white dark:bg-slate-800 px-8 pt-8 pb-4 rounded-xl shadow border">
-                <EmployeeDetailsCalendar
-                    employeeId={params?.employeeId}
-                    employeeStore={employee?.work.toString().split("/").pop() as string}
-                />
+                <EmployeeDetailsCalendar employeeId={params?.employeeId} employeeStore={employee?.work.toString().split("/").pop() as string} />
                 </div>
             </div>
         </section>
