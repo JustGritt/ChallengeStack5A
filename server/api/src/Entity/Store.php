@@ -20,6 +20,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Controller\AdminDashboardStats;
 use ApiPlatform\Metadata\Link;
 use App\State\StoreStateProvider;
+use App\Controller\StoreFreeTime;
 
 #[ApiResource(
     operations: [
@@ -41,6 +42,14 @@ use App\State\StoreStateProvider;
     ],
 )]
 #[ApiFilter(SearchFilter::class, properties: ['name' => 'ipartial', 'address' => 'ipartial', 'postalCode' => 'ipartial', 'country' => 'ipartial', 'city' => 'ipartial', 'services.name' => 'ipartial'])]
+#[ApiResource(
+    operations: [
+         new Get(
+            uriTemplate: '/stores/{id}/free-time', 
+            controller: StoreFreeTime::class, 
+         ) 
+    ],
+)]
 #[ORM\Entity(repositoryClass: StoreRepository::class)]
 class Store
 {

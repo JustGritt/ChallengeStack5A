@@ -17,6 +17,22 @@ export type User = {
     companie?: Company
 }
 
+export type CompanyRequestType = {
+    name: string,
+    kbis: string,
+    rcs: string,
+    capital: number,
+    adresse: string,
+    structure: string,
+    registrationDate: Date,
+    firstname: string,
+    lastname: string,
+    birthday: Date,
+    birthdayPlace: string,
+    ownerAdresse: string,
+    endDuration: Date,
+}
+
 export enum UserCookieType {
     SESSION = "session",
 }

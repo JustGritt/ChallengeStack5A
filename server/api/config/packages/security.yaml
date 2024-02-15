@@ -47,6 +47,7 @@ security:
         - { path: ^/users/\d+/schedules, roles: PUBLIC_ACCESS, methods: GET }
         - { path: ^/stores/\d+/services, roles: PUBLIC_ACCESS, methods: GET }
         - { path: ^/employee/\d+/bookings, roles: PUBLIC_ACCESS, methods: GET }
+        - { path: ^/service/\d+/reviews, roles: PUBLIC_ACCESS, methods: GET }
         - { path: '^/users/token/.+$', roles: PUBLIC_ACCESS }
         - { path: ^/$, roles: PUBLIC_ACCESS }
         - { path: '^/forgot_password', roles: PUBLIC_ACCESS }
