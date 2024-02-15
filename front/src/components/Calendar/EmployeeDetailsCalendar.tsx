@@ -1,22 +1,19 @@
+import toast from "react-hot-toast";
 import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction';
 
-import toast from "react-hot-toast";
-import timeGridPlugin from '@fullcalendar/timegrid'
 import { Button } from '@/components/Ui/Button';
 import { useSelector } from 'react-redux';
 import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
+import { CheckIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import { useEffect, useMemo, useState } from 'react';
 import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
-import { useRouter } from "next/navigation";
-import { CheckIcon, XMarkIcon } from '@heroicons/react/20/solid';
 
-export default function EmployeeCalendar() {
-    const router = useRouter();
+export default function EmployeeDetailsCalendar({ employeeId, employeeStore }: { employeeId: string, employeeStore: string }) {
+
     const [newSchedules, setNewSchedules] = useState<any[]>([]);
-
     const [scheduleFetched, setScheduleFetched] = useState(false);
     const [schedules, setSchedules] = useState([]);
     const [scheduleToDelete, setScheduleToDelete] = useState<string[]>([]);
@@ -37,8 +34,11 @@ export default function EmployeeCalendar() {
 
     useEffect(() => {
         if (user && !scheduleFetched) {
-            fetch(`https://api.odicylens.com/users/${user?.id}/schedules`, {
+            fetch(`https://api.odicylens.com/users/${employeeId}/schedules`, {
                 method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${parsedSession?.token}`
+                }
             })
                 .then((res) => res.json())
                 .then((data) => {
@@ -47,22 +47,21 @@ export default function EmployeeCalendar() {
                         start: event.startDate,
                         end: event.endDate,
                         extendedProps: { scheduleId: event.id },
-                        // Yellow if the user is on vacation, red if the user has refused: true
                         backgroundColor: event.onVacation ? "#6a994e" : event.refused ? "#c1121f" : null
                     }));
                     setSchedules(events);
                 })
             setScheduleFetched(true);
         }
-    }, [scheduleFetched, user]);
+    }, [employeeId, parsedSession?.token, scheduleFetched, user]);
 
     const [bookings, setBookings] = useState<any[]>([]);
     const [bookingsFetched, setBookingsFetched] = useState(false);
 
     // Get the bookings
     useEffect(() => {
-        if (user && !bookingsFetched) {
-            fetch(`https://api.odicylens.com/employee/${user?.id}/bookings`, {
+        if (user && !bookingsFetched && employeeId) {
+            fetch(`https://api.odicylens.com/employee/${employeeId}/bookings`, {
                 method: "GET",
             })
                 .then((res) => res.json())
@@ -78,21 +77,15 @@ export default function EmployeeCalendar() {
                     }));
                     setBookings(bookingEvents);
                 })
-                setBookingsFetched(true);
+            setBookingsFetched(true);
         }
-    }, [bookingsFetched, user]);
+    }, [bookingsFetched, user, employeeId]);
 
     const handleDateSelect = (arg: any) => {
         const eventCategory = document.getElementById('selectedEvent') as HTMLSelectElement;
         const title = eventCategory.value;
         const calendarApi = arg.view.calendar;
         calendarApi.unselect();
-
-        // If the date is in the past, prevent the user from adding a new one
-        if(arg.start < new Date()) {
-            toast.error("You can't add an event in the past");
-            return;
-        }
 
         // If there are events at the same time, prevent the user from adding a new one
         if(calendarApi.getEvents().some((event: any) => { return (arg.start >= event.start && arg.start <= event.end) || (arg.end >= event.start && arg.end <= event.end) })) {
@@ -126,20 +119,15 @@ export default function EmployeeCalendar() {
                 allDay: arg.allDay
             });
 
-            newSchedules.push({
+            setNewSchedules([...newSchedules, {
                 title,
                 start: arg.start.toISOString().replace('T', ' ').replace('Z', '').split('.')[0],
                 end: arg.end.toISOString().replace('T', ' ').replace('Z', '').split('.')[0]
-            });
+            }]);
         }
     }
 
     const handleRemoveEvent = (arg: any) => {
-        if(arg.event.start < new Date()) {
-            toast.error("You can't delete a past schedule");
-            return;
-        }
-
         if(arg.event.title === "Booking") {
             toast.error("You can't delete a booking event");
             return;
@@ -179,7 +167,7 @@ export default function EmployeeCalendar() {
 
     // Save events as Worker
     const saveEvents = () => {
-        if(userRoles.includes("isWorker")) {
+        if(userRoles.includes("isOwner")) {
             const deletePromises = scheduleToDelete.map((id: any) => {
                 return fetch(`https://api.odicylens.com/schedules/${id}`, {
                     method: "DELETE",
@@ -226,12 +214,6 @@ export default function EmployeeCalendar() {
 
             Promise.all(deletePromises)
                 .then(() => {
-                    // If a schedule is set before 9am or after 7pm, prevent the user from saving the events
-                    if(newSchedules.some((event: any) => new Date(event.start).getHours() < 9 || new Date(event.end).getHours() > 19)) {
-                        toast.error("You can't work before 9am or after 7pm");
-                        return;
-                    }
-
                     const postPromises = newSchedules.map((event: any) => {
                         return fetch(`https://api.odicylens.com/schedules`, {
                             method: "POST",
@@ -243,8 +225,8 @@ export default function EmployeeCalendar() {
                                 startDate: event.start,
                                 endDate: event.end,
                                 onVacation: event.title === "Vacation",
-                                employee: `users/${user?.id}`,
-                                store: `stores/${user?.work?.id}`
+                                employee: `users/${employeeId}`,
+                                store: `stores/${employeeStore.split("/")[2]}`
                             })
                         })
                     });
@@ -298,7 +280,7 @@ export default function EmployeeCalendar() {
     return (
         <div className="lg:flex lg:h-full lg:flex-col">
             <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">
-                Your schedule
+                Employee schedule
             </h2>
             <div className="flex justify-center items-center mb-8">
                 <select id="selectedEvent" className="flex-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">

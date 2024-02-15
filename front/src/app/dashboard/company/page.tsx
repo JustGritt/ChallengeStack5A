@@ -1,6 +1,5 @@
 "use client";
 
-
 import Link from 'next/link';
 import { Company } from "@/types/Company";
 import { Employee } from "@/types/User";

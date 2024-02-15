@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
-
+import Link from "next/link";
 export default function StoreCalendar() {
 
     const [schedules, setSchedules] = useState([]);
@@ -63,7 +63,6 @@ export default function StoreCalendar() {
         })
             .then((res) => res.json())
             .then((data) => {
-                console.log("events: ", data["hydra:member"]);
                 setSchedules(data["hydra:member"]);
             })
     }
@@ -73,7 +72,6 @@ export default function StoreCalendar() {
         setSelectedStore(selectedStore.value);
 
         if(selectedStore.value !== "") {
-            console.log("selectedStore.value: ", selectedStore.value)
             fetchCompanySchedules(selectedStore.value);
         }
     }
@@ -87,8 +85,6 @@ export default function StoreCalendar() {
     }
 
     const cancelVacation = (scheduleId: string) => {
-        // PATCH /schedules/{id} and inform the user that the vacation has been canceled
-        console.log(scheduleId);
         fetch(`https://api.odicylens.com/schedules/${scheduleId}`, {
             method: "PATCH",
             headers: {
@@ -102,10 +98,11 @@ export default function StoreCalendar() {
         })
             .then((res) => res.json())
             .then((data) => {
-                console.log("events: ", data);
-                // setSchedules(data["hydra:member"]);
+                setSchedules(data["hydra:member"]);
             })
     }
+
+    console.log(schedules)
 
     return (
         <div className="lg:flex lg:h-full lg:flex-col">
@@ -161,19 +158,19 @@ export default function StoreCalendar() {
                                 <table className="min-w-full divide-y divide-gray-300">
                                     <thead className="bg-gray-50">
                                         <tr>
-                                            <th scope="col" className="py-4 px-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                                            <th scope="col" className="py-4 px-3 text-center text-sm font-semibold text-gray-900 sm:pl-6">
                                                 Type
                                             </th>
-                                            <th scope="col" className="py-4 px-3 text-left text-sm font-semibold text-gray-900">
+                                            <th scope="col" className="py-4 px-3 text-center text-sm font-semibold text-gray-900">
                                                 Name
                                             </th>
-                                            <th scope="col" className="py-4 px-3 text-left text-sm font-semibold text-gray-900">
+                                            <th scope="col" className="py-4 px-3 text-center text-sm font-semibold text-gray-900">
                                                 Start
                                             </th>
-                                            <th scope="col" className="py-4 px-3  text-left text-sm font-semibold text-gray-900">
+                                            <th scope="col" className="py-4 px-3 text-center text-sm font-semibold text-gray-900">
                                                 End
                                             </th>
-                                            <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                            <th scope="col" className="text-center relative py-3.5 pl-3 pr-4 sm:pr-6">
                                                 <span className="sr-only">Edit</span>
                                             </th>
                                         </tr>
@@ -183,19 +180,19 @@ export default function StoreCalendar() {
                                             schedules.filter((schedule: any) => schedule.onVacation).length > 0 ? (
                                                 schedules.filter((schedule: any) => schedule.onVacation).map((schedule: any) => (
                                                     <tr key={schedule.id}>
-                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                        <td className="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                             <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-700 ring-1 ring-inset ring-yellow-600/20">Vacation</span>
                                                         </td>
-                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                        <td className="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                             {schedule.employee.email}
                                                         </td>
-                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                        <td className="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                             {schedule.startDate.replace("T", " ").split("+")[0]}
                                                         </td>
-                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                        <td className="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                             {schedule.endDate.replace("T", " ").split("+")[0]}
                                                         </td>
-                                                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                                        <td className="text-center relative whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
                                                             <Button intent="delete" onClick={() => cancelVacation(schedule.id)}>
                                                                 Cancel
                                                             </Button>
@@ -216,17 +213,20 @@ export default function StoreCalendar() {
                                 <table className="min-w-full divide-y divide-gray-300 mt-4">
                                     <thead className="bg-gray-50">
                                         <tr>
-                                            <th scope="col" className="py-4 px-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                                            <th scope="col" className="py-4 px-3 text-center text-sm font-semibold text-gray-900 sm:pl-6">
                                                 Type
                                             </th>
-                                            <th scope="col" className="py-4 px-3 text-left text-sm font-semibold text-gray-900">
+                                            <th scope="col" className="py-4 px-3 text-center text-sm font-semibold text-gray-900">
                                                 Name
                                             </th>
-                                            <th scope="col" className="py-4 px-3 text-left text-sm font-semibold text-gray-900">
+                                            <th scope="col" className="py-4 px-3 text-center text-sm font-semibold text-gray-900">
                                                 Start
                                             </th>
-                                            <th scope="col" className="py-4 px-3  text-left text-sm font-semibold text-gray-900">
+                                            <th scope="col" className="py-4 px-3 text-center text-sm font-semibold text-gray-900">
                                                 End
+                                            </th>
+                                            <th scope="col" className="py-4 px-3 text-center text-sm font-semibold text-gray-900">
+                                                More details
                                             </th>
                                         </tr>
                                     </thead>
@@ -237,17 +237,22 @@ export default function StoreCalendar() {
                                                     .filter((schedule: any) => !schedule.onVacation)
                                                     .map((schedule: any) => (
                                                         <tr key={schedule.id}>
-                                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                            <td className="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                                 <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Working</span>
                                                             </td>
-                                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                            <td className="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                                 {schedule.employee.email}
                                                             </td>
-                                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                            <td className="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                                 {schedule.startDate.replace("T", " ").split("+")[0]}
                                                             </td>
-                                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                            <td className="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                                 {schedule.endDate.replace("T", " ").split("+")[0]}
+                                                            </td>
+                                                            <td className="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                                <Link href={`/dashboard/${schedule.store}/employees/${schedule.employee.id}`} className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                                                                    Details
+                                                                </Link>
                                                             </td>
                                                         </tr>
                                                     ))
@@ -262,6 +267,7 @@ export default function StoreCalendar() {
                                     </tbody>
                                 </table>
                             </div>
+
                         </div>
                     </div>
                 </div>

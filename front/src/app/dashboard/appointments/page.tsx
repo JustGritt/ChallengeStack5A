@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
 
 import UserCalendar from "@/components/Calendar/EmployeeCalendar";
-import StoreCalendar from "@/components/Calendar/StoreCalendar";
+import EmployeeTableCalendar from "@/components/Calendar/EmployeeTableCalendar";
 import ClientCalendar from "@/components/Calendar/ClientCalendar";
 
 export default function Page() {
@@ -20,7 +20,7 @@ export default function Page() {
                     {
                         userRoles.includes("isOwner") && (
                             <div className="lg:flex lg:h-full lg:flex-col">
-                                <StoreCalendar />
+                                <EmployeeTableCalendar />
                             </div>
                         )
                     }

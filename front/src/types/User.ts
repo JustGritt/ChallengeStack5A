@@ -57,5 +57,6 @@ export type Employee = {
     email: string,
     firstname: string,
     work: Store,
-    company: Company
+    company: Company,
+    isValid: boolean,
 }
