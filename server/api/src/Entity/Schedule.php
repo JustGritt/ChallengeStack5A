@@ -17,6 +17,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use App\State\ScheduleStateProcessor;
+use Symfony\Component\Validator\Context\ExecutionContext;
 
 #[ORM\Entity(repositoryClass: ScheduleRepository::class)]
 #[ApiResource(
@@ -67,7 +68,7 @@ class Schedule
      */
     #[Assert\Type("\DateTimeInterface")]
     #[Assert\GreaterThan(propertyPath: 'startDate', message: 'The end date must be after the start date')]
-    #[Assert\LessThanOrEqual('19:00:00', message: 'The end date must be before 19:00')]
+    #[Assert\Callback(callback: [self::class, 'validateEndDate'])]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\Column]
@@ -165,6 +166,18 @@ class Schedule
         $this->refused = $refused;
 
         return $this;
+    }
+
+    public static function validateEndDate($value, ExecutionContext $context): void
+    {
+        if ($value instanceof \DateTimeInterface) {
+            $endTime = $value->format('H:i:s');
+
+            if ($endTime > '19:00:00') {
+                $context->buildViolation('The end date must be before 19:00')
+                    ->addViolation();
+            }
+        }
     }
 
 }
