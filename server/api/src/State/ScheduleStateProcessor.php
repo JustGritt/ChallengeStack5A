@@ -92,8 +92,9 @@ class ScheduleStateProcessor implements ProcessorInterface
                 throw new AccessDeniedException('You cannot create a new schedule. THis employee does not belong to this company.');
             }
 
-            if (null !== $work && $data->getStore()->getId() === $work->getId()) {
+            if (null !== $work) {
                 $data->setEmployee($user);
+                $data->setStore($work);
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
 

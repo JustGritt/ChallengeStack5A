@@ -55,6 +55,8 @@ class Schedule
     #[Assert\NotNull]
     #[Groups(['schedule-read', 'schedule-mutation'])]
     #[Assert\Type("\DateTimeInterface")]
+    //should be a date string in the "Y-m-d H:i:s" and must be grater or equal to 9:00 and less than 18:00
+    #[Assert\GreaterThanOrEqual('09:00:00', message: 'The start date must be after 9:00')]
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -65,6 +67,7 @@ class Schedule
      */
     #[Assert\Type("\DateTimeInterface")]
     #[Assert\GreaterThan(propertyPath: 'startDate', message: 'The end date must be after the start date')]
+    #[Assert\LessThanOrEqual('19:00:00', message: 'The end date must be before 19:00')]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\Column]
