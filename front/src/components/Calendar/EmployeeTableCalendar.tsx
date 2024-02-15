@@ -3,7 +3,7 @@ import { Button } from '@/components/Ui/Button';
 import { useSelector } from 'react-redux';
 import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
@@ -11,10 +11,7 @@ import Link from "next/link";
 export default function StoreCalendar() {
 
     const [schedules, setSchedules] = useState([]);
-
     const user: any = useSelector(selectCurrentUser);
-    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
-    const userRoles = useMemo(() => Object.keys(userConfig || {}).filter(role => userConfig[role]), [userConfig]);
 
     // Get session
     const [parsedSession, setParsedSession] = useState<any>({});
@@ -28,9 +25,7 @@ export default function StoreCalendar() {
 
     const [stores, setStores] = useState([]);
     const [storeFetched, setStoreFetched] = useState(false);
-    const [selectedStore, setSelectedStore] = useState("");
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
-
 
     // Get all stores
     useEffect(() => {
@@ -69,7 +64,6 @@ export default function StoreCalendar() {
 
     const handleStoreSelect = () => {
         const selectedStore = document.getElementById('selectedStore') as HTMLSelectElement;
-        setSelectedStore(selectedStore.value);
 
         if(selectedStore.value !== "") {
             fetchCompanySchedules(selectedStore.value);
@@ -101,8 +95,6 @@ export default function StoreCalendar() {
                 setSchedules(data["hydra:member"]);
             })
     }
-
-    console.log(schedules)
 
     return (
         <div className="lg:flex lg:h-full lg:flex-col">
@@ -177,7 +169,7 @@ export default function StoreCalendar() {
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 bg-white">
                                         {
-                                            schedules.filter((schedule: any) => schedule.onVacation).length > 0 ? (
+                                            schedules && schedules.filter((schedule: any) => schedule.onVacation).length > 0 ? (
                                                 schedules.filter((schedule: any) => schedule.onVacation).map((schedule: any) => (
                                                     <tr key={schedule.id}>
                                                         <td className="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500">
@@ -232,9 +224,8 @@ export default function StoreCalendar() {
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 bg-white">
                                         {
-                                            schedules.length > 0 ? (
-                                                schedules
-                                                    .filter((schedule: any) => !schedule.onVacation)
+                                            schedules && schedules.length > 0 ? (
+                                                schedules.filter((schedule: any) => !schedule.onVacation)
                                                     .map((schedule: any) => (
                                                         <tr key={schedule.id}>
                                                             <td className="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500">

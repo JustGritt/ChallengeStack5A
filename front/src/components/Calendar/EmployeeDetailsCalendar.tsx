@@ -272,41 +272,63 @@ export default function EmployeeDetailsCalendar({ employeeId, employeeStore }: {
 
     return (
         <div className="lg:flex lg:h-full lg:flex-col">
-            <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">
+            <h2 className="text-center text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">
                 Employee schedule
             </h2>
-            <div className="flex justify-center items-center mb-8">
-                <select id="selectedEvent" className="flex-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <option defaultValue="work">Work</option>
-                    <option defaultValue="vacation">Vacation</option>
-                </select>
+            {
+                userRoles.includes("isOwner") ? (
+                    <section>
+                        <div className="flex justify-center items-center mb-8">
+                            <select id="selectedEvent" className="flex-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option defaultValue="work">Work</option>
+                                <option defaultValue="vacation">Vacation</option>
+                            </select>
 
-                <Button onClick={() => saveEvents()} className="flex-none flex-2 ml-4">
-                    Save events
-                </Button>
-            </div>
+                            <Button onClick={() => saveEvents()} className="flex-none flex-2 ml-4">
+                                Save events
+                            </Button>
+                        </div>
 
-            <FullCalendar
-                plugins={[ timeGridPlugin, interactionPlugin ]}
-                initialView="timeGridWeek"
-                timeZone='UTC+1'
-                selectable={true}
-                allDaySlot={false}
-                nowIndicator={true}
-                selectMirror={true}
-                selectOverlap={true}
-                eventOverlap={false}
-                slotMinTime="07:00:00"
-                slotMaxTime="21:00:00"
-                businessHours={{
-                    daysOfWeek: [ 0, 1, 2, 3, 4, 5, 6 ],
-                    startTime: '09:00',
-                    endTime: '19:00'
-                }}
-                events={(schedules as any[]).concat(bookings as any[])}
-                select={handleDateSelect}
-                eventClick={handleRemoveEvent}
-            />
+                        <FullCalendar
+                            plugins={[ timeGridPlugin, interactionPlugin ]}
+                            initialView="timeGridWeek"
+                            timeZone='UTC+1'
+                            selectable={true}
+                            allDaySlot={false}
+                            nowIndicator={true}
+                            selectMirror={true}
+                            selectOverlap={true}
+                            eventOverlap={false}
+                            slotMinTime="07:00:00"
+                            slotMaxTime="21:00:00"
+                            businessHours={{
+                                daysOfWeek: [ 0, 1, 2, 3, 4, 5, 6 ],
+                                startTime: '09:00',
+                                endTime: '19:00'
+                            }}
+                            events={(schedules as any[]).concat(bookings as any[])}
+                            select={handleDateSelect}
+                            eventClick={handleRemoveEvent}
+                        />
+                    </section>
+                ) : (
+                    <FullCalendar
+                        plugins={[ timeGridPlugin, interactionPlugin ]}
+                        initialView="timeGridWeek"
+                        timeZone='UTC+1'
+                        allDaySlot={false}
+                        eventOverlap={false}
+                        slotMinTime="07:00:00"
+                        slotMaxTime="21:00:00"
+                        businessHours={{
+                            daysOfWeek: [ 0, 1, 2, 3, 4, 5, 6 ],
+                            startTime: '09:00',
+                            endTime: '19:00'
+                        }}
+                        events={(schedules as any[]).concat(bookings as any[])}
+                    />
+                )
+            }
         </div>
     )
 }
