@@ -89,7 +89,13 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ amount: 100 })
+      body: JSON.stringify({
+        employee: "employee",
+        service: "service",
+        startDate: "startDate",
+        amount: 100,
+        serviceName: "serviceName",
+      })
     }).then((res) => res.json());
     const stripe = await stripePromise;
     const { error } = await stripe!.redirectToCheckout({

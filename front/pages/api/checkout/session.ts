@@ -6,7 +6,7 @@ const stripe = new Stripe('sk_test_51OMwURF9MmQfZRp33UMVAUgs2HEXTcvvacO67SkCBNNQ
 });
 
 const checkout = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { employee, service, startDate, amount, serviceName } = req.body
+  const { employee, service, startDate, amount, serviceName, email } = req.body
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     metadata: {
@@ -15,6 +15,7 @@ const checkout = async (req: NextApiRequest, res: NextApiResponse) => {
       startDate,
       amount,
     },
+    customer_email: email,
     line_items: [{
       price_data: {
         currency: 'eur',
@@ -27,7 +28,7 @@ const checkout = async (req: NextApiRequest, res: NextApiResponse) => {
     }],
     mode: 'payment',
     success_url: `${req.headers.origin}/result?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${req.headers.origin}/checkout`,
+    cancel_url: `${req.headers.origin}/result?session_id={CHECKOUT_SESSION_ID}`,
   })
   res.status(200).json({ sessionId: session.id });
 }
