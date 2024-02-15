@@ -85,7 +85,7 @@ class ScheduleStateProcessor implements ProcessorInterface
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
 
-            if (null !== $companie && $data->getStore()->getCompany()->getId() === $companie->getId() && $companie->isIsValid() === true) {
+            if (null !== $companie && null !== $data->getStore() && $data->getStore()->getCompany()->getId() === $companie->getId() && $companie->isIsValid() === true) {
                 if (null !== $data->getEmployee()->getWork() && $data->getEmployee()->getWork()->getCompany()->getId() === $data->getStore()->getCompany()->getId()) {
                     return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
                 }
