@@ -85,15 +85,16 @@ class ScheduleStateProcessor implements ProcessorInterface
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
 
-            if (null !== $companie && $data->getStore()->getCompany()->getId() === $companie->getId() && $companie->isIsValid() === true) {
+            if (null !== $companie && null !== $data->getStore() && $data->getStore()->getCompany()->getId() === $companie->getId() && $companie->isIsValid() === true) {
                 if (null !== $data->getEmployee()->getWork() && $data->getEmployee()->getWork()->getCompany()->getId() === $data->getStore()->getCompany()->getId()) {
                     return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
                 }
                 throw new AccessDeniedException('You cannot create a new schedule. THis employee does not belong to this company.');
             }
 
-            if (null !== $work && $data->getStore()->getId() === $work->getId()) {
+            if (null !== $work) {
                 $data->setEmployee($user);
+                $data->setStore($work);
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
 

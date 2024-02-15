@@ -1,7 +1,7 @@
 import api from "./api";
 import { ApiSuccessBase } from "@/types/ApiBase";
 import { LoginResponse } from "@/types/Auth";
-import { User, UserCookieType, UserRegister } from "@/types/User";
+import { CompanyRequestType, User, UserCookieType, UserRegister } from "@/types/User";
 import { setCredentials } from "./slices/authSlice";
 import { getUserCookie, setUserCookie } from "../helpers/UserHelper";
 
@@ -35,12 +35,13 @@ export const authApi = api.injectEndpoints({
         body: user,
       }),
     }),
-    becomeAffiliate: build.mutation<{ kbis: string, name: string }, Record<"kbis" | "name", string>>({
-      query: ({ kbis, name }) => ({
+    becomeAffiliate: build.mutation<ApiSuccessBase<any>, CompanyRequestType>({
+      query: (Company) => ({
         url: "/companies",
         method: "POST",
-        body: { kbis, name }
+        body: Company,
       }),
+      invalidatesTags: ["Me"],
     }),
     validateEmailToken: build.mutation<ApiSuccessBase<any>, Record<"token", string>>({
       query: (token) => ({

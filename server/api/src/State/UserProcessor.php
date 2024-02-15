@@ -53,7 +53,6 @@ final class UserProcessor implements ProcessorInterface
         
             throw new AccessDeniedException('Cannot create this user.');
         }
-
     
         if ($operation->getUriTemplate() === '/users/{id}{._format}' && $operation->getMethod() === 'PATCH') {
             $user = $this->security->getUser();

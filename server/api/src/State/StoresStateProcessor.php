@@ -59,6 +59,9 @@ class StoresStateProcessor implements ProcessorInterface
             }
             //check if the user is admin of the company
             if (null !== $user->getCompanie() && $user->getCompanie()->getId() === $data->getCompany()->getId()) {
+                if ($data->getUsers() !== null && $data->getUsers()->contains($user)) {
+                    throw new AccessDeniedException('You cannot add yourself to the store.');
+                }
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
             }
             throw new AccessDeniedException('Cannot update this store.');
@@ -70,6 +73,9 @@ class StoresStateProcessor implements ProcessorInterface
             if (null !== $user->getCompanie() && $user->getCompanie()->getId()) {
                 if ($user->getCompanie()->isIsValid() === false) {
                     throw new AccessDeniedException('You need to wait for the validation of your company.');
+                }
+                if ($data->getUsers() !== null && $data->getUsers()->contains($user)) {
+                    throw new AccessDeniedException('You cannot add yourself to the store.');
                 }
                 $data->setCompany($user->getCompanie());
                 return $this->persistProcessor->process($data, $operation, $uriVariables, $context);

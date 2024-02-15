@@ -19,6 +19,7 @@ use App\State\UserProcessor;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use Symfony\Component\Validator\Constraints\PasswordStrength;
+use App\Validator\PasswordPutGroupsGenerator;
 
 #[ApiResource(
     operations: [
@@ -30,13 +31,12 @@ use Symfony\Component\Validator\Constraints\PasswordStrength;
     normalizationContext: ['groups' => ['read-user', 'read-user-mutation']],
     processor: UserProcessor::class,
 )]
-
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[Groups(['read-user-mutation', 'read-companie', 'store-read-full'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read-full', 'schedule-read'])]
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue]
@@ -66,13 +66,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Groups(['create-user', 'update-user'])]
-    #[Assert\NotBlank()]
     #[Assert\Length(min: 6, max: 255)]
-    #[Assert\PasswordStrength([
-        'minScore' => PasswordStrength::STRENGTH_MEDIUM,
-        'message' => 'Your password is too easy to guess. Company\'s security policy requires to use a stronger password.'
-    ])]
-    private string $plainPassword = '';
+    private ?string $plainPassword = null;
 
     #[Groups(['read-user',  'update-user', 'read-user-mutation'])]
     #[ORM\Column(nullable: true)]
@@ -92,10 +87,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Booking::class)]
     private Collection $bookings;
 
+    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Review::class)]
+    private Collection $reviews;
+
     public function __construct()
     {
         $this->schedules = new ArrayCollection();
         $this->bookings = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     
@@ -181,12 +180,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPlainPassword(): string
+    public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
 
-    public function setPlainPassword(string $plainPassword): void
+    public function setPlainPassword(?string $plainPassword): void
     {
         $this->plainPassword = $plainPassword;
         $this->password = $plainPassword;
@@ -287,6 +286,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($booking->getCustomer() === $this) {
                 $booking->setCustomer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): static
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setCustomer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): static
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getCustomer() === $this) {
+                $review->setCustomer(null);
             }
         }
 
