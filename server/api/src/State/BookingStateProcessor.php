@@ -44,7 +44,11 @@ class BookingStateProcessor implements ProcessorInterface
             }
 
             if (null !== $user && null !== $user->getWork()) {
-                throw new AccessDeniedException('Sorry you cannot book a service because you are an employee.');
+                throw new AccessDeniedException('Sorry you cannot book a service, we currently do not support booking for employees.');
+            }
+
+            if (null !== $user && null !== $user->getCompanie()) {
+                throw new AccessDeniedException('Sorry you cannot book a service, we currently do not support booking for companies owners.');
             }
 
             //round to the nearest 30 minutes e.g 10:15 => 10:00 and 10:45 => 11:00
