@@ -38,7 +38,9 @@ class StoreFreeTime extends AbstractController
 
             foreach ($bookings as $booking) {
                 $newTimeSlots = [];
-
+                if ($booking->getEmployee() !== $schedule->getEmployee()) {
+                    continue;
+                }
                 foreach ($timeSlots as $timeSlot) {
                     // Check if the booking overlaps with the current time slot
                     if ($booking->getEndDate() > $timeSlot['startDate'] && $booking->getStartDate() < $timeSlot['endDate']) {
@@ -54,7 +56,7 @@ class StoreFreeTime extends AbstractController
                         $newTimeSlots[] = $timeSlot;
                     }
                 }
-                // Update the time slots array with the newly created time slots
+                // Do not update the original $timeSlots array here, collect the new time slots separately
                 $timeSlots = $newTimeSlots;
             }
 
@@ -65,4 +67,5 @@ class StoreFreeTime extends AbstractController
         return $this->json($availableTimeSlots, 200, [], ['groups' => 'schedule-read']);
     }
 
+    
 }
