@@ -11,15 +11,14 @@ import Link from "next/link";
 export default function StoreCalendar() {
 
     const [schedules, setSchedules] = useState([]);
-    const user: any = useSelector(selectCurrentUser);
+    const user = useSelector(selectCurrentUser);
 
     // Get session
-    const [parsedSession, setParsedSession] = useState<any>({});
+    const [parsedToken, setParsedSession] = useState<undefined| string>();
     useEffect(() => {
         (async () => {
             const session = await getUserCookie(UserCookieType.SESSION);
-            const parsedSession = JSON.parse(session?.value || "{}");
-            setParsedSession(parsedSession);
+            setParsedSession(session?.token);
         })();
     }, [])
 
@@ -29,11 +28,11 @@ export default function StoreCalendar() {
 
     // Get all stores
     useEffect(() => {
-        if (user && !storeFetched && parsedSession.token) {
+        if (user && !storeFetched && parsedToken) {
             fetch(`${process.env.NEXT_PUBLIC_API_URL}/companies/${user?.companie?.id}`, {
                 method: "GET",
                 headers: {
-                    "Authorization": `Bearer ${parsedSession.token}`
+                    "Authorization": `Bearer ${parsedToken}`
                 }
             })
                 .then((res) => res.json())
@@ -42,7 +41,7 @@ export default function StoreCalendar() {
                 })
                 setStoreFetched(true);
         }
-    }, [storeFetched, user, parsedSession]);
+    }, [storeFetched, user, parsedToken]);
 
     useEffect(() => {
         handleStoreSelect();
@@ -53,7 +52,7 @@ export default function StoreCalendar() {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/stores/${storeId}/schedules?startDate%5Bafter%5D=${selectedDate}&endDate%5Bbefore%5D=${nextDateValue}`, {
             method: "GET",
             headers: {
-                "Authorization": `Bearer ${parsedSession.token}`
+                "Authorization": `Bearer ${parsedToken}`
             }
         })
             .then((res) => res.json())
@@ -83,7 +82,7 @@ export default function StoreCalendar() {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/merge-patch+json",
-                "Authorization": `Bearer ${parsedSession.token}`
+                "Authorization": `Bearer ${parsedToken}`
             },
             body: JSON.stringify({
                 onVacation: false,

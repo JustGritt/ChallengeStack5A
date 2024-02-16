@@ -71,55 +71,22 @@ export const getWorkinHours = (date: string) => {
     })
 }
 
-export const findAvailableEmployees = (date: string, vacationSchedules: ScheduleAvailable[], workingSchedules: ScheduleAvailable[]): Pick<User, "email" | "id">[] => {
 
-    // Filter schedules that are outside the given date range
-    const filteredVacationSchedules = filterSchedulesInsideRange(new Date(date), vacationSchedules);
-    const filteredWorkingSchedules = filterSchedulesInsideRange(new Date(date), workingSchedules);
-
-    // Find common employees between vacation and working schedules
-    const filteredSchedules = findNonOverlappingSchedules(filteredVacationSchedules, filteredWorkingSchedules);
-    const availableEmployees = filteredSchedules.map(schedule => schedule.employee);
-
-
-
-    return availableEmployees;
-};
-
-
-
-export const filterSchedulesInsideRange = (date: Date, schedules: ScheduleAvailable[]): ScheduleAvailable[] => {
+export const filterSchedulesInsideRange = (date: Date, schedules: ScheduleAvailable[], serviceTime: number): ScheduleAvailable[] => {
     // Convert date string to Date object
     const dateTime = moment(date.getTime()).utc(true).toDate();
-
     // Filter schedules that are inside the given date range
     const filteredSchedules = schedules.filter(schedule => {
         const scheduleStartTime = moment(schedule.startDate).utc(true).toDate();
         const scheduleEndTime = moment(schedule.endDate).utc(true).toDate();
-        return dateTime.getTime() >= scheduleStartTime.getTime() && dateTime.getTime() <= scheduleEndTime.getTime();
+        console.log((scheduleEndTime.getTime() / 3600000) >= (serviceTime * 1000));
+        return dateTime.getTime() >= scheduleStartTime.getTime() && dateTime.getTime() <= scheduleEndTime.getTime() && (Math.abs(scheduleStartTime.getTime() - scheduleEndTime.getTime()) / 3600000) >= (serviceTime * 1000);
     });
 
     return filteredSchedules;
 };
 
-export const findAvailableEmployees_ = (date: string, vacationSchedules: ScheduleAvailable[], workingSchedules: ScheduleAvailable[]): Pick<User, "id">[] => {
-    // Filter schedules that are outside the given date range
-    const filteredVacationSchedules = filterSchedulesInsideRange(new Date(date), vacationSchedules);
-    const filteredWorkingSchedules = filterSchedulesInsideRange(new Date(date), workingSchedules);
 
-
-    const freeEmployees = filteredWorkingSchedules.filter(schedule => {
-        return filteredVacationSchedules.some(vacationSchedule => vacationSchedule.employee.id === schedule.employee.id);
-    }).map(schedule => schedule.employee);
-
-    console.log({ freeEmployees }, { filteredWorkingSchedules });
-
-    // Find common employees between vacation and working schedules
-    const filteredSchedules = findNonOverlappingSchedules(filteredVacationSchedules, filteredWorkingSchedules);
-    console.log(filteredSchedules);
-
-    return filteredSchedules.map(schedule => schedule.employee);
-}
 
 const findNonOverlappingSchedules = (vacationSchedules: ScheduleAvailable[], workingSchedules: ScheduleAvailable[]): ScheduleAvailable[] => {
     const vacationEmployeeEmails = vacationSchedules.map(schedule => schedule.employee.email);

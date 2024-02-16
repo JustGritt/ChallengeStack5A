@@ -16,8 +16,7 @@ export default function Employees() {
     useEffect(() => {
         (async () => {
             const session = await getUserCookie(UserCookieType.SESSION);
-            const parsedSession = JSON.parse(session?.value || "{}");
-            setParsedSession(parsedSession);
+            setParsedSession(session);
         })();
     }, [])
 
@@ -51,7 +50,7 @@ export default function Employees() {
             }
         };
         fetchEmployees();
-    }, [employeesFetched, parsedSession, userConfig]);
+    }, [employeesFetched, parsedSession, userConfig, userRoles]);
 
     return (
         <section className="lg:pl-72 block min-h-screen">

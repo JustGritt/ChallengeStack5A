@@ -23,7 +23,7 @@ export default function History() {
   useEffect(() => {
     (async () => {
       const session = await getUserCookie(UserCookieType.SESSION);
-      setParsedSession(session?.token);
+      setParsedSession(session);
   
     })();
   }, [userConfig]);

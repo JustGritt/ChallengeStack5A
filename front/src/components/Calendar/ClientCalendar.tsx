@@ -10,26 +10,17 @@ import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slice
 
 export default function UserCalendar() {
 
-    const data: {
-        title: string;
-        start: any;
-        end: any;
-    }[] = [];
-
     const [scheduleFetched, setScheduleFetched] = useState(false);
     const [schedules, setSchedules] = useState([]);
 
-    const user: any = useSelector(selectCurrentUser);
-    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
-    const userRoles = useMemo(() => Object.keys(userConfig || {}).filter(role => userConfig[role]), [userConfig]);
+    const user = useSelector(selectCurrentUser);
 
     // Get session
     const [parsedSession, setParsedSession] = useState<any>({});
     useEffect(() => {
         (async () => {
             const session = await getUserCookie(UserCookieType.SESSION);
-            const parsedSession = JSON.parse(session?.value || "{}");
-            setParsedSession(parsedSession);
+            setParsedSession(session);
         })();
     }, [])
 
@@ -53,7 +44,7 @@ export default function UserCalendar() {
                 })
             setScheduleFetched(true);
         }
-    }, [parsedSession?.token, scheduleFetched, user]);
+    }, [parsedSession, scheduleFetched, user]);
 
     return (
         <div className="lg:flex lg:h-full lg:flex-col">
