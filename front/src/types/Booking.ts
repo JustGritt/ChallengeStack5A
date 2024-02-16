@@ -12,11 +12,13 @@ export interface Booking {
     service: HydraResp<Pick<Service, "name">>;
     startDate: string;
     endDate: string;
+    amount: number;
     store: string;
 }
 
 export type BooKingPost = {
     employee: string,//"users/1"
     service: string,//"services/1"
-    startDate: string
+    startDate: string,
+    amount: number
 }

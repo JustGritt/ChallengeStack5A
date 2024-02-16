@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import React, { FC, useCallback } from "react";
 import { useToast } from "@/components/Ui/use-toast";
+import { StripeLogo } from "@/components/Icons/Icons";
 import { HydraError } from "@/types/HydraPaginateResp";
 import { cn } from "@/lib/utils";
 import {
@@ -21,6 +22,10 @@ import { Schedule } from "@/types/Schedule";
 import { filterSchedulesInsideRange } from "@/lib/helpers/CalendarCarousselHelper";
 import { removeKeyCookie, removeUserCookie } from "@/lib/helpers/UserHelper";
 import moment from "moment";
+import { BooKingPost } from "@/types/Booking";
+import Pay from "@/components/payment/payment";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "@/lib/services/slices/authSlice";
 
 type ValidationCardProps = {
   service: Service;
@@ -53,6 +58,7 @@ const ValidationCard: FC<ValidationCardProps> = ({
     useGetStoreFreeSchedulesQuery(service.store.split("/")[2]);
 
   const router = useRouter();
+  const user = useSelector(selectCurrentUser);
 
   const handleSubmit = useCallback(async () => {
     const myDate = moment(startDate)
@@ -61,62 +67,39 @@ const ValidationCard: FC<ValidationCardProps> = ({
       .replace("T", " ");
 
     const availableEmployee = filterSchedulesInsideRange(
-      startDate,
+      new Date(myDate),
       freeSchedules ?? [],
       service.time
     );
 
+    if (availableEmployee.length === 0) {
+      toast({
+        className: cn(
+          "fixed top-4 z-[100] flex max-h-screen w-full flex-col-reverse items-start py-4 px-4 right-4  sm:flex-col md:max-w-[420px]"
+        ),
+        title: `No available employee`,
+        description: `The selected time is not available. Please choose another time or date.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     const employeeToUse =
       availableEmployee.length > 0 ? availableEmployee[0] : freeSchedules?.[0];
 
-    console.log("====================================");
-    console.log("employeeToUse", employeeToUse);
-    console.log("====================================");
-    return;
 
-    await createBooking({
+    await Pay({
       employee:
         employee === "no-one"
           ? `/users/${employeeToUse?.employee.id}`
           : `/users/${employee}`,
       service: "/services/" + service.id,
       startDate: myDate,
+      amount: service.price,
+      serviceName: service.name,
+      email: user?.email,
     })
-      .unwrap()
-      .then((resp) => {
-        removeKeyCookie("collaboratorChoosen");
-        removeKeyCookie("dateRdv");
-        toast({
-          className: cn(
-            "fixed top-4 z-[100] flex max-h-screen w-full flex-col-reverse py-4 px-4 right-4  sm:flex-col md:max-w-[420px]"
-          ),
-          title: `Booking successfully created`,
-          description: `You've now a meet for ${new Intl.DateTimeFormat(
-            "en-FR",
-            {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              weekday: "long",
-            }
-          ).format(new Date(startDate))} please don't be late`,
-          variant: "default",
-        });
-        router.push(`/dashboard/appointments`);
-      })
-      .catch((error: { data: HydraError }) => {
-        toast({
-          className: cn(
-            "fixed top-4 z-[100] flex max-h-screen w-full flex-col-reverse py-4 px-4 right-4  sm:flex-col md:max-w-[420px]"
-          ),
-          title: "Une erreur est survenue.",
-          description:
-            error?.data.detail ??
-            "Désolé, quelque chose ne s'est pas bien passe.",
-          variant: "destructive",
-        });
-      });
-  }, [schedules, storeBookings, employee, freeSchedules, startDate, service]);
+  }, [schedules, storeBookings, employee, freeSchedules, startDate, service, user]);
 
   return (
     <section className="flex flex-col w-full">
@@ -155,10 +138,14 @@ const ValidationCard: FC<ValidationCardProps> = ({
         <Button
           onClick={handleSubmit}
           isLoading={isLoadingCreateBooking}
-          className="mt-4 w-full py-5"
+          className="mt-4 w-full py-5 flex gap-2 justify-center items-center"
         >
-          <FontAwesomeIcon className="mr-3" icon={faCreditCard} />
-          Valider
+          <div className="flex gap-2 items-center pb-[2px] mr-1">
+            <FontAwesomeIcon icon={faCreditCard} />
+            Valider
+          </div>
+          <span>•</span>
+          <StripeLogo className={`w-12`} />
         </Button>
         <p className="text-[13px] font-light italic tracking-tight text-gray-300 dark:text-white">
           Vous avez la possibilité de valider votre commande sans paiement en

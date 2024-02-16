@@ -6,10 +6,13 @@ import FormSearchHome from "@/components/Forms/FormSearchHome";
 import { Button } from "@/components/Ui/Button";
 import { useRouter } from "next/navigation";
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline'
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "@/lib/services/slices/authSlice";
 
 export default function Home() {
 
   const router = useRouter();
+  // const user = useSelector(selectCurrentUser)
 
   return (
     <>
@@ -41,7 +44,9 @@ export default function Home() {
             </p>
             <Button intent="default" className="mt-8 h-16 px-8 grid place-items-center transition-colors rounded-full text-lg" onClick={
               () => {
+                // user ?
                 router.push("/affiliate")
+                // : router.push("/login?redirectUrl=/affiliate")
               }
             }>
               Become a Odicylens affiliate

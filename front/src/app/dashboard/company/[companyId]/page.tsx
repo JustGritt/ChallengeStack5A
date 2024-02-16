@@ -7,13 +7,16 @@ import { Employee } from "@/types/User";
 import { useSelector } from 'react-redux';
 import { useEffect, useMemo, useState } from 'react';
 import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
-import { CheckIcon, IdentificationIcon, UserIcon, HomeModernIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import { CheckIcon, IdentificationIcon, UserIcon, HomeModernIcon, XMarkIcon, EllipsisHorizontalIcon } from "@heroicons/react/20/solid";
 import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
 import { Button } from '@/components/Ui/Button';
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function CompanyDetails({ params }: { params: { companyId: string } }) {
+
+    const router = useRouter();
 
     const user = useSelector(selectCurrentUser);
     const userConfig = useSelector(selectCurrentUserConfig);
@@ -70,6 +73,36 @@ export default function CompanyDetails({ params }: { params: { companyId: string
             })
             .then(response => response.json())
             .then(data => { if (data.isValid) setNotifications(notifications.filter(notification => notification.id !== id)) })
+            .then(() => {
+                router.push("/dashboard/company");
+                toast.custom((t) => (
+                    <div aria-live="assertive" className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6">
+                        <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
+                            <div className="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                            <div className="p-4">
+                                <div className="flex items-start">
+                                <div className="flex-shrink-0">
+                                    <CheckIcon className="w-6 h-6 text-green-400" aria-hidden="true" />
+                                </div>
+                                <div className="ml-3 w-0 flex-1 pt-0.5">
+                                    <p className="text-sm font-medium text-gray-900">The company has been validated</p>
+                                    <p className="mt-1 text-sm text-gray-500">
+                                        The company owner has been notified
+                                    </p>
+                                </div>
+                                <div className="ml-4 flex flex-shrink-0">
+                                    <button type="button" className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                    <span className="sr-only">Close</span>
+                                    <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+                                    </button>
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            })
     }
 
     const refuseCompany = (id: number) => {
@@ -83,6 +116,7 @@ export default function CompanyDetails({ params }: { params: { companyId: string
             })
             .then(response => response.json())
             .then(() => {
+                router.push("/dashboard/company");
                 toast.custom((t) => (
                     <div aria-live="assertive" className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6">
                         <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
@@ -137,9 +171,9 @@ export default function CompanyDetails({ params }: { params: { companyId: string
                                                         Validated
                                                     </span>
                                                 ) : (
-                                                    <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/20">
-                                                        <XMarkIcon className="w-5 h-5 mr-1" />
-                                                        Not validated
+                                                    <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-700 ring-1 ring-inset ring-yellow-600/20">
+                                                        <EllipsisHorizontalIcon className="w-5 h-5 mr-1" />
+                                                        Waiting for validation
                                                     </span>
                                                 )
                                             )

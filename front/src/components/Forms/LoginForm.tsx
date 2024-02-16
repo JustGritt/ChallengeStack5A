@@ -6,12 +6,12 @@ import { Button } from "@/components/Ui/Button";
 import { useLoginMutation } from "@/lib/services/auth";
 import React from "react";
 import toast from "react-hot-toast";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { setUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
 import { useLazyGetMyProfileQuery } from "@/lib/services/user";
 
-function LoginForm() {
+function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
   const [login, { error, data, isError, isLoading }] = useLoginMutation();
   const [getMyProfileAsync] = useLazyGetMyProfileQuery();
   const initialValues = {
@@ -26,6 +26,7 @@ function LoginForm() {
     remember: Yup.boolean().optional(),
   });
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams?.get("redirectUrl");
 
@@ -44,10 +45,15 @@ function LoginForm() {
             await getMyProfileAsync()
               .unwrap()
               .then((profile) => {
-                if (redirectUrl) {
-                  router.push(redirectUrl);
-                } else {
-                  router.push("/dashboard");
+                if (onSuccess) {
+                  onSuccess();
+                }
+                if (pathname === "/login") {
+                  if (redirectUrl) {
+                    router.push(redirectUrl);
+                  } else {
+                    router.push("/dashboard");
+                  }
                 }
               });
           }

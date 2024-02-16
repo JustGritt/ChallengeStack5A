@@ -24,12 +24,31 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
   params: { id },
 }) => {
   const { isLoading, isError, data: store } = useGetStoreQuery(id);
-
   const refSectionServices = React.useRef<null | HTMLDivElement>(null);
 
   if (isError) {
     return notFound();
   }
+
+  // const handleClick = async () => {
+  //   const { sessionId } = await fetch("/api/checkout/session", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       employee: "employee",
+  //       service: "service",
+  //       startDate: "startDate",
+  //       amount: 100,
+  //       serviceName: "serviceName",
+  //     })
+  //   }).then((res) => res.json());
+  //   const stripe = await stripePromise;
+  //   const { error } = await stripe!.redirectToCheckout({
+  //     sessionId,
+  //   });
+  // }
 
   return (
     <main className="w-full z-40 flex flex-col bg-white py-4 px-3 items-center">
@@ -160,6 +179,13 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
               )}
             </div>
           </div>
+          {/* <div>
+            <Button className="flex w-full max-w-[350px] justify-center items-center" onClick={handleClick}>
+              Pay your order
+              <span>|</span>
+              <StripeLogo className={`w-12`} />
+            </Button>
+          </div> */}
         </div>
       </section>
     </main>
