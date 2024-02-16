@@ -34,7 +34,6 @@ export const userApi = api.injectEndpoints({
                 const session = await getUserCookie(UserCookieType.SESSION);
                 if (session.user) {
                     dispatch(setCredentials({ user: session.user }));
-                    return
                 }
                 const { data: user } = await queryFulfilled;
                 setUserCookie(UserCookieType.SESSION, ({

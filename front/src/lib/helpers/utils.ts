@@ -11,8 +11,16 @@ export const getUserInitials = (name: string, size = 2): string =>
         .slice(0, size)
         .join('');
 
-function minutesToMilliseconds(minutes: number): number {
+export function minutesToMilliseconds(minutes: number): number {
     return minutes * 60 * 1000; // 1 minute = 60 seconds = 60,000 milliseconds
+}
+
+export function millisecondsToHours(milliseconds: number): number {
+    return milliseconds / 36e5;
+}
+
+export function getDiffBetween2Hours(start: Date, end: Date): number {
+    return Math.abs(start.getTime() - end.getTime()) / 36e5;
 }
 
 export const humanizeMinutes = (time: number) => {

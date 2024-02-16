@@ -21,8 +21,7 @@ export default function EditProfile() {
     };
 
     const user = useSelector(selectCurrentUser);
-    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
-    const [userRoles, setUserRoles] = useState<string[]>([]);
+    const userConfig = useSelector(selectCurrentUserConfig);
     const [parsedSession, setParsedSession] = useState<any>({});
 
     useEffect(() => {
@@ -30,7 +29,6 @@ export default function EditProfile() {
             const session = await getUserCookie(UserCookieType.SESSION);
             const parsedSession = JSON.parse(session?.value || "{}");
             setParsedSession(parsedSession);
-            setUserRoles(Object.keys(userConfig).filter(key => (userConfig as any)[key] === true))
         })();
     }, [userConfig]);
 
@@ -41,7 +39,7 @@ export default function EditProfile() {
     });
 
     const onSubmitProfile: FormikConfig<UserPassword>["onSubmit"] = (values) => {
-        fetch(`https://api.odicylens.com/users/${user?.id}`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${user?.id}`, {
             method: "PATCH",
             headers: { 'Authorization': `Bearer ${parsedSession?.token}`, 'Content-Type': 'application/merge-patch+json' },
             body: JSON.stringify(values)

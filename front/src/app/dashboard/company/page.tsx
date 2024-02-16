@@ -21,13 +21,6 @@ import {
 } from "@heroicons/react/20/solid";
 
 export default function Companies() {
-  type UserConfigType = {
-    isAdmin: boolean;
-    isWorker: boolean;
-    isOwner: boolean;
-    isClient: boolean;
-  };
-
   const user = useSelector(selectCurrentUser);
   const userConfig = useSelector(selectCurrentUserConfig);
   const [companies, setCompanies] = useState<Company[]>([]);
@@ -35,26 +28,37 @@ export default function Companies() {
   const [companyEmployees, setCompanyEmployees] = useState<Employee[]>([]);
   const userRoles = useMemo(
     () =>
-      Object.keys(userConfig).filter(
-        (role) => !!userConfig[role as keyof typeof userConfig]
+      Object.keys(userConfig || {}).filter(
+        (role) => userConfig[role as keyof UserConfigType]
       ),
     [userConfig]
   );
 
+  // Get session
+  const [parsedSession, setParsedSession] = useState<any>({});
+  useEffect(() => {
+    (async () => {
+      const session = await getUserCookie(UserCookieType.SESSION);
+      setParsedSession(session);
+    })();
+  }, []);
 
   useEffect(() => {
     const fetchCompanies = async (token: string) => {
-      const response = await fetch("https://api.odicylens.com/companies", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/companies`,
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       const data = await response.json();
       setCompanies(data["hydra:member"]);
     };
 
     const fetchCompanyInfo = async (token: string, companyId: string) => {
       const response = await fetch(
-        `https://api.odicylens.com/companies/${companyId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/companies/${companyId}`,
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
@@ -66,7 +70,7 @@ export default function Companies() {
 
     const fetchCompanyEmployees = async (token: string, companyId: string) => {
       const response = await fetch(
-        `https://api.odicylens.com/company/${companyId}/employee`,
+        `${process.env.NEXT_PUBLIC_API_URL}/company/${companyId}/employee`,
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
@@ -77,25 +81,19 @@ export default function Companies() {
     };
 
     (async () => {
-      const parsedSession = await getUserCookie(UserCookieType.SESSION);
-
-      if (userConfig.isAdmin && parsedSession.token) {
-        fetchCompanies(parsedSession.token);
+      if (userConfig.isAdmin && parsedSession?.token) {
+        fetchCompanies(parsedSession?.token);
       }
 
-      if (
-        userConfig.isOwner &&
-        parsedSession.token &&
-        parsedSession.user?.companie?.id
-      ) {
-        fetchCompanyInfo(parsedSession.token, parsedSession.user.companie.id);
+      if (userConfig.isOwner && parsedSession?.token && user?.companie?.id) {
+        fetchCompanyInfo(parsedSession?.token, `${user?.companie?.id ?? ""}`);
         fetchCompanyEmployees(
-            parsedSession.token,
-            parsedSession.user.companie.id
+          parsedSession?.token,
+          `${user?.companie?.id ?? ""}`
         );
       }
     })();
-  }, [user, userConfig]);
+  }, [user, userConfig, parsedSession]);
 
   return (
     <section className="lg:pl-72 block min-h-screen">
@@ -265,7 +263,8 @@ export default function Companies() {
             userRoles.includes("isAdmin") && (
               <section>
                 <h3 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">
-                  List of all companies
+                  List of all companies{" "}
+                  {companies.length > 0 ? `(${companies.length})` : ""}
                 </h3>
                 <ul role="list" className="divide-y divide-gray-100">
                   {companies &&

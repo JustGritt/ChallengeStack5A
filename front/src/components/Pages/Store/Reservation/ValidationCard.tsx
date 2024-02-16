@@ -19,12 +19,9 @@ import {
   useLazyGetStoreFreeSchedulesQuery,
 } from "@/lib/services/stores";
 import { Schedule } from "@/types/Schedule";
-import {
-  filterSchedulesInsideRange,
-  findAvailableEmployees,
-  findAvailableEmployees_,
-} from "@/lib/helpers/CalendarCarousselHelper";
+import { filterSchedulesInsideRange } from "@/lib/helpers/CalendarCarousselHelper";
 import { removeKeyCookie, removeUserCookie } from "@/lib/helpers/UserHelper";
+import moment from "moment";
 import { BooKingPost } from "@/types/Booking";
 import Pay from "@/components/payment/payment";
 import { useSelector } from "react-redux";
@@ -64,21 +61,24 @@ const ValidationCard: FC<ValidationCardProps> = ({
   const user = useSelector(selectCurrentUser);
 
   const handleSubmit = useCallback(async () => {
-    const myDate = new Date(
-      startDate.getTime() + startDate.getTimezoneOffset() * 60000
-    )
-      .toISOString()
-      .slice(0, -1)
+    const myDate = moment(startDate)
+      .toISOString(true)
+      .slice(0, -6)
       .replace("T", " ");
 
     const availableEmployee = filterSchedulesInsideRange(
       startDate,
-      freeSchedules ?? []
+      freeSchedules ?? [],
+      service.time
     );
 
     const employeeToUse =
       availableEmployee.length > 0 ? availableEmployee[0] : freeSchedules?.[0];
-    
+
+    console.log("====================================");
+    console.log("employeeToUse", employeeToUse);
+    console.log("====================================");
+    return;
 
     await Pay({
       employee:

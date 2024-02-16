@@ -38,11 +38,31 @@ export const servicesApi = api.injectEndpoints({
       },
       providesTags: (_result, _error, [idStore, idService]) => [{ type: 'Services', id: idService as string }],
     }),
+    deleteService: build.mutation<void, number>({
+      query: (id) => ({
+        url: `/services/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [{ type: "Services" }],
+    }),
+    patchService: build.mutation<Service, { id: string, data: Partial<Service> }>({
+      query: ({ id, data }) => ({
+        url: `/services/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      extraOptions: {
+        method: false,
+      },
+      invalidatesTags: [{ type: "Services" }],
+    }),
   }),
   overrideExisting: true,
 });
 
 export const {
   useLazyGetServicesQuery,
-  useLazyGetStoreServiceQuery
+  useLazyGetStoreServiceQuery,
+  useDeleteServiceMutation,
+  usePatchServiceMutation,
 } = servicesApi;

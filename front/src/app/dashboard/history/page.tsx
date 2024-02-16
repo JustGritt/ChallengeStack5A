@@ -4,21 +4,29 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { selectCurrentUserConfig } from "@/lib/services/slices/authSlice";
 import { CalendarIcon, ShoppingBagIcon } from "@heroicons/react/24/outline";
 
 export default function History() {
   const userConfig = useSelector(selectCurrentUserConfig);
+  const userRoles = useMemo(
+    () =>
+      Object.keys(userConfig || {}).filter(
+        (role) => userConfig[role as keyof UserConfigType]
+      ),
+    [userConfig]
+  );
 
   // Get session
   const [parsedSession, setParsedSession] = useState<any>({});
   useEffect(() => {
     (async () => {
-      const parsedSession = await getUserCookie(UserCookieType.SESSION);
-      setParsedSession(parsedSession);
+      const session = await getUserCookie(UserCookieType.SESSION);
+      setParsedSession(session);
+  
     })();
-  }, []);
+  }, [userConfig]);
 
   const [history, setHistory] = useState<any[]>([]);
   const [historyFetched, setHistoryFetched] = useState(false);
@@ -26,7 +34,7 @@ export default function History() {
     const fetchHistory = async () => {
       if (!historyFetched && parsedSession?.token) {
         fetch(
-          `https://api.odicylens.com/users/${parsedSession.user.id}/bookings`,
+          `${process.env.NEXT_PUBLIC_API_URL}/users/${parsedSession.user.id}/bookings`,
           {
             method: "GET",
             headers: { Authorization: `Bearer ${parsedSession?.token}` },
@@ -69,7 +77,7 @@ export default function History() {
                     <p className="text-base font-normal text-gray-500 dark:text-gray-400">
                       {booking.service.description}
                     </p>
-                    {userConfig.isClient && (
+                    {userRoles.includes("isClient") && (
                       <Link
                         href={booking.store}
                         className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-200 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700 mt-2"
