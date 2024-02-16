@@ -45,6 +45,14 @@ export type UserRegister = {
     terms: boolean
 }
 
+export type addEmployee = {
+    firstname: string
+    email: string
+    plainPassword: string
+    confirmPassword?: string
+    work?: string
+}
+
 export type UserLogin = {
     email: string
     password: string
