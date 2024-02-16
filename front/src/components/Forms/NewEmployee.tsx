@@ -87,7 +87,7 @@ export default function NewEmployee() {
                     </div>
                 </div>
             ));
-            router.back()
+            router.push(`/dashboard/stores/${storeId}/employees`);
         })
     };
 
