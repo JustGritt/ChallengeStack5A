@@ -56,7 +56,7 @@ class Store
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read-user-mutation', 'read-companie', 'store-read'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read', 'read-user-admin'])]
     private ?int $id = null;
 
     #[Groups(['read-user-mutation', 'read-companie', 'store-read', 'create-stores', 'update-companie'])]
