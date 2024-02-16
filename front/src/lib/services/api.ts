@@ -22,7 +22,6 @@ export const api = createApi({
       const session = await getUserCookie(UserCookieType.SESSION);
       if (session?.token) headers.set('Authorization', `Bearer ${session?.token}`);
       headers.set("Content-Type", "application/json");
-      console.log(extra)
       return headers;
     },
   }),

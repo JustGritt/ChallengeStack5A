@@ -9,7 +9,7 @@ import {
   selectCurrentUser,
   selectCurrentUserConfig,
 } from "@/lib/services/slices/authSlice";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { CheckIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 export default function Notifications() {
@@ -23,6 +23,15 @@ export default function Notifications() {
       ),
     [userConfig]
   );
+
+  const [parsedToken, setParsedToken] = useState<string | undefined>();
+  useEffect(() => {
+      (async () => {
+          const session = await getUserCookie(UserCookieType.SESSION);
+          setParsedToken(session?.token);
+      })();
+  }, [userConfig]);
+
   const [parsedSession, setParsedSession] = useState<any>({});
   useEffect(() => {
     (async () => {
@@ -38,7 +47,7 @@ export default function Notifications() {
         userRoles.includes("ROLE_ADMIN") ||
         userRoles.includes("ROLE_SUPER_ADMIN")
       ) {
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/companies?page=0`, {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/companies`, {
           method: "GET",
           headers: { Authorization: `Bearer ${parsedSession?.token}` },
         })
@@ -63,6 +72,24 @@ export default function Notifications() {
       }
     })();
   }, [user, parsedSession?.token, userConfig, userRoles]);
+
+    const fetchCompanies = useCallback(async () => {
+      if (userRoles.includes('isAdmin')) {
+          const response = await fetch('https://api.odicylens.com/companies', {
+              method: 'GET',
+              headers: { 'Authorization': `Bearer ${parsedToken}` }
+          });
+          const data = await response.json();
+          if (data['hydra:member']) {
+              const invalidCompanies = data['hydra:member'].filter((company: any) => (!company.isValid && !company.refused));
+              return setNotifications(invalidCompanies);
+          }
+      }
+  }, [userRoles, parsedToken]);
+
+  useEffect(() => {
+      fetchCompanies();
+  }, [fetchCompanies]);
 
   return (
     <section className="lg:pl-72 block min-h-screen">

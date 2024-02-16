@@ -93,7 +93,6 @@ export const filterSchedulesInsideRange = (date: Date, schedules: ScheduleAvaila
 
 const findNonOverlappingSchedules = (vacationSchedules: ScheduleAvailable[], workingSchedules: ScheduleAvailable[]): ScheduleAvailable[] => {
     const vacationEmployeeEmails = vacationSchedules.map(schedule => schedule.employee.email);
-    console.log(vacationEmployeeEmails);
 
     const nonOverlappingSchedules = workingSchedules.filter(schedule =>
         vacationEmployeeEmails.includes(schedule.employee.email)

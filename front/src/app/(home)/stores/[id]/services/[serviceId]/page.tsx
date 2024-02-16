@@ -46,8 +46,7 @@ const Reservation: FC<
               if (!isInitializeValue) {
                 setDate(undefined);
               }
-              console.log('setting user', user);
-              
+
               setSelectedEmployeeId(user);
             }}
             callBackService={setSelectedService}

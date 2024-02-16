@@ -35,7 +35,6 @@ export default function Employees() {
                 })
                     .then((res) => res.json())
                     .then((data) => {
-                        console.log(data)
                         setEmployees(data["hydra:member"])
                     });
 
