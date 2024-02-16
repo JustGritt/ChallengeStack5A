@@ -12,7 +12,8 @@ import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline"
 import { useParams } from "next/navigation";
-export default function UpdateProfile() {
+
+export default function NewService() {
     type RouteParams = {
         storeId?: string;
     };
@@ -31,7 +32,7 @@ export default function UpdateProfile() {
             setParsedSession(parsedSession);
             setStoreId(getStoreId);
         })();
-    }, [userConfig]);
+    }, [getStoreId, userConfig]);
 
     // Update profile
     const initialValues: any = {

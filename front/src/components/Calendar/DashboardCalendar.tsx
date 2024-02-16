@@ -76,6 +76,7 @@ export default function DashboardCalendar() {
             <FullCalendar
                 plugins={[ listPlugin ]}
                 initialView="listDay"
+                timeZone="UTC+1"
                 events={data}
                 headerToolbar={{
                     start: 'title',

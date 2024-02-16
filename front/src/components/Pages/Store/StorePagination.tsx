@@ -21,6 +21,10 @@ export default function Stores() {
     const [stores, setStores] = useState<Store[]>([]);
     const [storesFetched, setStoresFetched] = useState(false);
 
+    const [displayedStores, setDisplayedStores] = useState<Store[]>([]);
+    const [pages, setPages] = useState<number[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+
     // Get session
     const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
     const [parsedSession, setParsedSession] = useState<any>({});
@@ -114,11 +118,11 @@ export default function Stores() {
             setPages(new Array(pages).fill(0).map((_, index) => index + 1));
             setDisplayedStores(stores.slice(0, 5));
         }
-    }, [stores]);
 
-    const [displayedStores, setDisplayedStores] = useState<Store[]>([]);
-    const [pages, setPages] = useState<number[]>([]);
-    const [currentPage, setCurrentPage] = useState(1);
+        if (currentPage > 1) {
+            setDisplayedStores(stores.slice((currentPage - 1) * 5, currentPage * 5));
+        }
+    }, [stores, currentPage]);
 
     const handleNextPage = () => {
         if (currentPage < pages.length) {

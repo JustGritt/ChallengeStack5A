@@ -64,6 +64,7 @@ export default function UserCalendar() {
             <FullCalendar
                 plugins={[ timeGridPlugin ]}
                 initialView="timeGridWeek"
+                timeZone="UTC+1"
                 editable={false}
                 selectable={false}
                 nowIndicator={true}

@@ -46,6 +46,7 @@ export default function UserCalendar() {
             <FullCalendar
                 plugins={[ timeGridPlugin, interactionPlugin ]}
                 initialView="timeGridWeek"
+                timeZone="UTC+1"
                 headerToolbar={{
                     left: 'prev,next today',
                     center: 'title',

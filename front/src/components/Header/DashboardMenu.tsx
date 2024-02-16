@@ -8,10 +8,10 @@ import { usePathname } from 'next/navigation'
 import { useSelector } from 'react-redux';
 import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
-import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
 import { Dialog, Transition } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { Fragment, useCallback, useEffect, useState } from 'react'
+import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
 import { Bars3Icon, BellIcon, CalendarIcon, ShoppingCartIcon, Cog6ToothIcon, HomeIcon, UsersIcon, XMarkIcon, ClockIcon, UserIcon, SparklesIcon } from '@heroicons/react/24/outline'
 
 export default function DashboardMenu() {
