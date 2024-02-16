@@ -56,8 +56,6 @@ export type UserLogin = {
 
 export type UserUpdateProfile = {
     firstname: string
-    confirmPassword: string
-    plainPassword: string,
 }
 
 export type UserForgetPassword = {
@@ -79,5 +77,6 @@ export type Employee = {
     email: string,
     firstname: string,
     work: Store,
-    company: Company
+    company: Company,
+    isValid: boolean,
 }

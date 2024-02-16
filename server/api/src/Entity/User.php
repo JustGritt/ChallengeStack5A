@@ -36,7 +36,7 @@ use App\Validator\PasswordPutGroupsGenerator;
 #[UniqueEntity(['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[Groups(['read-user-mutation', 'read-companie', 'store-read-full'])]
+    #[Groups(['read-user-mutation', 'read-companie', 'store-read-full', 'schedule-read'])]
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue]
@@ -87,10 +87,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Booking::class)]
     private Collection $bookings;
 
+    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Review::class)]
+    private Collection $reviews;
+
     public function __construct()
     {
         $this->schedules = new ArrayCollection();
         $this->bookings = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     
@@ -282,6 +286,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($booking->getCustomer() === $this) {
                 $booking->setCustomer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): static
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setCustomer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): static
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getCustomer() === $this) {
+                $review->setCustomer(null);
             }
         }
 

@@ -1,12 +1,12 @@
 import FullCalendar from '@fullcalendar/react';
 import listPlugin from '@fullcalendar/list';
-import { useEffect, useState } from 'react';
+import { useSelector } from "react-redux";
 import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
+import { useEffect, useState } from 'react';
 import { selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
-import { useSelector } from "react-redux";
 
-export default function UserCalendar() {
+export default function DashboardCalendar() {
 
     const userConfig = useSelector(selectCurrentUserConfig);
     const [bookings, setBookings] = useState<any[]>([])

@@ -1,6 +1,5 @@
 "use client";
 
-
 import Link from 'next/link';
 import { Company } from "@/types/Company";
 import { Employee } from "@/types/User";
@@ -248,7 +247,7 @@ export default function Companies() {
                         (userRoles.includes('isAdmin')) && (
                             <section>
                                 <h3 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">
-                                    List of all companies
+                                    List of all companies {companies.length > 0 ? `(${companies.length})` : ''}
                                 </h3>
                                 <ul role="list" className="divide-y divide-gray-100">
                                     {
