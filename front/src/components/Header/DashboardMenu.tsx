@@ -35,23 +35,6 @@ export default function DashboardMenu() {
         })();
     }, [userConfig])
     
-    // Get company to validate
-    const fetchCompanies = useCallback(async () => {
-        if (userRoles.includes('isAdmin')) {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/companies`, {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${parsedSession?.token}` }
-            }).then(response => response.json());
-            const data = await response;
-            const invalidCompanies = data['hydra:member'].filter((company: any) => (!company.isValid && !company.refused));
-            return setNotifications(invalidCompanies);
-        }
-    }, [userRoles, parsedSession]);
-
-    useEffect(() => {
-        fetchCompanies();
-    }, [fetchCompanies]);
-
     const appointmentLabel = userRoles.includes('isClient') ? 'My appointments' : 'Schedule';
 
     const navigation = [

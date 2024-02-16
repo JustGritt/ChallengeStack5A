@@ -33,10 +33,9 @@ export default function StoresEmployees({
                 <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4 inline-block">
                   Employees ({store.users.length})
                 </h2>
-                {userConfig.isOwner && (
+                {(userConfig.isOwner || userConfig.isAdmin) && (
                   <div className="flex items-center justify-between gap-4">
-                    <a
-                      href={`/dashboard/stores/${params.storeId}/employees/add`}
+                    <a href={`/dashboard/stores/${params.storeId}/employees/add`}
                       className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2"
                     >
                       New Employee

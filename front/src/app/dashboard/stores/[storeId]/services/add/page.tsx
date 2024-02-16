@@ -10,8 +10,8 @@ export default function EditStoreServices() {
   const userConfig = useSelector(selectCurrentUserConfig);
   const router = useRouter();
     
-    if (!userConfig.isOwner) {
-        router.push("/dashbaord");
+    if (!userConfig.isOwner || !userConfig.isAdmin) {
+        router.push("/dashboard");
     }
 
 

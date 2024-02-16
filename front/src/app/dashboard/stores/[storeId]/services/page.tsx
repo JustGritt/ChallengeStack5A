@@ -39,7 +39,7 @@ export default function EditStoreServices({ params }: { params: { storeId: strin
 
                                 <div className="flex items-center justify-between gap-4">
                                     {
-                                        userConfig.isOwner && (
+                                        (userConfig.isOwner || userConfig.isAdmin) && (
                                             <Link href={`/dashboard/stores/${params.storeId}/services/add`} className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">
                                                 New Service
                                             </Link>

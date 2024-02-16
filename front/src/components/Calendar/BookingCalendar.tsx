@@ -32,20 +32,12 @@ export default function UserCalendar() {
         }
     ]
 
-    // TODO: POST Schedule
-    // {
-    //     "startDate": "2024-02-04 21:02:39.927",
-    //     "endDate": "2024-02-04T21:02:39.927Z",
-    //     "onVacation": true,
-    //     "employee": "https://example.com/",
-    //     "store": "https://example.com/"
-    //   }
-
     return (
         <div className="lg:flex lg:h-full lg:flex-col">
             <FullCalendar
                 plugins={[ timeGridPlugin, interactionPlugin ]}
                 initialView="timeGridWeek"
+                timeZone="UTC+1"
                 headerToolbar={{
                     left: 'prev,next today',
                     center: 'title',
