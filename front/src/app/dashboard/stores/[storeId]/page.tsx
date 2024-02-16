@@ -30,7 +30,6 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                     <p className="mr-4">{store.address}, {store.postalCode} {store.city}, {store.country}</p>
                                 </div>
 
-
                                 <div className=" flex justify-end items-end mt-4 gap-8">
                                     {
                                         store.users && (
@@ -48,6 +47,7 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                             </div>
                                         )
                                     }
+
                                 </div>
                             </div>
 
@@ -75,7 +75,7 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                                 store.users.length === 0 ? (
                                                     <p>No employees yet</p>
                                                 ) : (
-                                                    store.users.slice(0, 3).map((user, index) => (
+                                                    store.users?.slice(0, 3).map((user, index) => (
                                                         <a href={`/dashboard/stores/${store?.id}/employees/${user.id}`} key={user.id}>
                                                             <li className="flex justify-between gap-6 w-full rounded px-4 hover:bg-gray-100 shadow">
                                                                 <div className="flex min-w-0 gap-4 py-4">

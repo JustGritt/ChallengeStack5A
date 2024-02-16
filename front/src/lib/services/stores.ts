@@ -1,7 +1,8 @@
 import api from "./api";
 import { HydraPaginateResp } from "@/types/HydraPaginateResp";
-import { QueryStore, Store } from "@/types/Store";
+import { CreateStore, CreateStoreSend, QueryStore, Store } from "@/types/Store";
 import { createQueryParams } from "../utils";
+import { AvailableSchedule, Schedule } from "@/types/Schedule";
 
 export const storesApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -31,7 +32,30 @@ export const storesApi = api.injectEndpoints({
       },
       providesTags: (result, _error, id) => [{ type: "Stores", id }],
     }),
-    addStore: build.mutation<Store, Partial<Store>>({
+    getStoreSchedules: build.query<HydraPaginateResp<Schedule>, string>({
+      query: (idStore) => {
+        return {
+          url: `/stores/${idStore}/schedules`,
+        };
+      },
+      providesTags: (result, _error, filters) =>
+        result
+          ? [
+            ...result['hydra:member'].map(({ id }) => ({
+              type: "StoreSchedules" as const,
+              id,
+            }))
+          ]
+          : [],
+    }),
+    getStoreFreeSchedules: build.query<Array<AvailableSchedule>, string>({
+      query: (idStore) => {
+        return {
+          url: `/stores/${idStore}/free-time`,
+        };
+      }
+    }),
+    addStore: build.mutation<CreateStoreSend, Partial<Store>>({
       query: (data) => {
         return {
           url: "/stores",
@@ -49,5 +73,10 @@ export const {
   useGetAllStoresQuery,
   useLazyGetAllStoresQuery,
   useGetStoreQuery,
+  useLazyGetStoreQuery,
+  useGetStoreSchedulesQuery,
+  useLazyGetStoreSchedulesQuery,
   useAddStoreMutation,
+  useLazyGetStoreFreeSchedulesQuery,
+  useGetStoreFreeSchedulesQuery,
 } = storesApi;

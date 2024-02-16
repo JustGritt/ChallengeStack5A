@@ -36,7 +36,7 @@ use ApiPlatform\Action\NotFoundAction;
             output: false
         ),
         new Post(denormalizationContext: ['groups' => ['service-mutation']]),
-        new Patch(denormalizationContext: ['groups' => ['service-mutation']]),
+        new Patch(denormalizationContext: ['groups' => ['service-mutation-patch']]),
         new Delete(),
     ],
     normalizationContext: ['groups' => ['service-read']],
@@ -71,13 +71,13 @@ class Service
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 3, max: 255)]
-    #[Groups(['service-read', 'service-mutation', 'store-read-full', 'store-read', 'booking-read-full'])]
+    #[Groups(['service-read', 'service-mutation', 'store-read-full', 'store-read', 'booking-read-full', 'service-mutation-patch'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 3, max: 255)]
-    #[Groups(['service-read', 'service-mutation', 'store-read-full', 'admin-read-booking'])]
+    #[Groups(['service-read', 'service-mutation', 'store-read-full', 'admin-read-booking', 'service-mutation-patch'])]
     private ?string $description = null;
 
     #[ORM\Column]
@@ -85,7 +85,7 @@ class Service
     #[Assert\Positive]
     #[Assert\LessThanOrEqual(720)] //12 hours
     #[Assert\DivisibleBy(30)]
-    #[Groups(['service-read', 'service-mutation', 'store-read-full', 'admin-read-booking'])]
+    #[Groups(['service-read', 'service-mutation', 'store-read-full', 'admin-read-booking', 'service-mutation-patch'])]
     private ?int $time = null;
 
     #[ORM\ManyToOne(inversedBy: 'services')]
@@ -96,7 +96,7 @@ class Service
     #[ORM\Column]
     #[Assert\NotBlank()]
     #[Assert\PositiveOrZero()]
-    #[Groups(['service-read',  'service-mutation', 'store-read-full', 'admin-read-booking'])]
+    #[Groups(['service-read',  'service-mutation', 'store-read-full', 'admin-read-booking', 'service-mutation-patch'])]
     private ?float $price = null;
 
     #[ORM\OneToMany(mappedBy: 'service', targetEntity: Booking::class)]

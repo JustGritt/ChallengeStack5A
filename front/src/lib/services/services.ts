@@ -1,5 +1,5 @@
 import api from "./api";
-import { HydraPaginateResp } from "@/types/HydraPaginateResp";
+import { HydraPaginateResp, HydraResp } from "@/types/HydraPaginateResp";
 import { createQueryParams } from "../utils";
 import { IFilters } from "@/types/Fetch";
 import { Service } from "@/types/Service";
@@ -27,6 +27,17 @@ export const servicesApi = api.injectEndpoints({
           ]
           : [],
     }),
+    getStoreService: build.query<HydraResp<Service>, [string, string]>({
+      query: ([idStore, idService]) => {
+        return {
+          url: `/stores/${idStore}/services/${idService}`,
+          headers: {
+            "content-type": "application/json"
+          },
+        };
+      },
+      providesTags: (_result, _error, [idStore, idService]) => [{ type: 'Services', id: idService as string }],
+    }),
     deleteService: build.mutation<void, number>({
       query: (id) => ({
         url: `/services/${id}`,
@@ -51,6 +62,7 @@ export const servicesApi = api.injectEndpoints({
 
 export const {
   useLazyGetServicesQuery,
+  useLazyGetStoreServiceQuery,
   useDeleteServiceMutation,
   usePatchServiceMutation,
 } = servicesApi;

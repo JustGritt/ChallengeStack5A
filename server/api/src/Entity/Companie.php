@@ -27,7 +27,7 @@ use App\Controller\AdminCompany;
         new GetCollection(normalizationContext: ['groups' => ['read-companie']], provider: CompanieStateProvider::class),
         new Get(normalizationContext: ['groups' => ['read-companie']]),
         new Post(denormalizationContext: ['groups' => ['create-companie']]),
-        new Patch(denormalizationContext: ['groups' => ['update-companie']]),
+        #new Patch(denormalizationContext: ['groups' => ['update-companie']]),
     ],
     normalizationContext: ['groups' => ['read-companie']],
     processor: CompanieStateProcessor::class,

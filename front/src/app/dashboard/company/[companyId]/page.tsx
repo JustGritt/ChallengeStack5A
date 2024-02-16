@@ -19,18 +19,16 @@ export default function CompanyDetails({ params }: { params: { companyId: string
     const router = useRouter();
 
     const user = useSelector(selectCurrentUser);
-    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
+    const userConfig = useSelector(selectCurrentUserConfig);
     const [companyInfo, setCompanyInfo] = useState<Company>();
     const [companyEmployees, setCompanyEmployees] = useState<Employee[]>([]);
     const [notifications, setNotifications] = useState<any[]>([]);
-    const userRoles = useMemo(() => Object.keys(userConfig || {}).filter(role => userConfig[role]), [userConfig]);
 
     // Get session
     const [parsedSession, setParsedSession] = useState<any>({});
     useEffect(() => {
         (async () => {
-            const session = await getUserCookie(UserCookieType.SESSION);
-            const parsedSession = JSON.parse(session?.value || "{}");
+            const parsedSession = await getUserCookie(UserCookieType.SESSION);
             setParsedSession(parsedSession);
         })();
     }, [])
@@ -40,12 +38,12 @@ export default function CompanyDetails({ params }: { params: { companyId: string
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/companies/${params.companyId}`);
             const data = await response.json();
 
-            if (userRoles.includes("isAdmin") || data.owner.id === user?.id) {
+            if (userConfig.isAdmin || data.owner.id === user?.id) {
                 setCompanyInfo(data);
             }
         };
         fetchCompanyInfo();
-    }, [userRoles, user, params.companyId]);
+    }, [user, params.companyId, userConfig]);
 
     useEffect(() => {
         const fetchEmployees = async () => {

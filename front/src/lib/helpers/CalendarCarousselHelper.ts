@@ -1,4 +1,15 @@
 
+import dayHours from "@/lib/constants/day_hours.json";
+import { Schedule } from "@/types/Schedule";
+import { Employee, User } from "@/types/User";
+import { DateTime } from "luxon";
+import { convertDateToNormal, dateWithoutTimezone, getDiffBetween2Hours, millisecondsToHours, minutesToMilliseconds } from "./utils";
+import moment from "moment";
+
+type ScheduleAvailable = {
+    employee: Pick<User, "email" | "id">
+} & Pick<Schedule, 'startDate' | 'endDate'>
+
 export const getIntlDayAndMonth = (date: string, locale: string) => {
     const intlDate = new Date(date);
     const day = intlDate.toLocaleDateString(locale, {
@@ -19,33 +30,72 @@ export const getIntlDayAndMonth = (date: string, locale: string) => {
     }
 }
 
-const getMiliTaryHoursFromDate = (date: Date) => {
-    const militaryHour = new Date(); // Create a new Date object
-    const hours = ("0" + militaryHour.getHours()).slice(-2); // Get hours and pad with leading zero if needed
-    const minutes = ("0" + militaryHour.getMinutes()).slice(-2); // Get minutes and pad with leading zero if needed
-
-    return hours + minutes
+interface Range {
+    start: Date;
+    end: Date;
 }
 
-interface ExcludeRange {
-    startExclude: Date;
-    endExclude: Date;
-}
+export const isOnHour = (currentDate: Date, excludeRanges: Range[], includeRanges: Range[], isAllBookings?: boolean): boolean => {
+    const dateTime = currentDate;
 
-export const isOffHour = (militaryTime: string, currentDate: Date, excludeRanges: ExcludeRange[]): boolean => {
-    // Convert military time string to hours and minutes
-    const hours: number = parseInt(militaryTime.slice(0, 2));
-    const minutes: number = parseInt(militaryTime.slice(2));
-    const currentTime: Date = new Date(currentDate);
-
-    // Set the military time on the currentDate
-    currentTime.setHours(hours, minutes, 0, 0);
-    
-    // Check if the currentDate falls within any of the ranges specified by excludeRanges
-    for (const range of excludeRanges) {
-        if (currentTime >= range.startExclude && currentTime <= range.endExclude) {
-            return true; // It's off hour
-        }
+    if (includeRanges.length === 0 && excludeRanges.length === 0) {
+        return false;
     }
-    return false; // It's working hour
+    const isInIncludeRanges = includeRanges.some(range => isInRange(dateTime, range));
+    const isInExcludeRanges = excludeRanges.some(range => isInRange(dateTime, range));
+
+    // if (isAllBookings && isInExcludeRanges && includeRanges.length > 0) {
+    //     return true;
+    // }
+    return isInIncludeRanges && !isInExcludeRanges;
+};
+
+const isInRange = (time: Date, range: Range): boolean => {
+    const normalizedTime = convertDateToNormal(time);
+    const normalizedRangeStart = convertDateToNormal(range.start);
+    const normalizedRangeEnd = convertDateToNormal(range.end);
+
+    return ((normalizedTime.getTime() >= normalizedRangeStart.getTime()) && (normalizedTime.getTime() <= normalizedRangeEnd.getTime()));
+};
+
+
+export const getWorkinHours = (date: string) => {
+    return dayHours.filter((day) => {
+        const militaryTime =
+            parseInt(day.military_format.slice(0, 2)) * 60 +
+            parseInt(day.military_format.slice(2));
+        return (
+            militaryTime >= 540 &&
+            militaryTime <= 1140
+        );
+    })
+}
+
+
+export const filterSchedulesInsideRange = (date: Date, schedules: ScheduleAvailable[], serviceTime: number): ScheduleAvailable[] => {
+    // Convert date string to Date object
+    const dateTime = moment(date.getTime()).utc(true).toDate();
+    const milliseconds = minutesToMilliseconds(serviceTime)
+    // Filter schedules that are inside the given date range
+    const filteredSchedules = schedules.filter(schedule => {
+        const scheduleStartTime = moment(schedule.startDate).utc(true).toDate();
+        const scheduleEndTime = moment(schedule.endDate).utc(true).toDate();
+        console.log((scheduleEndTime.getTime() / 3600000), milliseconds);
+        return dateTime.getTime() >= scheduleStartTime.getTime() && dateTime.getTime() <= scheduleEndTime.getTime() && getDiffBetween2Hours(scheduleStartTime, scheduleEndTime) >= millisecondsToHours(milliseconds);
+    });
+
+    return filteredSchedules;
+};
+
+
+
+const findNonOverlappingSchedules = (vacationSchedules: ScheduleAvailable[], workingSchedules: ScheduleAvailable[]): ScheduleAvailable[] => {
+    const vacationEmployeeEmails = vacationSchedules.map(schedule => schedule.employee.email);
+    console.log(vacationEmployeeEmails);
+
+    const nonOverlappingSchedules = workingSchedules.filter(schedule =>
+        vacationEmployeeEmails.includes(schedule.employee.email)
+    );
+
+    return nonOverlappingSchedules;
 };

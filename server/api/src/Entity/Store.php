@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\StoreRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -99,7 +100,7 @@ class Store
     #[Assert\NotBlank()]
     private ?float $longitude = null;
 
-    #[Groups(['store-read-full', 'update-companie'])]
+    #[Groups(['store-read-full'])]
     #[ORM\OneToMany(mappedBy: 'work', targetEntity: User::class, orphanRemoval: true)]
     private Collection $users;
 
@@ -108,7 +109,7 @@ class Store
     #[ORM\JoinColumn(nullable: false)]
     private ?Companie $company = null;
 
-    #[Groups([ 'store-read', 'store-read-full'])]
+    #[Groups(['store-read', 'store-read-full'])]
     #[ORM\OneToMany(mappedBy: 'store', targetEntity: Service::class, orphanRemoval: true)]
     private Collection $services;
 
@@ -117,6 +118,10 @@ class Store
 
     #[ORM\OneToMany(mappedBy: 'store', targetEntity: Booking::class)]
     private Collection $bookings;
+
+    #[Groups(['read-companie', 'store-read', 'create-stores', 'update-companie'])]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
 
     public function __construct()
     {
@@ -343,6 +348,18 @@ class Store
                 $booking->setStore(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }
