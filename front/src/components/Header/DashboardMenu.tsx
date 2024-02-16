@@ -12,7 +12,7 @@ import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slice
 import { Dialog, Transition } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { Fragment, useCallback, useEffect, useState } from 'react'
-import { Bars3Icon, BellIcon, CalendarIcon, ShoppingCartIcon, Cog6ToothIcon, HomeIcon, UsersIcon, XMarkIcon, ClockIcon, UserIcon, SparklesIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, BellIcon, CalendarIcon, ShoppingCartIcon, Cog6ToothIcon, HomeIcon, UsersIcon, XMarkIcon, ClockIcon, UserIcon, } from '@heroicons/react/24/outline'
 
 export default function DashboardMenu() {
 
@@ -43,7 +43,7 @@ export default function DashboardMenu() {
                 headers: { 'Authorization': `Bearer ${parsedSession?.token}` }
             }).then(response => response.json());
             const data = await response;
-            const invalidCompanies = data['hydra:member'].filter((company: any) => !company.isValid);
+            const invalidCompanies = data['hydra:member'].filter((company: any) => (!company.isValid && !company.refused));
             return setNotifications(invalidCompanies);
         }
     }, [userRoles, parsedSession]);

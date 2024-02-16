@@ -13,16 +13,20 @@ import { CheckIcon, IdentificationIcon, UserIcon, XMarkIcon } from "@heroicons/r
 
 export default function EmployeeDetails({ params }: { params: { employeeId: string } }) {
 
-    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
-    const userRoles = useMemo(() => Object.keys(userConfig || {}).filter(role => userConfig[role]), [userConfig]);
-
+    const userConfig = useSelector(selectCurrentUserConfig);
+    const userRoles = useMemo(
+      () =>
+        Object.keys(userConfig || {}).filter(
+          (role) => userConfig[role as keyof UserConfigType]
+        ),
+      [userConfig]
+    );
     // Get session
     const [parsedSession, setParsedSession] = useState<any>({});
     useEffect(() => {
         (async () => {
             const session = await getUserCookie(UserCookieType.SESSION);
-            const parsedSession = JSON.parse(session?.value || "{}");
-            setParsedSession(parsedSession);
+            setParsedSession(session);
         })();
     }, [])
 
