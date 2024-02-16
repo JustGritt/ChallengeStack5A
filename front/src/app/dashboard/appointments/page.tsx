@@ -1,12 +1,14 @@
 "use client";
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
+import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
 
 import UserCalendar from "@/components/Calendar/EmployeeCalendar";
 import EmployeeTableCalendar from "@/components/Calendar/EmployeeTableCalendar";
 import ClientCalendar from "@/components/Calendar/ClientCalendar";
+import { getUserCookie } from '@/lib/helpers/UserHelper';
+import { UserCookieType } from '@/types/User';
 
 export default function Page() {
   const data: {
