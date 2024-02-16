@@ -28,7 +28,7 @@ export default function NewEmployee() {
         })();
     }, []);
 
-    // Update profile
+    // create employee
     const initialValues: addEmployee = {
         firstname: "",
         email: "",
@@ -36,7 +36,7 @@ export default function NewEmployee() {
         confirmPassword: "",
     };
 
-    // Update profile
+    // Create employee
     const validationSchema = Yup.object().shape({
         firstname: Yup.string().required("Firstname is required"),
         email: Yup.string().email("Invalid email address").required("Email is required"),

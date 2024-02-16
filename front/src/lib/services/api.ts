@@ -18,11 +18,11 @@ export const api = createApi({
   ],
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,
-    prepareHeaders: async (headers, { getState, endpoint }) => {
+    prepareHeaders: async (headers, { getState, endpoint, extra }) => {
       const session = await getUserCookie(UserCookieType.SESSION);
       if (session?.token) headers.set('Authorization', `Bearer ${session?.token}`);
       headers.set("Content-Type", "application/json");
-
+      console.log(extra)
       return headers;
     },
   }),

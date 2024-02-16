@@ -17,12 +17,14 @@ import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/router";
 
 export default function NewService() {
   type StoreParams = {
     storeId: string;
   };
   const params = useParams<StoreParams>();
+  const router = useRouter()
 
   const [parsedSession, setParsedSession] = useState<any>({});
 
@@ -122,6 +124,7 @@ export default function NewService() {
             </div>
           </div>
         ));
+        router.back()
       });
   };
 
