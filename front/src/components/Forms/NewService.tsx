@@ -11,7 +11,7 @@ import { selectCurrentUser, selectCurrentUserConfig } from "@/lib/services/slice
 import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline"
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 export default function UpdateProfile() {
 
     type StoreParams = {
@@ -19,6 +19,7 @@ export default function UpdateProfile() {
     };
     const { storeId } = useParams<StoreParams>();
     const [getStoreId, setStoreId] = useState(storeId);
+    const router = useRouter();
 
     const user = useSelector(selectCurrentUser);
     const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
@@ -93,6 +94,7 @@ export default function UpdateProfile() {
                     </div>
                 </div>
             ));
+            router.back()
         })
     };
 
