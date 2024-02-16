@@ -1,6 +1,5 @@
 
-
-import { RefDivCardSearch } from "@/components/cards/search/SearchSection";
+import { RefDivCardSearch } from "@/types/ScrollDiv";
 import { Store } from "@/types/Store";
 
 export async function selectCompany(search: Store, ref: React.RefObject<RefDivCardSearch>): Promise<void> {

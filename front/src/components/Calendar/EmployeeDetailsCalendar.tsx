@@ -18,17 +18,22 @@ export default function EmployeeDetailsCalendar({ employeeId, employeeStore }: {
     const [schedules, setSchedules] = useState([]);
     const [scheduleToDelete, setScheduleToDelete] = useState<string[]>([]);
 
-    const user: any = useSelector(selectCurrentUser);
-    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
-    const userRoles = useMemo(() => Object.keys(userConfig || {}).filter(role => userConfig[role]), [userConfig]);
+    const user = useSelector(selectCurrentUser);
+    const userConfig = useSelector(selectCurrentUserConfig);
+    const userRoles = useMemo(
+      () =>
+        Object.keys(userConfig || {}).filter(
+          (role) => userConfig[role as keyof UserConfigType]
+        ),
+      [userConfig]
+    );
 
     // Get session
     const [parsedSession, setParsedSession] = useState<any>({});
     useEffect(() => {
         (async () => {
             const session = await getUserCookie(UserCookieType.SESSION);
-            const parsedSession = JSON.parse(session?.value || "{}");
-            setParsedSession(parsedSession);
+            setParsedSession(session);
         })();
     }, [])
 

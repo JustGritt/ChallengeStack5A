@@ -13,8 +13,7 @@ export default function Stores({ params }: { params: { storeId: string, serviceI
     useEffect(() => {
         (async () => {
             const session = await getUserCookie(UserCookieType.SESSION);
-            const parsedSession = JSON.parse(session?.value || "{}");
-            setParsedSession(parsedSession);
+            setParsedSession(session);
         })();
     }, [])
 

@@ -3,11 +3,11 @@ import * as Yup from "yup";
 import Link from "next/link";
 import Image from "next/image";
 import toast from "react-hot-toast";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRegisterMutation } from "@/lib/services/auth";
 import { Button } from "@/components/Ui/Button";
-import { useRouter } from "next/navigation";
 import { UserRegister } from "@/types/User";
 import { ApiErrorResponse } from "@/types/ApiBase";
-import { useRegisterMutation } from "@/lib/services/auth";
 import { Form, Field, FormikProvider, useFormik, ErrorMessage, FormikConfig } from "formik";
 
 export default function Register() {
@@ -33,11 +33,18 @@ export default function Register() {
     terms: Yup.boolean().oneOf([true], "Must Accept Terms and Conditions"),
   });
 
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams?.get("redirectUrl");
+
   const onSubmit: FormikConfig<UserRegister>["onSubmit"] = (values) => {
     register(values)
       .unwrap()
       .then((res) => {
-        router.push("login");
+        if (redirectUrl) {
+          router.push(redirectUrl);
+        } else {
+          router.push("login");
+        }
         toast.custom((t) => (
           <div
             className={`${"animate-enter"} max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
@@ -225,7 +232,11 @@ export default function Register() {
                   className="text-red-600 leading-3 text-sm"
                 />
                 <div className="flex flex-col justify-center items-center gap-2">
-                  <Button intent="default" type="submit" className="mt-4 w-full">
+                  <Button
+                    intent="default"
+                    type="submit"
+                    className="mt-4 w-full"
+                  >
                     Register
                   </Button>
                   <p className="text-black text-center text-sm font-inter">

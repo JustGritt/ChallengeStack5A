@@ -18,3 +18,10 @@ interface ServerSideComponentProp<
 interface AnyProperties {
     [prop: string]: any
 }
+
+type UserConfigType = {
+    isAdmin: boolean;
+    isWorker: boolean;
+    isOwner: boolean;
+    isClient: boolean;
+};

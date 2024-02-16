@@ -2,7 +2,11 @@ import { Company } from "./Company"
 import { Store } from "./Store"
 import { use } from 'react';
 
-type UserROLES = "ROLE_ADMIN" | "ROLE_USER" | "ROLE_SUPER_ADMIN"
+export enum USER_ROLES {
+    ROLE_ADMIN = "ROLE_ADMIN",
+    ROLE_USER = "ROLE_USER",
+    ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN"
+}
 
 export type User = {
     "@context": string,
@@ -10,7 +14,7 @@ export type User = {
     "@type": string,
     id: number,
     email: string,
-    roles: Array<UserROLES>,
+    roles: Array<USER_ROLES>,
     firstname: string,
     isValid: boolean,
     work?: Store,

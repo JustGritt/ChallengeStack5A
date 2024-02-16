@@ -1,11 +1,13 @@
 "use client";
+import SearchSection from "@/components/cards/Search/SearchSection";
 import CustomMap from "@/components/cards/map/CustomMap";
-import SearchSection, {
-  RefDivCardSearch,
-} from "@/components/cards/search/SearchSection";
+
 import { selectCompany } from "@/lib/helpers/SearchStoreHelper";
+import { RefDivCardSearch } from "@/types/ScrollDiv";
 import { Store } from "@/types/Store";
 import React, { createRef } from "react";
+
+
 
 function SearchPage() {
   const refSearchSection = createRef<RefDivCardSearch>();
