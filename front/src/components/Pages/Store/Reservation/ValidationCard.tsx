@@ -86,8 +86,7 @@ const ValidationCard: FC<ValidationCardProps> = ({
 
     const employeeToUse =
       availableEmployee.length > 0 ? availableEmployee[0] : freeSchedules?.[0];
-    
-    return
+
     try {
       await Pay({
         employee:
