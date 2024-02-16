@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Context\ExecutionContext;
 #[ApiResource(
     operations: [
         new Post(denormalizationContext: ['groups' => ['schedule-mutation']]),
-        new Patch(denormalizationContext: ['groups' => ['schedule-mutation', 'admin-patch']]),
+        #new Patch(denormalizationContext: ['groups' => ['schedule-mutation', 'admin-patch']]),
         new Delete(),
     ],
     normalizationContext: ['groups' => ['schedule-read']],
