@@ -4,11 +4,11 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import Stripe from 'stripe'
 
-const stripe = new Stripe('sk_test_51OMwURF9MmQfZRp33UMVAUgs2HEXTcvvacO67SkCBNNQP3RxGAIqOF7O9zdJPgtsVV59X7m3g6jf1YRNu0014bpL000rnpvGbn', {
+const stripe = new Stripe(`${process.env.STRIPE_SECRET_KEY}`, {
     apiVersion: '2023-10-16',
 })
 
-const webhookSecret: string = 'whsec_7118723d38a1a79f2c1310e85616b1aa756c8762e74355c8d846083a4c610469'
+const webhookSecret: string = `${process.env.STRIPE_WEBHOOK_SECRET}`;
 
 export const config = {
     api: {
@@ -40,13 +40,13 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         if (event.type === 'payment_intent.succeeded') {
             const paymentIntent = event.data.object as Stripe.PaymentIntent
-            console.log('PaymentIntent was successful!')
+            // console.log('PaymentIntent was successful!')
         } else if (event.type === 'payment_intent.payment_failed') {
             const paymentIntent = event.data.object as Stripe.PaymentIntent
-            console.log('PaymentIntent was not successful!')
+            // console.log('PaymentIntent was not successful!')
         } else if (event.type === 'charge.succeeded') {
             const charge = event.data.object as Stripe.Charge
-            console.log('Charge was successful!')
+            // console.log('Charge was successful!')
         } else {
             console.warn(`Unhandled event type: ${event.type}`)
         }

@@ -71,7 +71,7 @@ const data = {
   ],
 };
 
-const stripePromise = loadStripe('pk_test_51OMwURF9MmQfZRp3FWy76r8hxd5EsxW4GJGN2oXBz8L2Sp97UohCfqcGokB1kGfdX8E5YMMkwd85Dy931aEOhNdU00046RjC2C');
+const stripePromise = loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`);
 
 const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
   params: { id },
@@ -83,25 +83,25 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
     return notFound();
   }
 
-  const handleClick = async () => {
-    const { sessionId } = await fetch("/api/checkout/session", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        employee: "employee",
-        service: "service",
-        startDate: "startDate",
-        amount: 100,
-        serviceName: "serviceName",
-      })
-    }).then((res) => res.json());
-    const stripe = await stripePromise;
-    const { error } = await stripe!.redirectToCheckout({
-      sessionId,
-    });
-  }
+  // const handleClick = async () => {
+  //   const { sessionId } = await fetch("/api/checkout/session", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       employee: "employee",
+  //       service: "service",
+  //       startDate: "startDate",
+  //       amount: 100,
+  //       serviceName: "serviceName",
+  //     })
+  //   }).then((res) => res.json());
+  //   const stripe = await stripePromise;
+  //   const { error } = await stripe!.redirectToCheckout({
+  //     sessionId,
+  //   });
+  // }
 
   return (
     <main className="w-full z-40 flex flex-col bg-white py-4 px-3 items-center">
@@ -230,13 +230,13 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
               )}
             </div>
           </div>
-          <div>
+          {/* <div>
             <Button className="flex w-full max-w-[350px] justify-center items-center" onClick={handleClick}>
               Pay your order
               <span>|</span>
               <StripeLogo className={`w-12`} />
             </Button>
-          </div>
+          </div> */}
         </div>
       </section>
     </main>

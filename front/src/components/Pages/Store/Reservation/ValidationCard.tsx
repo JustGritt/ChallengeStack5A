@@ -13,6 +13,8 @@ import { cn } from "@/lib/utils";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { BooKingPost } from "@/types/Booking";
 import Pay from "@/components/payment/payment";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "@/lib/services/slices/authSlice";
 
 type ValidationCardProps = {
   service: Service;
@@ -36,6 +38,8 @@ const ValidationCard: FC<ValidationCardProps> = ({
   ] = useCreateBookingMutation();
 
   const router = useRouter();
+  const user = useSelector(selectCurrentUser);
+
   const handleSubmit = async () => {
     await Pay({
       employee: "/users/" + employee,
@@ -43,6 +47,7 @@ const ValidationCard: FC<ValidationCardProps> = ({
       startDate: startDate.toISOString(),
       amount: service.price,
       serviceName: service.name,
+      email: user?.email,
     });
   };
   return (

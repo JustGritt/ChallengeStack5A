@@ -6,11 +6,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { HydraError } from "@/types/HydraPaginateResp";
 import { useToast } from "@/components/Ui/use-toast";
 import useSWR from 'swr';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getUserCookie } from '@/lib/helpers/UserHelper';
 import { UserCookieType } from '@/types/User';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle, faCross, faFaceAngry, faXmarkCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faCross, faFaceAngry, faSadCry, faSadTear, faXmarkCircle } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import { selectCurrentUser } from '@/lib/services/slices/authSlice';
 import { useSelector } from 'react-redux';
@@ -24,6 +24,7 @@ export default function Result() {
 
     const user = useSelector(selectCurrentUser);
 
+    const [callError, setCallError] = useState<string | null>(null);
 
     const { data, error } = useSWR(
         sessionId
@@ -41,9 +42,14 @@ export default function Result() {
     }
 
     const createBookingServer = async (payload: BooKingPost) => {
-        const session = await getUserCookie(UserCookieType.SESSION);
-        console.log("🚀 ~ createBookingServer ~ session:", session)
-
+        let session;
+        try {
+            session = await getUserCookie(UserCookieType.SESSION);
+            // console.log("🚀 ~ createBookingServer ~ session:", session);
+        } catch (error) {
+            throw new Error('Failed to retrieve user session');
+        }
+    
         try {
             const res = await fetch('/api/services/booking', {
                 method: 'POST',
@@ -53,20 +59,30 @@ export default function Result() {
                 },
                 body: JSON.stringify(payload),
             });
+    
+            // Check if the response is ok (status in the range 200-299).
+            if (!res.ok) {
+                const data = await res.json(); // Attempt to read the response body.
+                const errorMessage = data.detail || 'An unknown error occurred during booking';
+                throw new Error(errorMessage);
+            }
+    
             const data = await res.json();
-            return data;
+            return data; // Assuming 201 is the only success code, otherwise check for res.status === 201 explicitly if needed.
+        } catch (error: any) {
+            // Re-throwing the error to be handled by the caller.
+            console.error("Error in createBookingServer:", error);
+            throw new Error(typeof error === 'string' ? error : (error).message || 'Error occurred during booking process');
         }
-        catch (error) {
-        }
-    }
-    console.log(data)
+    };
+    // console.log(data)
     // useEffect(() => {
     // })
     useEffect(() => {
         window.history.replaceState({}, document.title, window.location.pathname)
         if (data) {
             const { session } = data
-            if (session.payment_status === "paid" && session.payment_intent && session.customer_email === user?.email) {
+            if (session.payment_status === "paid" && session.payment_intent) {
                 const intentPayment = session.payment_intent;
                 createBookingServer({
                     employee: session.metadata.employee,
@@ -93,14 +109,17 @@ export default function Result() {
                         });
                         router.push(`/dashboard/appointments`);
                     })
-                    .catch((error: { data: HydraError }) => {
+                    .catch((error) => {
+                        // console.log("🚀 ~ useEffect ~ error:", error)
+                        const errorMessage = error instanceof Error ? error.message : String(error) || "Désolé, quelque chose ne s'est pas bien passe.";
+                        setCallError(errorMessage);
                         toast({
                             className: cn(
                                 "fixed top-4 z-[100] flex max-h-screen w-full flex-col-reverse py-4 px-4 right-4  sm:flex-col md:max-w-[420px]"
                             ),
                             title: "Une erreur est survenue.",
                             description:
-                                error?.data.detail ??
+                                (errorMessage) ??
                                 "Désolé, quelque chose ne s'est pas bien passe.",
                             variant: "destructive",
                         });
@@ -118,9 +137,8 @@ export default function Result() {
                     {data ? (
                         <pre>
                             {
-                                data.session.payment_status === "paid"
-                                    && data.session.payment_intent.status === "succeeded"
-                                    && data.session.customer_email === user?.email ? (
+                                (data.session.payment_status === "paid"
+                                    && data.session.payment_intent.status === "succeeded") && !callError ? (
                                     <div className='flex flex-col justify-center gap-2'>
                                         <FontAwesomeIcon className="text-green-500 text-9xl animate-pulse" icon={faCheckCircle} />
                                         <strong className="mt-4 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
@@ -130,7 +148,22 @@ export default function Result() {
                                             The payment has been successfully processed, your booking is being created
                                         </span>
                                     </div>
-                                ) : (
+                                ) : 
+                                (data.session.payment_status === "paid"
+                                && data.session.payment_intent.status === "succeeded") && callError ? (
+                                    <div className='flex flex-col justify-center gap-2'>
+                                        <FontAwesomeIcon className="text-yellow-500 text-9xl animate-pulse" icon={faSadTear} />
+                                        <strong className="mt-4 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                                            Payment failed
+                                        </strong>
+                                        <span>
+                                            {callError}
+                                            <br />
+                                            A refund will be issued shortly
+                                        </span>
+                                    </div>
+                                )
+                                : (
                                     <div className='flex flex-col justify-center gap-2'>
                                         <FontAwesomeIcon className="text-red-500 text-9xl animate-pulse" icon={faXmarkCircle} />
                                         <strong className="mt-4 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
