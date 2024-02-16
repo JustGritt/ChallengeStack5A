@@ -76,6 +76,13 @@ class BookingStateProcessor implements ProcessorInterface
                 if ($booking->getEmployee() === $employee && $booking->getStartDate()->format('Y-m-d H:i') === $data->getStartDate()->format('Y-m-d H:i')) {
                     throw new AccessDeniedException('The employee is already booked at this time. Please choose another time.');
                 }
+                //check if there is overlap of booking time
+                $cloneStartDate = clone $data->getStartDate();
+                $cloneEndDate = clone $data->getStartDate();
+                $cloneEndDate->add(new \DateInterval('PT' . $service->getTime() . 'M'));
+                if ($booking->getEmployee() === $employee && $cloneStartDate >= $booking->getStartDate() && $cloneStartDate <= $booking->getEndDate()) {
+                    throw new AccessDeniedException('The employee is already booked at this time. Please choose another time.');
+                }
             }
 
             //check if the employee is available at the time
@@ -94,6 +101,7 @@ class BookingStateProcessor implements ProcessorInterface
             if (count($employeeSchedules) === 0) {
                 throw new AccessDeniedException('The employee is not available at this time');
             }
+        
 
             $data->setCustomer($user);
             $serviceTime = $service->getTime();
