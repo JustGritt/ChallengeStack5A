@@ -13,6 +13,7 @@ export interface Booking {
     startDate: string;
     endDate: string;
     amount: number;
+    store: string;
 }
 
 export type BooKingPost = {
