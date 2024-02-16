@@ -4,16 +4,21 @@ import Link from "next/link";
 import Breadcrumb from "@/components/Header/Breadcrumb";
 import { Store } from "@/types/Store";
 import { useState, useEffect } from 'react';
+import { selectCurrentUserConfig } from "@/lib/services/slices/authSlice";
+import { useSelector } from "react-redux";
 
 export default function Stores({ params }: { params: { storeId: string } }) {
 
     const [store, setStore] = useState<Store | null>(null);
+    const userConfig = useSelector(selectCurrentUserConfig);
     useEffect(() => {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/stores/${params.storeId}`)
             .then(response => response.json())
             .then(data =>
                 setStore(data));
     }, [params.storeId]);
+
+
 
     return (
         <section className="lg:pl-72 block min-h-screen">
