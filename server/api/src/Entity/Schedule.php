@@ -17,12 +17,13 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use App\State\ScheduleStateProcessor;
+use Symfony\Component\Validator\Context\ExecutionContext;
 
 #[ORM\Entity(repositoryClass: ScheduleRepository::class)]
 #[ApiResource(
     operations: [
         new Post(denormalizationContext: ['groups' => ['schedule-mutation']]),
-        new Patch(denormalizationContext: ['groups' => ['schedule-mutation']]),
+        new Patch(denormalizationContext: ['groups' => ['schedule-mutation', 'admin-patch']]),
         new Delete(),
     ],
     normalizationContext: ['groups' => ['schedule-read']],
@@ -55,6 +56,8 @@ class Schedule
     #[Assert\NotNull]
     #[Groups(['schedule-read', 'schedule-mutation'])]
     #[Assert\Type("\DateTimeInterface")]
+    //should be a date string in the "Y-m-d H:i:s" and must be grater or equal to 9:00 and less than 18:00
+    #[Assert\GreaterThanOrEqual('09:00:00', message: 'The start date must be after 9:00')]
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -65,6 +68,7 @@ class Schedule
      */
     #[Assert\Type("\DateTimeInterface")]
     #[Assert\GreaterThan(propertyPath: 'startDate', message: 'The end date must be after the start date')]
+    #[Assert\Callback(callback: [self::class, 'validateEndDate'])]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\Column]
@@ -81,6 +85,10 @@ class Schedule
     #[Groups(['schedule-read', 'schedule-mutation'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Store $store = null;
+
+    #[Groups(['admin-patch', 'schedule-read'])]
+    #[ORM\Column()]
+    private bool $refused = false;
 
 
     public function getId(): ?int
@@ -146,6 +154,30 @@ class Schedule
         $this->store = $store;
 
         return $this;
+    }
+
+    public function isRefused(): bool
+    {
+        return $this->refused;
+    }
+
+    public function setRefused(bool $refused): static
+    {
+        $this->refused = $refused;
+
+        return $this;
+    }
+
+    public static function validateEndDate($value, ExecutionContext $context): void
+    {
+        if ($value instanceof \DateTimeInterface) {
+            $endTime = $value->format('H:i:s');
+
+            if ($endTime > '19:00:00') {
+                $context->buildViolation('The end date must be before 19:00')
+                    ->addViolation();
+            }
+        }
     }
 
 }

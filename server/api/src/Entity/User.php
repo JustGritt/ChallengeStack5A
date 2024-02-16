@@ -25,6 +25,7 @@ use App\Validator\PasswordPutGroupsGenerator;
     operations: [
         new Get(uriTemplate: '/users/me', name: "getuserinfo", normalizationContext: ['groups' => ['read-user-mutation']]),
         new Get(normalizationContext: ['groups' => ['read-user']]),
+        new GetCollection(normalizationContext: ['groups' => ['read-user-admin']], security: "is_granted('ROLE_SUPER_ADMIN')"),
         new Post(denormalizationContext: ['groups' => ['create-user']]),
         new Patch(denormalizationContext: ['groups' => ['update-user']]),
     ],
@@ -43,7 +44,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[Assert\Email()]
-    #[Groups(['read-user-as-admin', 'create-user', 'read-user-mutation',  'store-read-full', 'read-companie', 'add-user-to-store', 'schedule-read', 'booking-read-full'])]
+    #[Groups(['read-user-as-admin', 'create-user', 'read-user-mutation',  'store-read-full', 'read-companie', 'add-user-to-store', 'schedule-read', 'booking-read-full', 'read-user-admin'])]
     #[Assert\NotBlank()]
     #[Assert\Email()]
     #[ORM\Column(length: 180, unique: true)]
@@ -69,11 +70,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(min: 6, max: 255)]
     private ?string $plainPassword = null;
 
-    #[Groups(['read-user',  'update-user', 'read-user-mutation'])]
+    #[Groups(['read-user',  'update-user', 'read-user-mutation', 'read-user-admin'])]
     #[ORM\Column(nullable: true)]
     private ?bool $isValid = false;
 
-    #[Groups(['read-user', 'update-user', 'read-user-mutation', 'create-user'])]
+    #[Groups(['read-user', 'update-user', 'read-user-mutation', 'create-user', 'read-user-admin'])]
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Store $work = null;
 
@@ -87,10 +88,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Booking::class)]
     private Collection $bookings;
 
+    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Review::class)]
+    private Collection $reviews;
+
     public function __construct()
     {
         $this->schedules = new ArrayCollection();
         $this->bookings = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     
@@ -282,6 +287,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($booking->getCustomer() === $this) {
                 $booking->setCustomer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): static
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setCustomer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): static
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getCustomer() === $this) {
+                $review->setCustomer(null);
             }
         }
 

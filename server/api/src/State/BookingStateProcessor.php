@@ -11,6 +11,9 @@ use App\Entity\User;
 use ApiPlatform\Metadata\DeleteOperationInterface;
 use ApiPlatform\Metadata\PatchOperationInterface;
 use ApiPlatform\Metadata\Post;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Booking;
+use App\Entity\Schedule;
 
 class BookingStateProcessor implements ProcessorInterface
 {
@@ -20,6 +23,7 @@ class BookingStateProcessor implements ProcessorInterface
         private ProcessorInterface $persistProcessor,
         #[Autowire('@api_platform.doctrine.orm.state.remove_processor')]
         private ProcessorInterface $removeProcessor,
+        private EntityManagerInterface $entityManager,
         private Security $security
     )
     {
@@ -39,6 +43,26 @@ class BookingStateProcessor implements ProcessorInterface
                 throw new AccessDeniedException('The employee is not working in the store');
             }
 
+            if (null !== $user && null !== $user->getWork()) {
+                throw new AccessDeniedException('Sorry you cannot book a service, we currently do not support booking for employees.');
+            }
+
+            if (null !== $user && null !== $user->getCompanie()) {
+                throw new AccessDeniedException('Sorry you cannot book a service, we currently do not support booking for companies owners.');
+            }
+
+            //round to the nearest 30 minutes e.g 10:15 => 10:00 and 10:45 => 11:00
+            $roundedMinutes = floor($data->getStartDate()->format('i') / 30) * 30;
+            $roundedStartDate = clone $data->getStartDate();
+            $roundedStartDate->setTime(
+                $data->getStartDate()->format('H'),
+                $roundedMinutes,
+                0
+            );
+
+            $data->setStartDate($roundedStartDate);
+           
+
             //check if the user as already a booking at the same time for the same service
             $bookings = $store->getBookings();
             foreach ($bookings as $booking) {
@@ -47,13 +71,29 @@ class BookingStateProcessor implements ProcessorInterface
                 }
             }
 
-            //round to the nearest 30 minutes e.g 10:15 => 10:00 and 10:45 => 11:00
-            $roundedMinutes = round($data->getStartDate()->format('i') / 30) * 30;
-            $data->getStartDate()->setTime(
-                $data->getStartDate()->format('H'),
-                $roundedMinutes,
-                0
-            );        
+            //check that the employye is not already booked at the same time
+            foreach ($bookings as $booking) {
+                if ($booking->getEmployee() === $employee && $booking->getStartDate()->format('Y-m-d H:i') === $data->getStartDate()->format('Y-m-d H:i')) {
+                    throw new AccessDeniedException('The employee is already booked at this time. Please choose another time.');
+                }
+            }
+
+            //check if the employee is available at the time
+            $serviceTime = $service->getTime();
+            $cloneStartDate = clone $data->getStartDate();
+            $employeeSchedules = $this->entityManager->getRepository(Schedule::class)->createQueryBuilder('s')
+                ->where('s.employee = :employee')
+                ->andWhere('s.startDate <= :startTime')
+                ->andWhere('s.endDate >= :endTime')
+                ->setParameter('employee', $employee)
+                ->setParameter('startTime', $data->getStartDate())
+                ->setParameter('endTime', $cloneStartDate->add(new \DateInterval('PT' . $serviceTime . 'M')))
+                ->getQuery()
+                ->getResult();
+
+            if (count($employeeSchedules) === 0) {
+                throw new AccessDeniedException('The employee is not available at this time');
+            }
 
             $data->setCustomer($user);
             $serviceTime = $service->getTime();

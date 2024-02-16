@@ -1,12 +1,12 @@
 import FullCalendar from '@fullcalendar/react';
 import listPlugin from '@fullcalendar/list';
-import { useEffect, useState } from 'react';
+import { useSelector } from "react-redux";
 import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
+import { useEffect, useState } from 'react';
 import { selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
-import { useSelector } from "react-redux";
 
-export default function UserCalendar() {
+export default function DashboardCalendar() {
 
     const userConfig = useSelector(selectCurrentUserConfig);
     const [bookings, setBookings] = useState<any[]>([])
@@ -33,7 +33,7 @@ export default function UserCalendar() {
     }, [parsedSession, bookingFetched, userConfig])
 
     const getUserBookings = (id: number, token: string) => {
-        fetch(`https://api.odicylens.com/users/${id}/bookings`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}/bookings`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -45,7 +45,7 @@ export default function UserCalendar() {
     }
 
     const getEmployeeBookings = (id: number, token: string) => {
-        fetch(`https://api.odicylens.com/employee/${id}/bookings`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/employee/${id}/bookings`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`

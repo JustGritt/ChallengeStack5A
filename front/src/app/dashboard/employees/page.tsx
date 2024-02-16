@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from 'react';
 export default function Employees() {
 
     const userConfig = useSelector(selectCurrentUserConfig);
+    const userRoles = useMemo(() => Object.keys(userConfig || {}).filter((role) => userConfig[role as keyof UserConfigType]), [userConfig]);
 
     // Get session
     const [parsedSession, setParsedSession] = useState<any>({});
@@ -24,8 +25,8 @@ export default function Employees() {
     const [employeesFetched, setEmployeesFetched] = useState(false);
     useEffect(() => {
         const fetchEmployees = async () => {
-            if (!employeesFetched && parsedSession?.token && userConfig.isAdmin) {
-                fetch(`https://api.odicylens.com/company/2/employee`, {
+            if (!employeesFetched && parsedSession?.token && userRoles.includes("isAdmin")) {
+                fetch(`${process.env.NEXT_PUBLIC_API_URL}/company/2/employee`, {
                     method: "GET",
                     headers: {
                         'Authorization': `Bearer ${parsedSession?.token}`
@@ -37,8 +38,8 @@ export default function Employees() {
                 setEmployeesFetched(true);
             }
 
-            if (!employeesFetched && parsedSession?.token && (userConfig.isOwner || userConfig.isAdmin)) {
-                fetch(`https://api.odicylens.com/company/${parsedSession?.user?.companie?.id}/employee`, {
+            if (!employeesFetched && parsedSession?.token && (userRoles.includes("isOwner") || userRoles.includes("isWorker"))) {
+                fetch(`${process.env.NEXT_PUBLIC_API_URL}/company/${parsedSession?.user?.companie?.id}/employee`, {
                     method: "GET",
                     headers: {
                         'Authorization': `Bearer ${parsedSession?.token}`

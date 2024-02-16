@@ -9,9 +9,11 @@ export default function Stores({ params }: { params: { storeId: string } }) {
 
     const [store, setStore] = useState<Store | null>(null);
     useEffect(() => {
-        fetch(`https://api.odicylens.com/stores/${params.storeId}`)
+       
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/stores/${params.storeId}`)
             .then(response => response.json())
-            .then(data => setStore(data));
+            .then(data =>            
+                setStore(data));
     }, [params.storeId]);
 
     return (
@@ -46,7 +48,7 @@ export default function Stores({ params }: { params: { storeId: string } }) {
 
                                     <div className="flex items-center justify-between">
                                         <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4 inline-block">
-                                            Employees
+                                            Employees ({store.users.length})
                                         </h2>
                                         <div className="flex items-center justify-between gap-4">
                                             <a href={`/dashboard/stores/${params.storeId}/employees/add`} className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">
@@ -55,7 +57,7 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                         </div>
                                     </div>
 
-                                    <div className="max-w-screen-xl mx-auto lg:pt-8">
+                                    <div className="mx-auto lg:pt-8">
                                         <ul className="bg-white dark:bg-gray-700 rounded-xl flex flex-col gap-4">
                                             {
                                                 store.users?.length === 0 ? (
@@ -83,7 +85,7 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                 <div className="mx-auto bg-white dark:bg-slate-800 px-8 py-8 rounded-xl shadow border mt-4">
                                     <div className="flex items-center justify-between">
                                         <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4 inline-block">
-                                            Services
+                                            Services ({store.services.length})
                                         </h2>
 
                                         <div className="flex items-center justify-between gap-4">
@@ -97,10 +99,10 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                         </div>
                                     </div>
 
-                                    <div className="max-w-screen-xl mx-auto lg:pt-8">
+                                    <div className="mx-auto lg:pt-8">
                                         <ul className="flex flex-col gap-4">
                                             {
-                                                store.services?.length > 1 ? (store.services.slice(0, 3).map((service) => (
+                                                store.services.length > 0 ? (store.services.slice(0, 3).map((service) => (
                                                     <a href={`/dashboard/stores/${params.storeId}/services/${service.id}`} key={service.id}>
                                                         <li key={service.id} className="flex justify-between gap-x-6 py-5 hover:bg-gray-100 w-full rounded shadow">
                                                             <div className="min-w-0 flex flex-auto items-center justify-between px-6">
@@ -111,7 +113,7 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                                     </a>
                                                 ))) : (
                                                     <div>
-                                                        <p className="text-center">No employees found</p>
+                                                        <p className="text-center">No stores found</p>
                                                     </div>
                                                 )
                                             }
