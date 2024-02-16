@@ -19,6 +19,12 @@ import {
 import { AddressAutofill } from "@mapbox/search-js-react";
 import { AddressAutofillProps } from "@mapbox/search-js-react/dist/components/AddressAutofill";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+const AddressAutofillComponent = dynamic(
+  () => import("@mapbox/search-js-react").then((mod) => mod.AddressAutofill) as any,
+  { ssr: false }
+)
 
 export default function NewStore() {
   const initialValues: CreateStore = {
@@ -72,7 +78,7 @@ export default function NewStore() {
 
   const accessToken = process.env.NEXT_PUBLIC_MAPBOX_API_KEY;
 
-  const AddressAutofilComp = AddressAutofill as React.FC<AddressAutofillProps>;
+  const AddressAutofilComp = AddressAutofillComponent as React.FC<AddressAutofillProps>;
 
   return (
     <section className="lg:pl-72 block min-h-screen">
