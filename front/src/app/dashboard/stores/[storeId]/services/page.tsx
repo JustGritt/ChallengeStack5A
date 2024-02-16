@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 
 export default function EditStoreServices({ params }: { params: { storeId: string } }) {
 
-    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
+    const userConfig = useSelector(selectCurrentUserConfig);
 
     const [store, setStore] = useState<Store | null>(null);
     useEffect(() => {
