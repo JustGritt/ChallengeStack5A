@@ -9,8 +9,8 @@ import { useRouter } from "next/navigation";
 export default function EditStoreServices() {
     const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
     
+    const router = useRouter();
     if (!userConfig.isOwner) {
-        const router = useRouter();
         router.push("/dashbaord");
     }
 

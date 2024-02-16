@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/Ui/Button";
 import { useSelector } from 'react-redux';
 import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
@@ -36,7 +35,7 @@ export default function Notifications() {
                     .then(data => {
                         if (data && data['hydra:member']) {
                             data['hydra:member'].map((company: any) => {
-                                if (!company.isValid) setNotifications(notifications => ([...notifications, company]))
+                                if (!company.isValid && !company.refused) setNotifications(notifications => ([...notifications, company]))
                             })
                         }
                     })
@@ -58,7 +57,6 @@ export default function Notifications() {
                             notifications.length > 0 ? (
                                 notifications.map((notification: any) => (
                                     <li className="flex items-center mb-6" key={notification.id}>
-
                                         <div className="w-full flex justify-between items-center">
                                             <h3 className="flex items-center text-lg font-semibold text-gray-900 dark:text-white">
                                                 <span className="bg-yellow-100 text-yellow-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Waiting for validation</span>

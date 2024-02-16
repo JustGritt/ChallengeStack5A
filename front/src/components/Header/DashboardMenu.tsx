@@ -43,7 +43,7 @@ export default function DashboardMenu() {
                 headers: { 'Authorization': `Bearer ${parsedSession?.token}` }
             }).then(response => response.json());
             const data = await response;
-            const invalidCompanies = data['hydra:member'].filter((company: any) => !company.isValid);
+            const invalidCompanies = data['hydra:member'].filter((company: any) => (!company.isValid && !company.refused));
             return setNotifications(invalidCompanies);
         }
     }, [userRoles, parsedSession]);
