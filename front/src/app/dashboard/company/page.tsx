@@ -41,15 +41,6 @@ export default function Companies() {
     [userConfig]
   );
 
-  // Get session
-  const [parsedSession, setParsedSession] = useState<any>({});
-  useEffect(() => {
-    (async () => {
-      const session = await getUserCookie(UserCookieType.SESSION);
-      const parsedSession = JSON.parse(session?.value || "{}");
-      setParsedSession(parsedSession);
-    })();
-  }, []);
 
   useEffect(() => {
     const fetchCompanies = async (token: string) => {
@@ -86,8 +77,7 @@ export default function Companies() {
     };
 
     (async () => {
-      const session = await getUserCookie(UserCookieType.SESSION);
-      const parsedSession = JSON.parse(session?.value || "{}");
+      const parsedSession = await getUserCookie(UserCookieType.SESSION);
 
       if (userConfig.isAdmin && parsedSession.token) {
         fetchCompanies(parsedSession.token);
@@ -100,8 +90,8 @@ export default function Companies() {
       ) {
         fetchCompanyInfo(parsedSession.token, parsedSession.user.companie.id);
         fetchCompanyEmployees(
-          parsedSession.token,
-          parsedSession.user.companie.id
+            parsedSession.token,
+            parsedSession.user.companie.id
         );
       }
     })();

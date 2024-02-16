@@ -25,8 +25,7 @@ export default function CompanyDetails({ params }: { params: { companyId: string
     const [parsedSession, setParsedSession] = useState<any>({});
     useEffect(() => {
         (async () => {
-            const session = await getUserCookie(UserCookieType.SESSION);
-            const parsedSession = JSON.parse(session?.value || "{}");
+            const parsedSession = await getUserCookie(UserCookieType.SESSION);
             setParsedSession(parsedSession);
         })();
     }, [])

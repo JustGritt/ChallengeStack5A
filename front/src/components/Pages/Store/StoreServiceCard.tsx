@@ -1,6 +1,7 @@
 import { Button } from "@/components/Ui/Button";
 import { humanizeMinutes } from "@/lib/helpers/utils";
 import { Service } from "@/types/Service";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { FC } from "react";
 
@@ -23,14 +24,10 @@ const StoreServicesCard: FC<StoreServiceCardProps> = ({ services }) => {
               {humanizeMinutes(service?.time)} • {service.price}€
             </span>
             <div>
-              <Button
-                onClick={() => {
-                  router.push(
-                    `/stores/${service.store}/services/${service.id}`
-                  );
-                }}
-              >
-                Choisir
+              <Button>
+                <Link href={`/stores/${service.store}/services/${service.id}`}>
+                  Choisir
+                </Link>
               </Button>
             </div>
           </div>

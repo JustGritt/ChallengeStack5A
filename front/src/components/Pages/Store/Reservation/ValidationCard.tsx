@@ -1,6 +1,9 @@
 import { Button } from "@/components/Ui/ButtonShadcn";
 import Card from "@/components/cards/CardBase";
-import { useCreateBookingMutation } from "@/lib/services/bookings";
+import {
+  useCreateBookingMutation,
+  useGetStoreBookingsQuery,
+} from "@/lib/services/bookings";
 import { Service } from "@/types/Service";
 import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,7 +12,18 @@ import React, { FC, useCallback } from "react";
 import { useToast } from "@/components/Ui/use-toast";
 import { HydraError } from "@/types/HydraPaginateResp";
 import { cn } from "@/lib/utils";
-import { useGetStoreSchedulesQuery } from "@/lib/services/stores";
+import {
+  useGetStoreFreeSchedulesQuery,
+  useGetStoreSchedulesQuery,
+  useLazyGetStoreFreeSchedulesQuery,
+} from "@/lib/services/stores";
+import { Schedule } from "@/types/Schedule";
+import {
+  filterSchedulesInsideRange,
+  findAvailableEmployees,
+  findAvailableEmployees_,
+} from "@/lib/helpers/CalendarCarousselHelper";
+import { removeKeyCookie, removeUserCookie } from "@/lib/helpers/UserHelper";
 
 type ValidationCardProps = {
   service: Service;
@@ -35,31 +49,43 @@ const ValidationCard: FC<ValidationCardProps> = ({
   const { data: schedules, isFetching: isSchedulesLoading } =
     useGetStoreSchedulesQuery(service.store.split("/")[2]);
 
+  const { data: storeBookings, isFetching: isStoreBookingsLoading } =
+    useGetStoreBookingsQuery(service.store.split("/")[2]);
+
+  const { data: freeSchedules, isFetching: isFreeSchedulesLoading } =
+    useGetStoreFreeSchedulesQuery(service.store.split("/")[2]);
+
   const router = useRouter();
 
   const handleSubmit = useCallback(async () => {
-    if (!schedules) return;
-    const availableEmployee = schedules!["hydra:member"]
-      .map((schedule) => {
-        if (
-          new Date(schedule.startDate).getTime() <=
-            new Date(startDate).getTime() &&
-          new Date(schedule.endDate).getTime() >= new Date(startDate).getTime()
-        ) {
-          return schedule.employee;
-        }
-      })
-      .filter((employee) => employee !== undefined)[0];
+    const myDate = new Date(
+      startDate.getTime() + startDate.getTimezoneOffset() * 60000
+    )
+      .toISOString()
+      .slice(0, -1)
+      .replace("T", " ");
+
+    const availableEmployee = filterSchedulesInsideRange(
+      startDate,
+      freeSchedules ?? []
+    );
+
+    const employeeToUse =
+      availableEmployee.length > 0 ? availableEmployee[0] : freeSchedules?.[0];
+    
+
     await createBooking({
       employee:
         employee === "no-one"
-          ? `/users/${availableEmployee?.id}`
+          ? `/users/${employeeToUse?.employee.id}`
           : `/users/${employee}`,
       service: "/services/" + service.id,
-      startDate: startDate.toISOString(),
+      startDate: myDate,
     })
       .unwrap()
       .then((resp) => {
+        removeKeyCookie("collaboratorChoosen");
+        removeKeyCookie("dateRdv");
         toast({
           className: cn(
             "fixed top-4 z-[100] flex max-h-screen w-full flex-col-reverse py-4 px-4 right-4  sm:flex-col md:max-w-[420px]"
@@ -90,7 +116,7 @@ const ValidationCard: FC<ValidationCardProps> = ({
           variant: "destructive",
         });
       });
-  }, [schedules]);
+  }, [schedules, storeBookings, employee, freeSchedules, startDate, service]);
 
   return (
     <section className="flex flex-col w-full">

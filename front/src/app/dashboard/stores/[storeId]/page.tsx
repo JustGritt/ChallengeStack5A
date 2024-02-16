@@ -31,12 +31,12 @@ export default function Stores({ params }: { params: { storeId: string } }) {
 
                                     <div className=" flex justify-end items-end mt-4 gap-8">
                                         <div className="flex flex-col items-center justify-center">
-                                            <strong className="mb-2 text-3xl md:text-4xl font-extrabold">{store.users.length}</strong>
+                                            <strong className="mb-2 text-3xl md:text-4xl font-extrabold">{store.users?.length}</strong>
                                             <span className="font-light text-gray-500 dark:text-gray-400">Employees</span>
                                         </div>
 
                                         <div className="flex flex-col items-center justify-center">
-                                            <strong className="mb-2 text-3xl md:text-4xl font-extrabold">{store.services.length}</strong>
+                                            <strong className="mb-2 text-3xl md:text-4xl font-extrabold">{store.services?.length}</strong>
                                             <span className="font-light text-gray-500 dark:text-gray-400">Services</span>
                                         </div>
                                     </div>
@@ -58,10 +58,10 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                     <div className="max-w-screen-xl mx-auto lg:pt-8">
                                         <ul className="bg-white dark:bg-gray-700 rounded-xl flex flex-col gap-4">
                                             {
-                                                store.users.length === 0 ? (
+                                                store.users?.length === 0 ? (
                                                     <p>No employees yet</p>
                                                 ) : (
-                                                    store.users.slice(0, 3).map((user, index) => (
+                                                    store.users?.slice(0, 3).map((user, index) => (
                                                         <a href={`/dashboard/stores/${store?.id}/employees/${user.id}`} key={user.id}>
                                                             <li className="flex justify-between gap-6 w-full rounded px-4 hover:bg-gray-100 shadow">
                                                                 <div className="flex min-w-0 gap-4 py-4">
@@ -100,7 +100,7 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                     <div className="max-w-screen-xl mx-auto lg:pt-8">
                                         <ul className="flex flex-col gap-4">
                                             {
-                                                store.services.length > 1 ? (store.services.slice(0, 3).map((service) => (
+                                                store.services?.length > 1 ? (store.services.slice(0, 3).map((service) => (
                                                     <a href={`/dashboard/stores/${params.storeId}/services/${service.id}`} key={service.id}>
                                                         <li key={service.id} className="flex justify-between gap-x-6 py-5 hover:bg-gray-100 w-full rounded shadow">
                                                             <div className="min-w-0 flex flex-auto items-center justify-between px-6">

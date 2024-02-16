@@ -8,7 +8,7 @@ export interface Booking {
     "@context": string;
     id: number;
     customer: HydraResp<Pick<User, "email">>;
-    employee: HydraResp<Pick<User, "email">>;
+    employee: HydraResp<Pick<User, "email"| "id">>;
     service: HydraResp<Pick<Service, "name">>;
     startDate: string;
     endDate: string;

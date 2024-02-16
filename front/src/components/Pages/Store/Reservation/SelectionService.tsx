@@ -18,7 +18,6 @@ import Card from "@/components/cards/CardBase";
 import ErrorBaseShow from "@/components/Errors/ErrorBaseShow";
 import { getUserCookie, setUserCookie } from "@/lib/helpers/UserHelper";
 import { Service } from "@/types/Service";
-import { randomUUID } from "crypto";
 
 type SelectionServiceProps = {
   idStore: string;

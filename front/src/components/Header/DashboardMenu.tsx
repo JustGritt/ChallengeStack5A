@@ -49,14 +49,14 @@ export default function DashboardMenu() {
   const [parsedSession, setParsedSession] = useState<any>({});
   useEffect(() => {
     (async () => {
-      const session = await getUserCookie(UserCookieType.SESSION);
+      const parsedSession = await getUserCookie(UserCookieType.SESSION);
       if (
         userConfig.roles.includes(USER_ROLES.ROLE_ADMIN) ||
         userConfig.roles.includes(USER_ROLES.ROLE_USER)
       ) {
         await fetch("https://api.odicylens.com/companies?page=0", {
           method: "GET",
-          headers: { Authorization: `Bearer ${session?.token}` },
+          headers: { Authorization: `Bearer ${parsedSession?.token}` },
         })
           .then((response) => response.json())
           .then((data) =>
@@ -67,7 +67,6 @@ export default function DashboardMenu() {
             })
           );
       }
-      const parsedSession = JSON.parse(session?.value || "{}");
       setParsedSession(parsedSession);
     })();
   }, [userConfig]);

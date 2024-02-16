@@ -53,8 +53,7 @@ export default function Page() {
   const [parsedSession, setParsedSession] = useState<any>({});
   useEffect(() => {
     (async () => {
-      const session = await getUserCookie(UserCookieType.SESSION);
-      const parsedSession = JSON.parse(session?.value || "{}");
+      const parsedSession = await getUserCookie(UserCookieType.SESSION);
       setParsedSession(parsedSession);
     })();
   }, []);

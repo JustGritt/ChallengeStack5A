@@ -26,5 +26,22 @@ export function capitalize(str: string) {
 }
 
 export function createDateAsUTC(date: Date) {
-    return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+    console.log(date);
+
+    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds()));
 }
+
+export function convertDateToNormal(date: Date) {
+    return new Date(date.toISOString()
+        .slice(0, -1)
+        .replace("T", " "));
+}
+
+
+export const dateWithoutTimezone = (date: Date) => {
+    const tzoffset = date.getTimezoneOffset() * 60000; //offset in milliseconds
+    const withoutTimezone = new Date(date.valueOf() - tzoffset)
+        .toISOString()
+        .slice(0, -1);
+    return withoutTimezone;
+};

@@ -7,8 +7,14 @@ import React, {
   useState,
 } from "react";
 import CalendarCarousel from "../Slider/CalendarCarousel";
-import { useLazyGetEmployeeBookingsQuery } from "@/lib/services/bookings";
-import { useLazyGetStoreSchedulesQuery } from "@/lib/services/stores";
+import {
+  useLazyGetEmployeeBookingsQuery,
+  useLazyGetStoreBookingsQuery,
+} from "@/lib/services/bookings";
+import {
+  useLazyGetStoreFreeSchedulesQuery,
+  useLazyGetStoreSchedulesQuery,
+} from "@/lib/services/stores";
 import Skeleton from "react-loading-skeleton";
 import { useLazyGetUserSchedulesQuery } from "@/lib/services/user";
 import LoaderSimple from "../Ui/Loader/LoaderSimple";
@@ -19,9 +25,10 @@ import {
   setUserCookie,
 } from "@/lib/helpers/UserHelper";
 import { Button } from "../Ui/ButtonShadcn";
-import { createDateAsUTC } from "@/lib/helpers/utils";
+import { convertDateToNormal, createDateAsUTC } from "@/lib/helpers/utils";
 import { HydraPaginateResp } from "@/types/HydraPaginateResp";
 import { Schedule } from "@/types/Schedule";
+import { Booking } from "@/types/Booking";
 
 type CustomCalendarProps = {
   idStore: string;
@@ -49,9 +56,21 @@ const CustomCalendar: FC<CustomCalendarProps> = ({
     { data: schedules, isFetching: isSchedulesLoading },
   ] = useLazyGetStoreSchedulesQuery();
 
+  const [
+    getStoreFreeSchedulesQuery,
+    { data: freeSchedules, isFetching: isFreeSchedulesLoading },
+  ] = useLazyGetStoreFreeSchedulesQuery();
+
+  const [
+    getStoreBookingsQuery,
+    { data: storeBookings, isFetching: isStoreBookingsLoading },
+  ] = useLazyGetStoreBookingsQuery();
+
   useEffect(() => {
     if (idEmployee === "no-one") {
       getStoreSchedules(idStore);
+      getStoreFreeSchedulesQuery(idStore);
+      getStoreBookingsQuery(idStore);
       return;
     } else {
       getEmployeeBookings(idEmployee, true);
@@ -72,7 +91,10 @@ const CustomCalendar: FC<CustomCalendarProps> = ({
 
   const employeeDaysoff = useCallback(
     () =>
-      data?.["hydra:member"]
+      (
+        (idEmployee === "no-one" ? [] : data?.["hydra:member"]) ??
+        ([] as HydraPaginateResp<Booking>["hydra:member"])
+      )
         .map((booking) => {
           return {
             id: booking.id,
@@ -84,33 +106,26 @@ const CustomCalendar: FC<CustomCalendarProps> = ({
         })
         .map((booking) => {
           return {
-            start: createDateAsUTC(new Date(booking.startDate)),
-            end: createDateAsUTC(new Date(booking.endDate)),
+            start: convertDateToNormal(new Date(booking.startDate)),
+            end: convertDateToNormal(new Date(booking.endDate)),
           };
         }),
-    [data]
+    [data, idEmployee]
   );
-
 
   const employeeWorkingDays = useCallback(
     () =>
       (idEmployee === "no-one"
-        ? ((schedules?.["hydra:member"] ??
+        ? freeSchedules ?? []
+        : ((schedules?.["hydra:member"] ??
             []) as [] as HydraPaginateResp<Schedule>["hydra:member"])
-        : []
-      )
-        .concat(
-          (userSchedules?.["hydra:member"] ??
-            []) as HydraPaginateResp<Schedule>["hydra:member"]
-        )
-        .filter((schedule) => !schedule.onVacation)
-        .map((booking) => {
-          return {
-            start: createDateAsUTC(new Date(booking.startDate)),
-            end: createDateAsUTC(new Date(booking.endDate)),
-          };
-        }),
-    [schedules, userSchedules, idEmployee]
+      ).map((booking) => {
+        return {
+          start: convertDateToNormal(new Date(booking.startDate)),
+          end: convertDateToNormal(new Date(booking.endDate)),
+        };
+      }),
+    [freeSchedules, userSchedules, idEmployee]
   );
 
   const handleOnSelectDate = async (date?: Date) => {
@@ -177,6 +192,7 @@ const CustomCalendar: FC<CustomCalendarProps> = ({
                 isLoading={
                   isSchedulesLoading || isFetching || isUserSchedulesLoading
                 }
+                //  isAllBookings={idEmployee === "no-one"}
                 onSelectDate={handleOnSelectDate}
               />
             )}
