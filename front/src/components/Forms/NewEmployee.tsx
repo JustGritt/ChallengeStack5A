@@ -6,8 +6,6 @@ import { Button } from "@/components/Ui/Button";
 import { UserUpdateProfile, addEmployee } from "@/types/User";
 import { Form, Field, FormikProvider, useFormik, ErrorMessage, FormikConfig } from "formik";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { selectCurrentUser, selectCurrentUserConfig } from "@/lib/services/slices/authSlice";
 import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline"
@@ -19,23 +17,18 @@ export default function NewEmployee() {
     };
     const params = useParams<StoreParams>();
     const storeId = params?.storeId;
-    const [getStoreId, setStoreId] = useState(storeId);
     const router = useRouter();
 
-    const user = useSelector(selectCurrentUser);
-    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
     const [parsedSession, setParsedSession] = useState<any>({});
 
     useEffect(() => {
         (async () => {
             const session = await getUserCookie(UserCookieType.SESSION);
-            const parsedSession = JSON.parse(session?.value || "{}");
-            setParsedSession(parsedSession);
-            setStoreId(getStoreId);
+            setParsedSession(session);
         })();
-    }, [userConfig]);
+    }, []);
 
-    // Update profile
+    // create employee
     const initialValues: addEmployee = {
         firstname: "",
         email: "",
@@ -43,7 +36,7 @@ export default function NewEmployee() {
         confirmPassword: "",
     };
 
-    // Update profile
+    // Create employee
     const validationSchema = Yup.object().shape({
         firstname: Yup.string().required("Firstname is required"),
         email: Yup.string().email("Invalid email address").required("Email is required"),

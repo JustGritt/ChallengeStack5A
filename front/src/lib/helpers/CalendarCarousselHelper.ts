@@ -3,7 +3,7 @@ import dayHours from "@/lib/constants/day_hours.json";
 import { Schedule } from "@/types/Schedule";
 import { Employee, User } from "@/types/User";
 import { DateTime } from "luxon";
-import { convertDateToNormal, dateWithoutTimezone } from "./utils";
+import { convertDateToNormal, dateWithoutTimezone, getDiffBetween2Hours, millisecondsToHours, minutesToMilliseconds } from "./utils";
 import moment from "moment";
 
 type ScheduleAvailable = {
@@ -74,13 +74,16 @@ export const getWorkinHours = (date: string) => {
 
 export const filterSchedulesInsideRange = (date: Date, schedules: ScheduleAvailable[], serviceTime: number): ScheduleAvailable[] => {
     // Convert date string to Date object
-    const dateTime = moment(date.getTime()).utc(true).toDate();
+    const dateTime = moment(date).local(false).toDate();
+    const hours = dateTime.getHours();
+    dateTime.setHours(hours + 1, 0, 0, 0);
+    const milliseconds = minutesToMilliseconds(serviceTime)
     // Filter schedules that are inside the given date range
     const filteredSchedules = schedules.filter(schedule => {
-        const scheduleStartTime = moment(schedule.startDate).utc(true).toDate();
-        const scheduleEndTime = moment(schedule.endDate).utc(true).toDate();
-        console.log((scheduleEndTime.getTime() / 3600000) >= (serviceTime * 1000));
-        return dateTime.getTime() >= scheduleStartTime.getTime() && dateTime.getTime() <= scheduleEndTime.getTime() && (Math.abs(scheduleStartTime.getTime() - scheduleEndTime.getTime()) / 3600000) >= (serviceTime * 1000);
+        const scheduleStartTime = moment(schedule.startDate).utc(false).toDate();
+        
+        const scheduleEndTime = moment(schedule.endDate).utc(false).toDate();
+        return (dateTime.getTime() >= scheduleStartTime.getTime() && dateTime.getTime() <= scheduleEndTime.getTime()) && (scheduleStartTime.getTime() >= dateTime.getTime() && getDiffBetween2Hours(scheduleStartTime, scheduleEndTime) >= millisecondsToHours(milliseconds));
     });
 
     return filteredSchedules;
