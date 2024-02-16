@@ -1,5 +1,6 @@
 "use client";
 
+import NewEmployee from "@/components/Forms/NewEmployee";
 import Breadcrumb from "@/components/Header/Breadcrumb";
 import { selectCurrentUserConfig } from "@/lib/services/slices/authSlice";
 import { useRouter } from "next/navigation";

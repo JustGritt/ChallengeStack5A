@@ -9,10 +9,11 @@ import { useRouter } from "next/navigation";
 export default function EditStoreServices() {
   const userConfig = useSelector(selectCurrentUserConfig);
   const router = useRouter();
+    
+    if (!userConfig.isOwner) {
+        router.push("/dashbaord");
+    }
 
-  if (!userConfig.isOwner) {
-    router.push("/dashbaord");
-  }
 
   return (
     <section className="lg:pl-72 block min-h-screen">
