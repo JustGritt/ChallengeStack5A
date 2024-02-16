@@ -7,6 +7,8 @@ import { RefDivCardSearch } from "@/types/ScrollDiv";
 import { Store } from "@/types/Store";
 import React, { createRef } from "react";
 
+
+
 function SearchPage() {
   const refSearchSection = createRef<RefDivCardSearch>();
   const [stores, setStores] = React.useState<Store[]>([]);

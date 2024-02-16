@@ -1,16 +1,30 @@
 import { Button } from "@/components/Ui/ButtonShadcn";
 import Card from "@/components/cards/CardBase";
-import { useCreateBookingMutation } from "@/lib/services/bookings";
+import {
+  useCreateBookingMutation,
+  useGetStoreBookingsQuery,
+} from "@/lib/services/bookings";
 import { Service } from "@/types/Service";
 import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
-import React, { FC } from "react";
+import React, { FC, useCallback } from "react";
 import { useToast } from "@/components/Ui/use-toast";
 import { StripeLogo } from "@/components/Icons/Icons";
 import { HydraError } from "@/types/HydraPaginateResp";
 import { cn } from "@/lib/utils";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import {
+  useGetStoreFreeSchedulesQuery,
+  useGetStoreSchedulesQuery,
+  useLazyGetStoreFreeSchedulesQuery,
+} from "@/lib/services/stores";
+import { Schedule } from "@/types/Schedule";
+import {
+  filterSchedulesInsideRange,
+  findAvailableEmployees,
+  findAvailableEmployees_,
+} from "@/lib/helpers/CalendarCarousselHelper";
+import { removeKeyCookie, removeUserCookie } from "@/lib/helpers/UserHelper";
 import { BooKingPost } from "@/types/Booking";
 import Pay from "@/components/payment/payment";
 import { useSelector } from "react-redux";
@@ -37,19 +51,48 @@ const ValidationCard: FC<ValidationCardProps> = ({
     },
   ] = useCreateBookingMutation();
 
+  const { data: schedules, isFetching: isSchedulesLoading } =
+    useGetStoreSchedulesQuery(service.store.split("/")[2]);
+
+  const { data: storeBookings, isFetching: isStoreBookingsLoading } =
+    useGetStoreBookingsQuery(service.store.split("/")[2]);
+
+  const { data: freeSchedules, isFetching: isFreeSchedulesLoading } =
+    useGetStoreFreeSchedulesQuery(service.store.split("/")[2]);
+
   const router = useRouter();
   const user = useSelector(selectCurrentUser);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
+    const myDate = new Date(
+      startDate.getTime() + startDate.getTimezoneOffset() * 60000
+    )
+      .toISOString()
+      .slice(0, -1)
+      .replace("T", " ");
+
+    const availableEmployee = filterSchedulesInsideRange(
+      startDate,
+      freeSchedules ?? []
+    );
+
+    const employeeToUse =
+      availableEmployee.length > 0 ? availableEmployee[0] : freeSchedules?.[0];
+    
+
     await Pay({
-      employee: "/users/" + employee,
+      employee:
+        employee === "no-one"
+          ? `/users/${employeeToUse?.employee.id}`
+          : `/users/${employee}`,
       service: "/services/" + service.id,
-      startDate: startDate.toISOString(),
+      startDate: myDate,
       amount: service.price,
       serviceName: service.name,
       email: user?.email,
-    });
-  };
+    })
+  }, [schedules, storeBookings, employee, freeSchedules, startDate, service, user]);
+
   return (
     <section className="flex flex-col w-full">
       <h3 className="my-3 text-lg font-bold tracking-tight text-gray-900 dark:text-white flex items-center">

@@ -18,60 +18,7 @@ import React from "react";
 import { notFound } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/Ui/avatar";
 import { getUserInitials } from "@/lib/helpers/utils";
-import CustomCalendar from "@/components/Calendar/CustomCalendar";
-import { StripeLogo } from "@/components/Icons/Icons";
-import { loadStripe } from "@stripe/stripe-js";
-
-const data = {
-  storeName: "StoreCard",
-  address: "78 Address, address 75001, Paris",
-  rating: "4.3",
-  reviews: "50",
-  price: "€€€",
-  imgs: [
-    "/logo.svg",
-    "/logo.svg",
-    "/logo.svg",
-    "/logo.svg",
-    "/logo.svg",
-    "/logo.svg",
-    "/logo.svg",
-  ],
-  services: [
-    {
-      name: "Prestation 1",
-      duration: "3 heures",
-      price: "300€",
-    },
-    {
-      name: "Prestation 2",
-      duration: "3 heures",
-      price: "300€",
-    },
-    {
-      name: "Prestation 3",
-      duration: "3 heures",
-      price: "300€",
-    },
-    {
-      name: "Prestation 4",
-      duration: "3 heures",
-      price: "300€",
-    },
-  ],
-  collaborators: [
-    {
-      name: "Anthoni",
-      img: "/logo.svg",
-    },
-    {
-      name: "Reed",
-      img: "/logo.svg",
-    },
-  ],
-};
-
-const stripePromise = loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`);
+import ErrorBaseShow from "@/components/Errors/ErrorBaseShow";
 
 const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
   params: { id },
@@ -182,21 +129,23 @@ const StorePage: FC<ServerSideComponentProp<{ id: string }>> = ({
 
               {/* <CustomMap /> */}
             </div>
-            {/* <div className="w-full my-4">
+            <div className="w-full my-4">
               <h2 className="text-black font-bold text-xl my-2">À propos</h2>
               <div className="rounded-lg border border-1 border-gray-300 py-8 px-6 shadow-lg">
                 <p className="text-gray-500">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
+                  {isLoading ? (
+                    <Skeleton count={3} />
+                  ) : store?.description ? (
+                    store?.description
+                  ) : (
+                    <ErrorBaseShow
+                      text={"Description non renseignée"}
+                      type="warning"
+                    />
+                  )}
                 </p>
               </div>
-            </div> */}
+            </div>
           </div>
           <div className="w-full max-w-[400px]">
             <h1 className="text-black font-bold text-2xl my-2">

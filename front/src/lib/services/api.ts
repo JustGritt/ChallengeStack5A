@@ -13,7 +13,8 @@ export const api = createApi({
     "Stores",
     "Bookings",
     "UserSchedules",
-    "StoreSchedules"
+    "StoreSchedules",
+    "StoreBookings"
   ],
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,

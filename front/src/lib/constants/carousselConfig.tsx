@@ -1,6 +1,6 @@
 import CarousselNextArrow from "@/components/Slider/Arrows/CarousselNextSlider";
 import CarousselPreviousSlider from "@/components/Slider/Arrows/CarousselPreviousSlider";
-import Slider, { Settings } from "react-slick";
+import { Settings } from "react-slick";
 
 export const calendarCarouselSettings: Settings = {
   dots: false,
@@ -12,14 +12,6 @@ export const calendarCarouselSettings: Settings = {
   nextArrow: <CarousselNextArrow />,
   prevArrow: <CarousselPreviousSlider />,
   responsive: [
-    // {
-    //   breakpoint: 1024,
-    //   settings: {
-    //     slidesToShow: 3,
-    //     slidesToScroll: 3,
-    //     infinite: true,
-    //   },
-    // },
     {
       breakpoint: 800,
       settings: {
@@ -43,5 +35,3 @@ export const calendarCarouselSettings: Settings = {
     },
   ],
 };
-
-const HOURS = ["10:00"];

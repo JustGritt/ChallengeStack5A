@@ -11,6 +11,7 @@ import { getUserCookie } from '@/lib/helpers/UserHelper';
 import { UserCookieType } from '@/types/User';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle, faCross, faFaceAngry, faSadCry, faSadTear, faXmarkCircle } from '@fortawesome/free-solid-svg-icons';
+import { removeKeyCookie, removeUserCookie } from "@/lib/helpers/UserHelper";
 import Link from 'next/link';
 import { selectCurrentUser } from '@/lib/services/slices/authSlice';
 import { useSelector } from 'react-redux';
@@ -91,6 +92,8 @@ export default function Result() {
                     amount: intentPayment.amount / 100,
                 } as BooKingPost)
                     .then((resp) => {
+                        removeKeyCookie("collaboratorChoosen");
+                        removeKeyCookie("dateRdv");
                         toast({
                             className: cn(
                                 "fixed top-4 z-[100] flex max-h-screen w-full flex-col-reverse py-4 px-4 right-4 sm:flex-col md:max-w-[420px]"

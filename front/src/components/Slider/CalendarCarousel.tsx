@@ -6,10 +6,11 @@ import useCalendar from "use-calendar-react-hook";
 import {
   getIntlDayAndMonth,
   getWorkinHours,
-  isOffHour,
+  isOnHour,
 } from "@/lib/helpers/CalendarCarousselHelper";
 import { calendarCarouselSettings } from "@/lib/constants/carousselConfig";
 import { cn } from "@/lib/utils";
+import { convertDateToNormal, createDateAsUTC } from "@/lib/helpers/utils";
 type CalendarCarouselProps = {
   offPeriods?: Array<{
     start: Date;
@@ -20,6 +21,7 @@ type CalendarCarouselProps = {
     end: Date;
   }>;
   isLoading?: boolean;
+  isAllBookings?: boolean;
   onSelectDate?: (date: Date) => void;
 };
 
@@ -27,6 +29,7 @@ const CalendarCarousel: FC<CalendarCarouselProps> = ({
   offPeriods = [],
   workingPeriods = [],
   isLoading,
+  isAllBookings,
   onSelectDate,
 }) => {
   const { currentScope } = useCalendar();
@@ -40,7 +43,7 @@ const CalendarCarousel: FC<CalendarCarouselProps> = ({
             new Date(new Date().setHours(0, 0, 0, 0)).getTime()
           );
         })
-        .map(({ date }, i) => {
+        .map(({ date }, i) => {          
           const { day, month, dayWeek } = getIntlDayAndMonth(date, "fr-FR");
           const workinHours = getWorkinHours(date);
           return (
@@ -55,18 +58,23 @@ const CalendarCarousel: FC<CalendarCarouselProps> = ({
                 <div className="gap-2 flex flex-col">
                   {workinHours.map(
                     ({ twenty_four_hour_format, military_format }, i) => {
-                      const isOff = isOffHour(
-                        military_format,
-                        new Date(date),
+                      const [hours, minutes] = military_format
+                        .match(/\d{2}/g)!
+                        .map(Number);
+                      const date_ = new Date(date);
+                      date_.setHours(hours, minutes);
+                      const isOff = !isOnHour(
+                        (date_),
                         offPeriods,
-                        workingPeriods
+                        workingPeriods,
+                        isAllBookings
                       );
                       return (
                         <span
                           onClick={() => {
                             if (!isOff && !isLoading) {
                               onSelectDate?.(
-                                new Date(`${date} ${twenty_four_hour_format}`)
+                                createDateAsUTC(new Date(`${date} ${twenty_four_hour_format}`))
                               );
                             }
                           }}

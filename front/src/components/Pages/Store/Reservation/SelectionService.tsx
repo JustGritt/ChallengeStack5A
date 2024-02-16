@@ -18,7 +18,6 @@ import Card from "@/components/cards/CardBase";
 import ErrorBaseShow from "@/components/Errors/ErrorBaseShow";
 import { getUserCookie, setUserCookie } from "@/lib/helpers/UserHelper";
 import { Service } from "@/types/Service";
-import { randomUUID } from "crypto";
 
 type SelectionServiceProps = {
   idStore: string;
@@ -43,7 +42,7 @@ const SelectionService: FC<SelectionServiceProps> = ({
   const router = useRouter();
   useEffect(() => {
     (async () => {
-      await getStoreService([idStore, serviceId])
+      await getStoreService([idStore, serviceId], false)
         .unwrap()
         .then((resp) => {
           callBackService(resp);
@@ -64,7 +63,6 @@ const SelectionService: FC<SelectionServiceProps> = ({
   }, [idStore, serviceId]);
 
   const onSelect = async (userId: string) => {
-    if (userId === selectedEmployeeId) return;
     callBackUser(userId);
     await setUserCookie(undefined, {
       collaboratorChoosen: userId,
@@ -112,7 +110,7 @@ const SelectionService: FC<SelectionServiceProps> = ({
                   <SelectContent>
                     <SelectItem key={"no-one"} value={"no-one"}>
                       <div className="flex items-center h-8">
-                        <span className="ml-2 ">Personne</span>
+                        <span className="ml-2 ">Tout le monde</span>
                       </div>
                     </SelectItem>
                     {collaborators.map((collaborator, i) => (
