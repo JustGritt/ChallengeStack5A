@@ -36,7 +36,7 @@ export default function UserCalendar() {
                 .then((res) => res.json())
                 .then((data) => {
                     const events = data["hydra:member"].map((event: any) => ({
-                        title: event.title,
+                        title: event.service.name,
                         start: event.startDate,
                         end: event.endDate
                     }));
