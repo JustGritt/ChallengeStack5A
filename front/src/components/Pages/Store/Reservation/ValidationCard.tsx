@@ -86,20 +86,39 @@ const ValidationCard: FC<ValidationCardProps> = ({
 
     const employeeToUse =
       availableEmployee.length > 0 ? availableEmployee[0] : freeSchedules?.[0];
-
-
-    await Pay({
-      employee:
-        employee === "no-one"
-          ? `/users/${employeeToUse?.employee.id}`
-          : `/users/${employee}`,
-      service: "/services/" + service.id,
-      startDate: myDate,
-      amount: service.price,
-      serviceName: service.name,
-      email: user?.email,
-    })
-  }, [schedules, storeBookings, employee, freeSchedules, startDate, service, user]);
+    
+    return
+    try {
+      await Pay({
+        employee:
+          employee === "no-one"
+            ? `/users/${employeeToUse?.employee.id}`
+            : `/users/${employee}`,
+        service: "/services/" + service.id,
+        startDate: myDate,
+        amount: service.price,
+        serviceName: service.name,
+        email: user?.email,
+      });
+    } catch (error) {
+      toast({
+        className: cn(
+          "fixed top-4 z-[100] flex max-h-screen w-full flex-col-reverse items-start py-4 px-4 right-4  sm:flex-col md:max-w-[420px]"
+        ),
+        title: `Something went wrong`,
+        description: `Please try again later.`,
+        variant: "destructive",
+      });
+    }
+  }, [
+    schedules,
+    storeBookings,
+    employee,
+    freeSchedules,
+    startDate,
+    service,
+    user,
+  ]);
 
   return (
     <section className="flex flex-col w-full">

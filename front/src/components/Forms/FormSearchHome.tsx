@@ -48,7 +48,7 @@ const FormSearchHome = () => {
           <div className="flex-col flex lg:w-fit w-full">
             <label
               htmlFor="search-service"
-              className="text-gray-500 text-md mt-1"
+              className="text-black text-md mt-1"
             >
               What are you looking for?
             </label>
@@ -64,6 +64,12 @@ const FormSearchHome = () => {
               placeholder="Photographer, Designer, Videographer..."
               getOptionLabel={(option) => option.name}
               getOptionValue={(option) => String(option.id)}
+              styles={{
+                placeholder: (base) => ({
+                  ...base,
+                  color: "gray",
+                }),
+              }}
               className="lg:p-0 w-full lg:w-96 text-xl"
             />
 
@@ -77,7 +83,7 @@ const FormSearchHome = () => {
           <div className="flex-col flex lg:w-fit w-full">
             <label
               htmlFor="search-service"
-              className="text-gray-500 text-md mt-1"
+              className="text-black text-md mt-1"
             >
               Location
             </label>
@@ -93,6 +99,12 @@ const FormSearchHome = () => {
               placeholder="Paris"
               getOptionLabel={(option) => option.city}
               getOptionValue={(option) => String(option.id)}
+              styles={{
+                placeholder: (base) => ({
+                  ...base,
+                  color: "gray",
+                }),
+              }}
               className="lg:p-0 w-full lg:w-96"
             />
             <ErrorMessage
