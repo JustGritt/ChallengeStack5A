@@ -6,7 +6,6 @@ export const getFullUrlPath = async () => {
     const host = await headersList.get("host"); // to get domain
     const url = await headersList.get("next-url"); // to get url
 
-    console.log('host', host);
     
 
     return `http://${host}${url}`;

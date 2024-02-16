@@ -46,7 +46,6 @@ export default function Result() {
         let session;
         try {
             session = await getUserCookie(UserCookieType.SESSION);
-            // console.log("🚀 ~ createBookingServer ~ session:", session);
         } catch (error) {
             throw new Error('Failed to retrieve user session');
         }
@@ -76,7 +75,6 @@ export default function Result() {
             throw new Error(typeof error === 'string' ? error : (error).message || 'Error occurred during booking process');
         }
     };
-    // console.log(data)
     // useEffect(() => {
     // })
     useEffect(() => {
@@ -113,7 +111,6 @@ export default function Result() {
                         router.push(`/dashboard/appointments`);
                     })
                     .catch((error) => {
-                        // console.log("🚀 ~ useEffect ~ error:", error)
                         const errorMessage = error instanceof Error ? error.message : String(error) || "Désolé, quelque chose ne s'est pas bien passe.";
                         setCallError(errorMessage);
                         toast({

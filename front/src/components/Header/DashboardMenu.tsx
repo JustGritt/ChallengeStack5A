@@ -34,6 +34,31 @@ export default function DashboardMenu() {
             setUserRoles(Object.keys(userConfig).filter(key => (userConfig as any)[key] === true))
         })();
     }, [userConfig])
+
+    const [parsedToken, setParsedToken] = useState<string | undefined>();
+    useEffect(() => {
+        (async () => {
+            const session = await getUserCookie(UserCookieType.SESSION);
+            setParsedToken(session?.token);
+        })();
+    }, [userConfig]);
+
+    // Get company to validate
+    const fetchCompanies = useCallback(async () => {
+        if (userRoles.includes('isAdmin')) {
+            const response = await fetch('https://api.odicylens.com/companies', {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${parsedToken}` }
+            }).then(response => response.json());
+            const data = await response;
+            const invalidCompanies = data['hydra:member'].filter((company: any) => (!company.isValid && !company.refused));
+            return setNotifications(invalidCompanies);
+        }
+    }, [userRoles, parsedToken]);
+
+    useEffect(() => {
+        fetchCompanies();
+    }, [fetchCompanies]);
     
     const appointmentLabel = userRoles.includes('isClient') ? 'My appointments' : 'Schedule';
 
