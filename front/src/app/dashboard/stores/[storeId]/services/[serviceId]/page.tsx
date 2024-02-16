@@ -4,8 +4,12 @@ import Link from "next/link";
 import Breadcrumb from "@/components/Header/Breadcrumb";
 import { useEffect, useState } from 'react';
 import { getUserCookie } from "@/lib/helpers/UserHelper";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UserCookieType } from "@/types/User";
 import { useDeleteServiceMutation } from "@/lib/services/services";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import UpdateService from "@/components/Forms/updateService";
+import toast from "react-hot-toast";
 
 export default function Stores({ params }: { params: { storeId: string, serviceId: string } }) {
 
@@ -18,6 +22,8 @@ export default function Stores({ params }: { params: { storeId: string, serviceI
             setParsedSession(parsedSession);
         })();
     }, [])
+
+    const [deleteService] = useDeleteServiceMutation();
 
     const [services, setservices] = useState<any[]>([]);
     useEffect(() => {
@@ -36,6 +42,7 @@ export default function Stores({ params }: { params: { storeId: string, serviceI
         }
     }, [params.storeId, params.serviceId, parsedSession?.token]);
 
+    const [editService, setEditService] = useState(false);
 
     return (
         <section className="lg:pl-72 block min-h-screen">
@@ -44,7 +51,23 @@ export default function Stores({ params }: { params: { storeId: string, serviceI
                 {
                     services ? (
                         <section className="mt-4">
-                            <div className="mx-auto bg-white dark:bg-slate-800 px-8 py-8 rounded-xl shadow border">
+                            <div className="mx-auto bg-white dark:bg-slate-800 px-8 py-8 rounded-xl shadow border relative">
+                                <button className="absolute top-4 right-4
+                                    text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2
+                                "
+                                    onClick={() => setEditService(!editService)}
+                                >
+                                    Edit Service
+                                </button>
+                                <button className="absolute top-4 left-4
+                                    text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-blue-300 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 h-10 px-4 py-2
+                                "
+                                    onClick={() => deleteService(Number(params.serviceId)).then(() => {
+                                        toast.success("Service deleted successfully");
+                                    })}
+                                >
+                                    <FontAwesomeIcon icon={faTrashAlt} className="text-xl" />
+                                </button>
                                 <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4 text-center">
                                     Service {params.serviceId}
                                 </h2>
@@ -52,16 +75,20 @@ export default function Stores({ params }: { params: { storeId: string, serviceI
                                     Details of service {params.serviceId}
                                 </p>
                                 {
-                                    services.map((service) => (
-                                        service.id === Number(params.serviceId) ? (
-                                            <div key={service.id} className="flex justify-between gap-x-6 py-5 hover:bg-gray-100 w-full rounded shadow">
-                                                <div className="min-w-0 flex flex-auto items-center justify-between px-6">
-                                                    <p className="text-sm font-semibold leading-6 text-gray-900">{service.name}</p>
-                                                    <p className="text-sm font-semibold leading-6 text-gray-900">{service.price} €</p>
+                                    editService ? (
+                                        <UpdateService />
+                                    ) : (
+                                        services.map((service) => (
+                                            service.id === Number(params.serviceId) ? (
+                                                <div key={service.id} className="flex justify-between gap-x-6 py-5 hover:bg-gray-100 w-full rounded shadow">
+                                                    <div className="min-w-0 flex flex-auto items-center justify-between px-6">
+                                                        <p className="text-sm font-semibold leading-6 text-gray-900">{service.name}</p>
+                                                        <p className="text-sm font-semibold leading-6 text-gray-900">{service.price} €</p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ) : null
-                                    ))
+                                            ) : null
+                                        )
+                                        ))
                                 }
                             </div>
 

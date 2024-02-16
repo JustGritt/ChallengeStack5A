@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { useDeleteServiceMutation } from "@/lib/services/services";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import toast from "react-hot-toast";
 
 export default function EditStoreServices({ params }: { params: { storeId: string } }) {
 
@@ -63,7 +64,9 @@ export default function EditStoreServices({ params }: { params: { storeId: strin
                                                 <button className=" block px-5 text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-red-700
                                                 focus:ring-4 focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 
                                                 focus:outline-none dark:focus:ring-red-800" onClick={() => {
-                                                        deleteService(service.id);
+                                                        deleteService(service.id).then(() => {
+                                                            toast.success('Service deleted successfully');
+                                                        });
                                                     }}>
                                                     <FontAwesomeIcon icon={faTrashAlt} className="text-xl" />
                                                 </button>

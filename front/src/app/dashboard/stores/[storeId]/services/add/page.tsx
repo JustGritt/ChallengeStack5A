@@ -10,7 +10,6 @@ export default function EditStoreServices() {
     const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
     const router = useRouter();
     
-    const router = useRouter();
     if (!userConfig.isOwner) {
         router.push("/dashbaord");
     }

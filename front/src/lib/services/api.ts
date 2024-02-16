@@ -15,12 +15,12 @@ export const api = createApi({
   ],
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,
-    prepareHeaders: async (headers, { getState, endpoint }) => {
+    prepareHeaders: async (headers, { getState, endpoint, extra }) => {
       const session = await getUserCookie(UserCookieType.SESSION);
       const parsedSession = JSON.parse(session?.value || "{}");
       if (parsedSession?.token) headers.set('Authorization', `Bearer ${parsedSession?.token}`);
       headers.set("Content-Type", "application/json");
-
+      console.log(extra)
       return headers;
     },
   }),
