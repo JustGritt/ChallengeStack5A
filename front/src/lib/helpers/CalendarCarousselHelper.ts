@@ -3,7 +3,7 @@ import dayHours from "@/lib/constants/day_hours.json";
 import { Schedule } from "@/types/Schedule";
 import { Employee, User } from "@/types/User";
 import { DateTime } from "luxon";
-import { convertDateToNormal, dateWithoutTimezone, getDiffBetween2Hours, millisecondsToHours, minutesToMilliseconds } from "./utils";
+import { convertDateToNormal, getMillisecondsDifference, getDiffBetween2Hours, millisecondsToHours, minutesToMilliseconds } from "./utils";
 import moment from "moment";
 
 type ScheduleAvailable = {
@@ -74,16 +74,16 @@ export const getWorkinHours = (date: string) => {
 
 export const filterSchedulesInsideRange = (date: Date, schedules: ScheduleAvailable[], serviceTime: number): ScheduleAvailable[] => {
     // Convert date string to Date object
-    const dateTime = moment(date).local(false).toDate();
+    const dateTime = moment(date).local(true).toDate();
     const hours = dateTime.getHours();
-    dateTime.setHours(hours + 1, 0, 0, 0);
+    dateTime.setHours(hours + 1, dateTime.getMinutes(), 0, 0);
     const milliseconds = minutesToMilliseconds(serviceTime)
+
     // Filter schedules that are inside the given date range
     const filteredSchedules = schedules.filter(schedule => {
         const scheduleStartTime = moment(schedule.startDate).utc(false).toDate();
-        
         const scheduleEndTime = moment(schedule.endDate).utc(false).toDate();
-        return (dateTime.getTime() >= scheduleStartTime.getTime() && dateTime.getTime() <= scheduleEndTime.getTime()) && (scheduleStartTime.getTime() >= dateTime.getTime() && getDiffBetween2Hours(scheduleStartTime, scheduleEndTime) >= millisecondsToHours(milliseconds));
+        return (dateTime.getTime() >= scheduleStartTime.getTime() && dateTime.getTime() <= scheduleEndTime.getTime()) && (getDiffBetween2Hours(dateTime, scheduleEndTime) >= millisecondsToHours(milliseconds));
     });
 
     return filteredSchedules;

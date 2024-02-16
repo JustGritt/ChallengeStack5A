@@ -23,6 +23,22 @@ export function getDiffBetween2Hours(start: Date, end: Date): number {
     return Math.abs(start.getTime() - end.getTime()) / 36e5;
 }
 
+export function getMillisecondsDifference(date1: Date, date2: Date): number {
+    // Extract hours and minutes from each date
+    const hours1: number = date1.getHours();
+    const minutes1: number = date1.getMinutes();
+    const hours2: number = date2.getHours();
+    const minutes2: number = date2.getMinutes();
+
+    // Calculate milliseconds difference based on hours and minutes
+    const milliseconds1: number = hours1 * 60 * 60 * 1000 + minutes1 * 60 * 1000;
+    const milliseconds2: number = hours2 * 60 * 60 * 1000 + minutes2 * 60 * 1000;
+
+    // Calculate the difference in milliseconds
+    const diff: number = Math.abs(milliseconds1 - milliseconds2);
+    return diff;
+}
+
 export const humanizeMinutes = (time: number) => {
     const milliseconds = minutesToMilliseconds(time)
     return humanizeDuration(milliseconds, { language: "fr" })
