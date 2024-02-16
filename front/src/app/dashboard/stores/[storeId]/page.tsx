@@ -39,6 +39,7 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                             </div>
                                         )
                                     }
+
                                     {
                                         store.services && (
                                             <div className="flex flex-col items-center justify-center">
@@ -47,7 +48,6 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                             </div>
                                         )
                                     }
-
                                 </div>
                             </div>
 
@@ -114,8 +114,7 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                 <div className="mx-auto lg:pt-8">
                                     <ul className="flex flex-col gap-4">
                                         {
-                                            store.services &&
-                                                store.services.length > 0 ? (store.services.slice(0, 3).map((service) => (
+                                            store.services && (store.services.length > 0 ? (store.services.slice(0, 3).map((service) => (
                                                     <a href={`/dashboard/stores/${params.storeId}/services/${service.id}`} key={service.id}>
                                                         <li key={service.id} className="flex justify-between gap-x-6 py-5 hover:bg-gray-100 w-full rounded shadow">
                                                             <div className="min-w-0 flex flex-auto items-center justify-between px-6">
@@ -128,7 +127,7 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                                 <div>
                                                     <p className="text-center">No stores found</p>
                                                 </div>
-                                            )
+                                            ))
                                         }
                                     </ul>
                                 </div>
