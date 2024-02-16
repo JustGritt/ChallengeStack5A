@@ -61,18 +61,26 @@ const ValidationCard: FC<ValidationCardProps> = ({
       .replace("T", " ");
 
     const availableEmployee = filterSchedulesInsideRange(
-      startDate,
+      new Date(myDate),
       freeSchedules ?? [],
       service.time
     );
 
+    if (availableEmployee.length === 0) {
+      toast({
+        className: cn(
+          "fixed top-4 z-[100] flex max-h-screen w-full flex-col-reverse items-start py-4 px-4 right-4  sm:flex-col md:max-w-[420px]"
+        ),
+        title: `No available employee`,
+        description: `The selected time is not available. Please choose another time or date.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     const employeeToUse =
       availableEmployee.length > 0 ? availableEmployee[0] : freeSchedules?.[0];
 
-    console.log("====================================");
-    console.log("employeeToUse", employeeToUse);
-    console.log("====================================");
-    return;
 
     await createBooking({
       employee:
