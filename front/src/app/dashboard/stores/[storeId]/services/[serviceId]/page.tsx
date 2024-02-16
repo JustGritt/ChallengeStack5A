@@ -52,14 +52,15 @@ export default function Stores({ params }: { params: { storeId: string, serviceI
                     services ? (
                         <section className="mt-4">
                             <div className="mx-auto bg-white dark:bg-slate-800 px-8 py-8 rounded-xl shadow border relative">
-                                <button className="absolute top-4 right-4
+                                <div className="absolute top-4 right-10 flex gap-2">
+                                <button className="
                                     text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2
                                 "
                                     onClick={() => setEditService(!editService)}
                                 >
                                     Edit Service
                                 </button>
-                                <button className="absolute top-4 left-4
+                                <button className="
                                     text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-blue-300 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 h-10 px-4 py-2
                                 "
                                     onClick={() => deleteService(Number(params.serviceId)).then(() => {
@@ -68,6 +69,7 @@ export default function Stores({ params }: { params: { storeId: string, serviceI
                                 >
                                     <FontAwesomeIcon icon={faTrashAlt} className="text-xl" />
                                 </button>
+                                </div>
                                 <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4 text-center">
                                     Service {params.serviceId}
                                 </h2>
