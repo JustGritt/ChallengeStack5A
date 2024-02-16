@@ -29,6 +29,10 @@ export default function Stores() {
   const [stores, setStores] = useState<Store[]>([]);
   const [storesFetched, setStoresFetched] = useState(false);
 
+  const [displayedStores, setDisplayedStores] = useState<Store[]>([]);
+  const [pages, setPages] = useState<number[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+
   // Get session
   const user = useSelector(selectCurrentUser);
   const userConfig = useSelector(selectCurrentUserConfig);
@@ -83,7 +87,6 @@ export default function Stores() {
         setStoresFetched(true);
       }
 
-
       // Employee
       if (userConfig?.isWorker && !storesFetched && user?.work?.id && parsedSession?.token) {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/stores/${user?.work?.id}`, {
@@ -95,6 +98,19 @@ export default function Stores() {
     };
     fetchStores();
   }, [userConfig, storesFetched, parsedSession, router, user]);
+
+  // Store pagination
+  useEffect(() => {
+    if (stores) {
+        const pages = Math.ceil(stores.length / 5);
+        setPages(new Array(pages).fill(0).map((_, index) => index + 1));
+        setDisplayedStores(stores.slice(0, 5));
+    }
+
+    if (currentPage > 1) {
+        setDisplayedStores(stores.slice((currentPage - 1) * 5, currentPage * 5));
+    }
+  }, [stores, currentPage]);
 
   const deleteStore = (storeId: number) => {
     if (userConfig?.isOwner) {
@@ -154,10 +170,6 @@ export default function Stores() {
       setDisplayedStores(stores.slice(0, 5));
     }
   }, [stores]);
-
-  const [displayedStores, setDisplayedStores] = useState<Store[]>([]);
-  const [pages, setPages] = useState<number[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
 
   const handleNextPage = () => {
     if (currentPage < pages.length) {
@@ -287,17 +299,8 @@ export default function Stores() {
                       const otherPageClasses =
                         "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0";
                       return (
-                        <button
-                          key={page}
-                          type="button"
-                          onClick={() => setCurrentPage(page)}
-                          className={`${commonClasses} ${
-                            isCurrentPage
-                              ? currentPageClasses
-                              : otherPageClasses
-                          }`}
-                        >
-                          {page}
+                        <button key={page} type="button" onClick={() => setCurrentPage(page)} className={`${commonClasses} ${isCurrentPage ? currentPageClasses : otherPageClasses}`}>
+                            {page}
                         </button>
                       );
                     })}

@@ -42,7 +42,7 @@ class AdminCompany extends AbstractController
 
         $employees = $this->entityManager->getRepository(User::class)
             ->createQueryBuilder('u')
-            ->select('u.firstname', 'u.email', 's.name as storeName')
+            ->select('u.firstname', 'u.email', 's.name as storeName', 'u.isValid')
             ->leftJoin('u.work', 's') // Assuming there is a property 'store' in your User entity representing the association with Store
             ->where('s.company = :company')
             ->setParameter('company', $company)

@@ -3,21 +3,22 @@
 import DashboardCalendar from "@/components/Calendar/DashboardCalendar";
 import DashboardStat from '@/components/Dashboard/DashboardStat';
 import { useSelector } from 'react-redux';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slices/authSlice';
 
 export default function Dashboard() {
 
 	const user = useSelector(selectCurrentUser);
     const userConfig = useSelector(selectCurrentUserConfig);
-	const userRoles = useMemo(
-        () => 
-            Object.keys(userConfig).filter(
-                (role) => !!userConfig[role as keyof typeof userConfig]
-            ),
-        [userConfig]
-    )
-			
+    const [userRoles, setUserRoles] = useState<string[]>([]);
+
+    // Get session
+    useEffect(() => {
+        (async () => {
+            setUserRoles(Object.keys(userConfig).filter(key => (userConfig as any)[key] === true))
+        })();
+    }, [userConfig]);
+
 	return (
 		<section className="lg:pl-72 block min-h-screen">
 			<div className="p-4 sm:p-6 lg:p-8 h-full">
