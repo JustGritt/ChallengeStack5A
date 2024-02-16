@@ -6,21 +6,22 @@ import { Button } from "@/components/Ui/Button";
 import { UserUpdateProfile } from "@/types/User";
 import { Form, Field, FormikProvider, useFormik, ErrorMessage, FormikConfig } from "formik";
 import { useEffect, useState } from "react";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 import { selectCurrentUser, selectCurrentUserConfig } from "@/lib/services/slices/authSlice";
 import { getUserCookie } from "@/lib/helpers/UserHelper";
 import { UserCookieType } from "@/types/User";
-import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline'
-
+import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline"
+import { useParams } from "next/navigation";
 export default function UpdateProfile() {
 
-    // Update profile
-    const initialProfileValues: UserUpdateProfile = {
-        firstname: "",
+    type StoreParams = {
+        storeId: string;
     };
+    const { storeId } = useParams<StoreParams>();
+    const [getStoreId, setStoreId] = useState(storeId);
+
     const user = useSelector(selectCurrentUser);
     const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
-    const [userRoles, setUserRoles] = useState<string[]>([]);
     const [parsedSession, setParsedSession] = useState<any>({});
 
     useEffect(() => {
@@ -28,23 +29,40 @@ export default function UpdateProfile() {
             const session = await getUserCookie(UserCookieType.SESSION);
             const parsedSession = JSON.parse(session?.value || "{}");
             setParsedSession(parsedSession);
-            setUserRoles(Object.keys(userConfig).filter(key => (userConfig as any)[key] === true))
+            setStoreId(getStoreId);
         })();
     }, [userConfig]);
 
     // Update profile
-    const validationProfileSchema = Yup.object().shape({
-        firstname: Yup.string().required("Required")
+    const initialValues: any = {
+        serviceName: "",
+        time: 0,
+        price: 0,
+        serviceDescription: "",
+    };
+
+    // Update profile
+    const validationSchema = Yup.object().shape({
+        serviceName: Yup.string().required("Service name is required"),
+        time: Yup.number().required("Time is required").min(30, "Time must be at least 30 minutes").max(480, "Time must be at most 8 hours").integer("Time must be a multiple of 30").positive("Time must be a positive number").test("is-multiple-of-30", "Time must be a multiple of 30", value => value % 30 === 0),
+        price: Yup.number().required("Price is required").min(0, "Price must be at least 0").max(1000, "Price must be at most 1000").integer("Price must be a positive number").positive("Price must be a positive number"),
+        serviceDescription: Yup.string().required("Service description is required")
     });
 
-    const onSubmitProfile: FormikConfig<UserUpdateProfile>["onSubmit"] = (values) => {
-        fetch(`https://api.odicylens.com/users/${user?.id}`, {
-            method: "PATCH",
+    const onSubmitService: FormikConfig<any>["onSubmit"] = (values) => {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/services`, {
+            method: "POST",
             headers: {
-                'Authorization': `Bearer ${parsedSession?.token}`,
-                'Content-Type': 'application/merge-patch+json'
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${parsedSession?.token}`,
             },
-            body: JSON.stringify(values)
+            body: JSON.stringify({
+                name: values.serviceName,
+                time: values.time,
+                price: values.price,
+                description: values.serviceDescription,
+                store: `stores/${storeId}`,
+            })
         })
         .then((res) => res.json())
         .then(() => {
@@ -58,9 +76,9 @@ export default function UpdateProfile() {
                                 <CheckIcon className="w-6 h-6 text-green-400" aria-hidden="true" />
                             </div>
                             <div className="ml-3 w-0 flex-1 pt-0.5">
-                                <p className="text-sm font-medium text-gray-900">Profile Updated!</p>
+                                <p className="text-sm font-medium text-gray-900">New service added!</p>
                                 <p className="mt-1 text-sm text-gray-500">
-                                    The changes will be applied on your next login.
+                                    Your service has been added successfully.
                                 </p>
                             </div>
                             <div className="ml-4 flex flex-shrink-0">
@@ -78,10 +96,10 @@ export default function UpdateProfile() {
         })
     };
 
-    const formikProfile = useFormik<UserUpdateProfile>({
-        initialValues: initialProfileValues,
-        validationSchema: validationProfileSchema,
-        onSubmit: onSubmitProfile,
+    const formikService = useFormik<UserUpdateProfile>({
+        initialValues: initialValues,
+        validationSchema: validationSchema,
+        onSubmit: onSubmitService,
     });
 
     return (
@@ -89,7 +107,7 @@ export default function UpdateProfile() {
             <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">
                 New service
             </h2>
-            <FormikProvider value={formikProfile}>
+            <FormikProvider value={formikService}>
                 <Form id="profileFields" className="flex flex-col px-4 gap-1">
 
                     <div className="flex w-full flex-col">
@@ -102,10 +120,10 @@ export default function UpdateProfile() {
 
                     <div className="sm:grid sm:grid-cols-2 gap-4 w-full mt-4">
                         <div className="flex w-full flex-col">
-                            <label htmlFor="time" className="text-black text-sm font-semibold">
+                            <label htmlFor="time" className="text-black text-sm font-semibold inline">
                                 Time <span className="text-red-600">*</span>
+                                <ErrorMessage name="time" component="span" className="ml-4 text-red-600 leading-3 text-sm" />
                             </label>
-                            <ErrorMessage name="time" component="span" className="text-red-600 leading-3 text-sm" />
                             <Field type="number" placeholder="Your service" name="time" className="border border-gray-200 text-black rounded px-3 py-2 mt-2 focus:outline-0 font-inter placeholder:text-gray-400 placeholder:text-sm w-full" step={30} min={30} />
                         </div>
 

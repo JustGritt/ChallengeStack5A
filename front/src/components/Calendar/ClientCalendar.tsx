@@ -35,7 +35,7 @@ export default function UserCalendar() {
 
     useEffect(() => {
         if (user && !scheduleFetched && parsedSession?.token) {
-            fetch(`https://api.odicylens.com/users/${user?.id}/bookings`, {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${user?.id}/bookings`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",

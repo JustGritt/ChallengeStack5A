@@ -39,7 +39,7 @@ export default function Companies() {
 
     useEffect(() => {
         const fetchCompanies = async (token: string) => {
-            const response = await fetch('https://api.odicylens.com/companies', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/companies`, {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` },
             });
@@ -48,7 +48,7 @@ export default function Companies() {
         };
 
         const fetchCompanyInfo = async (token: string, companyId: string) => {
-            const response = await fetch(`https://api.odicylens.com/companies/${companyId}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/companies/${companyId}`, {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` },
             });
@@ -57,7 +57,7 @@ export default function Companies() {
         };
 
         const fetchCompanyEmployees = async (token: string, companyId: string) => {
-            const response = await fetch(`https://api.odicylens.com/company/${companyId}/employee`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/company/${companyId}/employee`, {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` },
             });

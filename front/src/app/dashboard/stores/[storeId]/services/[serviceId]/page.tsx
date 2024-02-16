@@ -21,7 +21,7 @@ export default function Stores({ params }: { params: { storeId: string, serviceI
     const [services, setservices] = useState<any[]>([]);
     useEffect(() => {
         if(parsedSession?.token) {
-            fetch(`https://api.odicylens.com/stores/${params.storeId}`, {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/stores/${params.storeId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

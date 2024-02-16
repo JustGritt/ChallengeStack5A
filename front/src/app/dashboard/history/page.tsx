@@ -29,7 +29,7 @@ export default function History() {
     useEffect(() => {
         const fetchHistory = async () => {
             if (!historyFetched && parsedSession?.token) {
-                fetch(`https://api.odicylens.com/users/${parsedSession.user.id}/bookings`, { method: "GET", headers: { 'Authorization': `Bearer ${parsedSession?.token}` } })
+                fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${parsedSession.user.id}/bookings`, { method: "GET", headers: { 'Authorization': `Bearer ${parsedSession?.token}` } })
                     .then((res) => res.json())
                     .then((data) => setHistory(data["hydra:member"]));
                 setHistoryFetched(true);

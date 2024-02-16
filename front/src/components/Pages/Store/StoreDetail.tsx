@@ -26,7 +26,7 @@ export default function Stores() {
     const [store, setStore] = useState<Store | null>(null);
     useEffect(() => {
         if(parsedSession?.user?.work?.id) {
-            fetch(`https://api.odicylens.com/stores/${parsedSession?.user?.work?.id}`, {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/stores/${parsedSession?.user?.work?.id}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -132,7 +132,7 @@ export default function Stores() {
                                             </a>
                                         ))) : (
                                             <div>
-                                                <p className="text-center">No employees found</p>
+                                                <p className="text-center">No services found</p>
                                             </div>
                                         )
                                     }

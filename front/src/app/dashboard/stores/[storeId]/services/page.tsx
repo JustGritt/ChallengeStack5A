@@ -4,12 +4,16 @@ import Link from "next/link";
 import Breadcrumb from "@/components/Header/Breadcrumb";
 import { Store } from "@/types/Store";
 import { useState, useEffect } from 'react';
+import { selectCurrentUserConfig } from "@/lib/services/slices/authSlice";
+import { useSelector } from "react-redux";
 
 export default function EditStoreServices({ params }: { params: { storeId: string } }) {
 
+    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
+
     const [store, setStore] = useState<Store | null>(null);
     useEffect(() => {
-        fetch(`https://api.odicylens.com/stores/${params.storeId}`)
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/stores/${params.storeId}`)
             .then(response => response.json())
             .then(data => setStore(data));
     }, [params.storeId]);
@@ -27,16 +31,20 @@ export default function EditStoreServices({ params }: { params: { storeId: strin
                                 </h2>
 
                                 <div className="flex items-center justify-between gap-4">
-                                    <Link href={`/dashboard/stores/${params.storeId}/services/add`} className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">
-                                        New Service
-                                    </Link>
+                                    {
+                                        userConfig.isOwner && (
+                                            <Link href={`/dashboard/stores/${params.storeId}/services/add`} className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">
+                                                New Service
+                                            </Link>
+                                        )
+                                    }
                                 </div>
                             </div>
 
                             <div className="mx-auto lg:pt-8">
                                 <ul className="flex flex-col gap-4">
                                     {
-                                        store.services.length > 1 ? (store.services.map((service) => (
+                                        store.services.length > 0 ? (store.services.map((service) => (
                                             <a href={`/dashboard/stores/${params.storeId}/services/${service.id}`} key={service.id}>
                                                 <li key={service.id} className="flex justify-between gap-x-6 py-5 hover:bg-gray-100 w-full rounded shadow">
                                                     <div className="min-w-0 flex flex-auto items-center justify-between px-6">
@@ -47,7 +55,7 @@ export default function EditStoreServices({ params }: { params: { storeId: strin
                                             </a>
                                         ))) : (
                                             <div>
-                                                <p className="text-center">No employees found</p>
+                                                <p className="text-center">No services found</p>
                                             </div>
                                         )
                                     }

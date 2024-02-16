@@ -34,11 +34,11 @@ export default function DashboardMenu() {
             setUserRoles(Object.keys(userConfig).filter(key => (userConfig as any)[key] === true))
         })();
     }, [userConfig])
-
+    
     // Get company to validate
     const fetchCompanies = useCallback(async () => {
         if (userRoles.includes('isAdmin')) {
-            const response = await fetch('https://api.odicylens.com/companies', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/companies`, {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${parsedSession?.token}` }
             }).then(response => response.json());

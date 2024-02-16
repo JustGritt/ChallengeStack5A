@@ -37,7 +37,7 @@ export default function EmployeeCalendar() {
 
     useEffect(() => {
         if (user && !scheduleFetched) {
-            fetch(`https://api.odicylens.com/users/${user?.id}/schedules`, {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${user?.id}/schedules`, {
                 method: "GET",
             })
                 .then((res) => res.json())
@@ -62,7 +62,7 @@ export default function EmployeeCalendar() {
     // Get the bookings
     useEffect(() => {
         if (user && !bookingsFetched) {
-            fetch(`https://api.odicylens.com/employee/${user?.id}/bookings`, {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/employee/${user?.id}/bookings`, {
                 method: "GET",
             })
                 .then((res) => res.json())
@@ -181,7 +181,7 @@ export default function EmployeeCalendar() {
     const saveEvents = () => {
         if(userRoles.includes("isWorker")) {
             const deletePromises = scheduleToDelete.map((id: any) => {
-                return fetch(`https://api.odicylens.com/schedules/${id}`, {
+                return fetch(`${process.env.NEXT_PUBLIC_API_URL}/schedules/${id}`, {
                     method: "DELETE",
                     headers: {
                         "Authorization": `Bearer ${parsedSession?.token}`
@@ -233,7 +233,7 @@ export default function EmployeeCalendar() {
                     }
 
                     const postPromises = newSchedules.map((event: any) => {
-                        return fetch(`https://api.odicylens.com/schedules`, {
+                        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/schedules`, {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json",

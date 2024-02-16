@@ -34,7 +34,7 @@ export default function CompanyDetails({ params }: { params: { companyId: string
 
     useEffect(() => {
         const fetchCompanyInfo = async () => {
-            const response = await fetch(`https://api.odicylens.com/companies/${params.companyId}`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/companies/${params.companyId}`);
             const data = await response.json();
 
             if (userRoles.includes("isAdmin") || data.owner.id === user?.id) {
@@ -49,7 +49,7 @@ export default function CompanyDetails({ params }: { params: { companyId: string
             if (companyInfo) {
                 const allEmployees: Employee[] = [];
                 const fetches = companyInfo.stores.map(async store => {
-                    const response = await fetch(`https://api.odicylens.com/stores/${store.id}`);
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/stores/${store.id}`);
                     const data = await response.json();
                     allEmployees.push(...data.users);
                 });
@@ -62,7 +62,7 @@ export default function CompanyDetails({ params }: { params: { companyId: string
     }, [companyInfo]);
 
     const validateCompany = (id: number) => {
-        fetch(`https://api.odicylens.com/companies/${id}`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/companies/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/merge-patch+json',
@@ -75,7 +75,7 @@ export default function CompanyDetails({ params }: { params: { companyId: string
     }
 
     const refuseCompany = (id: number) => {
-        fetch(`https://api.odicylens.com/companies/${id}`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/companies/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/merge-patch+json',

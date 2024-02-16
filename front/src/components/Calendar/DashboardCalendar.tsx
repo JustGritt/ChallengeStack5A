@@ -36,7 +36,7 @@ export default function DashboardCalendar() {
     }, [parsedSession, bookingFetched])
 
     const getUserBookings = (id: number, token: string) => {
-        fetch(`https://api.odicylens.com/users/${id}/bookings`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}/bookings`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -48,7 +48,7 @@ export default function DashboardCalendar() {
     }
 
     const getEmployeeBookings = (id: number, token: string) => {
-        fetch(`https://api.odicylens.com/employee/${id}/bookings`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/employee/${id}/bookings`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`

@@ -10,7 +10,7 @@ export default function StoresEmployees({ params }: { params: { storeId: string 
 
     const [store, setStore] = useState<Store | null>(null);
     useEffect(() => {
-        fetch(`https://api.odicylens.com/stores/${params.storeId}`)
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/stores/${params.storeId}`)
             .then(response => response.json())
             .then(data => setStore(data));
     }, [params.storeId]);

@@ -7,7 +7,7 @@ export default function ConfirmemailToken({ params }: { params: { token: string 
 
     const [req, setReq] = useState(0);
     useEffect(() => {
-        fetch(`https://api.odicylens.com/users/token/${params.token}`, { method: "GET", }).then((res) => { setReq(res.status) });
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/token/${params.token}`, { method: "GET", }).then((res) => { setReq(res.status) });
     }, [params.token]);
 
     const statusMessages = {

@@ -32,7 +32,7 @@ export default function EmployeeDetails({ params }: { params: { employeeId: stri
     useEffect(() => {
         const fetchEmployees = async () => {
             if (!employeeFetched && parsedSession?.token) {
-                fetch(`https://api.odicylens.com/users/${params.employeeId}`, {
+                fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${params.employeeId}`, {
                     method: "GET",
                     headers: {
                         'Authorization': `Bearer ${parsedSession?.token}`

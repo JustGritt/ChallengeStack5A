@@ -26,7 +26,7 @@ export default function Employees() {
     useEffect(() => {
         const fetchEmployees = async () => {
             if (!employeesFetched && parsedSession?.token && userRoles.includes("isAdmin")) {
-                fetch(`https://api.odicylens.com/company/2/employee`, {
+                fetch(`${process.env.NEXT_PUBLIC_API_URL}/company/2/employee`, {
                     method: "GET",
                     headers: {
                         'Authorization': `Bearer ${parsedSession?.token}`
@@ -39,7 +39,7 @@ export default function Employees() {
             }
 
             if (!employeesFetched && parsedSession?.token && (userRoles.includes("isOwner") || userRoles.includes("isWorker"))) {
-                fetch(`https://api.odicylens.com/company/${parsedSession?.user?.companie?.id}/employee`, {
+                fetch(`${process.env.NEXT_PUBLIC_API_URL}/company/${parsedSession?.user?.companie?.id}/employee`, {
                     method: "GET",
                     headers: {
                         'Authorization': `Bearer ${parsedSession?.token}`

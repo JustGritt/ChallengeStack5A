@@ -43,7 +43,7 @@ export default function Stores() {
 
             // Admin
             if (userConfig?.isAdmin && !storesFetched) {
-                fetch(`https://api.odicylens.com/companies`, { method: "GET" })
+                fetch(`${process.env.NEXT_PUBLIC_API_URL}/companies`, { method: "GET" })
                     .then((res) => res.json())
                     .then((data) => setStores(data["hydra:member"].reduce((acc: Store[], company: Company) => acc.concat(company.stores), [])))
                     setStoresFetched(true);
@@ -51,7 +51,7 @@ export default function Stores() {
 
             // Owner
             if (userConfig?.isOwner && !storesFetched && parsedSession?.user?.companie?.id) {
-                fetch(`https://api.odicylens.com/companies/${parsedSession.user.companie.id}`, {
+                fetch(`${process.env.NEXT_PUBLIC_API_URL}/companies/${parsedSession.user.companie.id}`, {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${parsedSession?.token}` }
                 }).then((res) => res.json()).then((data) => setStores(data.stores))
@@ -60,7 +60,7 @@ export default function Stores() {
 
             // Employee
             if (userConfig?.isWorker && !storesFetched && parsedSession?.user?.work?.id) {
-                fetch(`https://api.odicylens.com/stores/${parsedSession?.user?.work?.id}`, {
+                fetch(`${process.env.NEXT_PUBLIC_API_URL}/stores/${parsedSession?.user?.work?.id}`, {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${parsedSession?.token}` }
                 })
@@ -74,7 +74,7 @@ export default function Stores() {
 
     const deleteStore = (storeId: number) => {
             if(userConfig?.isOwner) {
-                fetch(`https://api.odicylens.com/stores/${storeId}`, {
+                fetch(`${process.env.NEXT_PUBLIC_API_URL}/stores/${storeId}`, {
                 method: "DELETE",
                 headers: { 'Authorization': `Bearer ${parsedSession?.token}` }
             })

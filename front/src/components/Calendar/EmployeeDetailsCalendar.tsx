@@ -34,7 +34,7 @@ export default function EmployeeDetailsCalendar({ employeeId, employeeStore }: {
 
     useEffect(() => {
         if (user && !scheduleFetched && employeeId && parsedSession?.token) {
-            fetch(`https://api.odicylens.com/users/${employeeId}/schedules`, {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${employeeId}/schedules`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${parsedSession?.token}`
@@ -61,7 +61,7 @@ export default function EmployeeDetailsCalendar({ employeeId, employeeStore }: {
     // Get the bookings
     useEffect(() => {
         if (user && !bookingsFetched && employeeId) {
-            fetch(`https://api.odicylens.com/employee/${employeeId}/bookings`, {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/employee/${employeeId}/bookings`, {
                 method: "GET",
             })
                 .then((res) => res.json())
@@ -170,7 +170,7 @@ export default function EmployeeDetailsCalendar({ employeeId, employeeStore }: {
         if(userRoles.includes("isOwner")) {
             // Delete schedules
             for (const id of scheduleToDelete) {
-                const res = await fetch(`https://api.odicylens.com/schedules/${id}`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/schedules/${id}`, {
                     method: "DELETE",
                     headers: {
                         "Authorization": `Bearer ${parsedSession?.token}`
@@ -213,7 +213,7 @@ export default function EmployeeDetailsCalendar({ employeeId, employeeStore }: {
             }
 
             const postPromises = newSchedules.map((event: any) => {
-                return fetch(`https://api.odicylens.com/schedules`, {
+                return fetch(`${process.env.NEXT_PUBLIC_API_URL}/schedules`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

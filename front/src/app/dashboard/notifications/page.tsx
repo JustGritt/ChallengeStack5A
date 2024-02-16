@@ -26,7 +26,7 @@ export default function Notifications() {
     useEffect(() => {
         (async () => {
             if (user?.roles.includes('ROLE_ADMIN') || user?.roles.includes('ROLE_SUPER_ADMIN')) {
-                await fetch('https://api.odicylens.com/companies?page=0', { method: 'GET', headers: { 'Authorization': `Bearer ${parsedSession?.token}` } })
+                await fetch(`${process.env.NEXT_PUBLIC_API_URL}/companies?page=0`, { method: 'GET', headers: { 'Authorization': `Bearer ${parsedSession?.token}` } })
                     .then(response => {
                         if (!response.ok) {
                             throw new Error(`HTTP error! status: ${response.status}`);

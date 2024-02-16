@@ -20,7 +20,7 @@ export default function DashboardStats() {
     useEffect(() => {
         const fetchCompanyStats = async () => {
             if (!companyStatsFetched && parsedSession?.user?.companie?.id) {
-                fetch(`https://api.odicylens.com/company/${parsedSession?.user?.companie?.id}/dashboard`, {
+                fetch(`${process.env.NEXT_PUBLIC_API_URL}/company/${parsedSession?.user?.companie?.id}/dashboard`, {
                     method: "GET",
                     headers: {
                         'Authorization': `Bearer ${parsedSession?.token}`
