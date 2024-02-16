@@ -9,7 +9,7 @@ import { selectCurrentUser, selectCurrentUserConfig } from '@/lib/services/slice
 export default function Dashboard() {
 
 	const user = useSelector(selectCurrentUser);
-    const userConfig: { [key: string]: boolean } = useSelector(selectCurrentUserConfig);
+    const userConfig = useSelector(selectCurrentUserConfig);
     const [userRoles, setUserRoles] = useState<string[]>([]);
 
     // Get session
