@@ -25,6 +25,7 @@ use App\Validator\PasswordPutGroupsGenerator;
     operations: [
         new Get(uriTemplate: '/users/me', name: "getuserinfo", normalizationContext: ['groups' => ['read-user-mutation']]),
         new Get(normalizationContext: ['groups' => ['read-user']]),
+        new GetCollection(normalizationContext: ['groups' => ['read-user']], security: "is_granted('ROLE_SUPER_ADMIN')"),
         new Post(denormalizationContext: ['groups' => ['create-user']]),
         new Patch(denormalizationContext: ['groups' => ['update-user']]),
     ],
