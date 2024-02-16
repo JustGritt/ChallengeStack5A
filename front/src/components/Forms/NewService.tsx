@@ -13,11 +13,11 @@ import { UserCookieType } from "@/types/User";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline"
 import { useParams, useRouter } from "next/navigation";
 export default function UpdateProfile() {
-
-    type StoreParams = {
-        storeId: string;
+    type RouteParams = {
+        storeId?: string;
     };
-    const { storeId } = useParams<StoreParams>();
+
+    const { storeId } = useParams<RouteParams>() || {};
     const [getStoreId, setStoreId] = useState(storeId);
     const router = useRouter();
 
