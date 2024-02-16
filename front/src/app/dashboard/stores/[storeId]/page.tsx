@@ -4,16 +4,21 @@ import Link from "next/link";
 import Breadcrumb from "@/components/Header/Breadcrumb";
 import { Store } from "@/types/Store";
 import { useState, useEffect } from 'react';
+import { selectCurrentUserConfig } from "@/lib/services/slices/authSlice";
+import { useSelector } from "react-redux";
 
 export default function Stores({ params }: { params: { storeId: string } }) {
 
     const [store, setStore] = useState<Store | null>(null);
+    const userConfig = useSelector(selectCurrentUserConfig);
     useEffect(() => {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/stores/${params.storeId}`)
             .then(response => response.json())
             .then(data =>
                 setStore(data));
     }, [params.storeId]);
+
+
 
     return (
         <section className="lg:pl-72 block min-h-screen">
@@ -61,11 +66,15 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                             </h2>
                                         )
                                     }
-                                    <div className="flex items-center justify-between gap-4">
-                                        <a href={`/dashboard/stores/${params.storeId}/employees/add`} className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">
-                                            New Employee
-                                        </a>
-                                    </div>
+                                    {
+                                        userConfig.isOwner === true && (
+                                            <div className="flex items-center justify-between gap-4">
+                                                <a href={`/dashboard/stores/${params.storeId}/employees/add`} className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">
+                                                    New Employee
+                                                </a>
+                                            </div>
+                                        )
+                                    }
                                 </div>
 
                                 <div className="mx-auto lg:pt-8">
@@ -105,12 +114,12 @@ export default function Stores({ params }: { params: { storeId: string } }) {
                                         )
                                     }
 
-                                        <div className="flex items-center justify-between gap-4">
-                                            <Link href={`/dashboard/stores/${params.storeId}/services`} className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">
-                                                See all
-                                            </Link>
-                                        </div>
+                                    <div className="flex items-center justify-between gap-4">
+                                        <Link href={`/dashboard/stores/${params.storeId}/services`} className="text-sm font-medium rounded-lg disabled:pointer-events-none disabled:opacity-50 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-10 px-4 py-2">
+                                            See all
+                                        </Link>
                                     </div>
+                                </div>
 
                                 <div className="mx-auto lg:pt-8">
                                     <ul className="flex flex-col gap-4">
