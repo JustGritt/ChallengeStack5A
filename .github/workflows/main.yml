@@ -7,7 +7,7 @@ on:
     paths-ignore:
       - 'infra/environments/prod/odicylens-api/.argocd-source-odicylens-api.yaml'
       - 'front/**'
-   
+      
 jobs:
   build_and_publish_docker_image:
     runs-on: ubuntu-latest
